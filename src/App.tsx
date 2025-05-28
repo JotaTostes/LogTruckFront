@@ -1,14 +1,12 @@
-import { Footer } from "./components/ui/Footer";
 import { AppRoutes } from "./routes/AppRoutes";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-grow">
-        <AppRoutes />
-      </main>
-      <Footer />
-    </div>
+    <>
+      <Toaster position="top-right" />
+      <AppRoutes />
+    </>
   );
 }
 
