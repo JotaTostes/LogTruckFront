@@ -1,15 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import UsuarioForm from "./UsuarioForm";
-import UsuarioTable from "./UsuarioTable";
-import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
-import { Dialog, DialogHeader, DialogBody } from "../../components/ui/Dialog";
 import { Button } from "../../components/ui/Button";
+import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
+import { useUsuarioStore } from "../../store/usuarioStore";
+import UsuarioFormModal from "./UsuarioFormModal";
+import UsuarioTable from "./UsuarioTable";
+import type { Usuario } from "../../types/Usuario";
+import toast from "react-hot-toast";
 
 export default function Usuarios() {
+  const { usuarios, carregarUsuarios, removerUsuario } = useUsuarioStore();
   const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<Usuario | null>(null);
 
-  const handleOpen = () => setOpen(!open);
+  useEffect(() => {
+    carregarUsuarios();
+  }, []);
+
+  const handleCreate = () => {
+    setSelected(null);
+    setOpen(true);
+  };
+
+  const handleEdit = (usuario: Usuario) => {
+    setSelected(usuario);
+    setOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await removerUsuario(id);
+      toast.success("Usuário removido com sucesso!");
+      carregarUsuarios(); // recarrega a lista
+    } catch (error) {
+      toast.error("Erro ao remover usuário");
+    }
+  };
+
+  const handleSuccess = () => {
+    setOpen(false);
+    carregarUsuarios();
+  };
 
   return (
     <div>
@@ -18,36 +49,28 @@ export default function Usuarios() {
           Usuários
         </Typography>
 
-        <Button onClick={handleOpen} className="flex items-center gap-2">
+        <Button
+          onClick={handleCreate}
+          className="flex items-center gap-2"
+          showArrow={false}
+        >
           <Plus className="h-4 w-4" />
           Novo Usuário
         </Button>
       </div>
 
-      <UsuarioTable />
+      <UsuarioTable
+        usuarios={usuarios}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
-      {/* Dialog Modal */}
-      <Dialog
+      <UsuarioFormModal
         open={open}
-        handler={handleOpen}
-        size="md"
-        placeholder=""
-        onResize={() => {}}
-        onResizeCapture={() => {}}
-        onPointerEnterCapture={() => {}}
-        onPointerLeaveCapture={() => {}}
-        className="bg-white"
-      >
-        <DialogHeader className="pb-2">
-          <Typography variant="h4" color="blue-gray">
-            Novo Usuário
-          </Typography>
-        </DialogHeader>
-
-        <DialogBody className="px-6 py-4">
-          <UsuarioForm onSuccess={() => setOpen(false)} />
-        </DialogBody>
-      </Dialog>
+        onClose={() => setOpen(false)}
+        usuario={selected}
+        onSuccess={handleSuccess}
+      />
     </div>
   );
 }

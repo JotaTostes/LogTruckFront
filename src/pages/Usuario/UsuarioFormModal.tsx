@@ -7,6 +7,7 @@ import {
   DialogBody,
   DialogFooter,
 } from "../../components/ui/Dialog";
+import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 
 type Props = {
   open: boolean;
@@ -26,43 +27,22 @@ export default function UsuarioFormModal({
       open={open}
       handler={onClose}
       size="md"
-      placeholder=""
-      onResize={() => {}}
-      onResizeCapture={() => {}}
-      onPointerEnterCapture={() => {}}
-      onPointerLeaveCapture={() => {}}
+      className="bg-white rounded-xl shadow-lg"
     >
-      <DialogHeader
-        placeholder=""
-        onResize={() => {}}
-        onResizeCapture={() => {}}
-        onPointerEnterCapture={() => {}}
-        onPointerLeaveCapture={() => {}}
-      >
-        {usuario ? "Editar Usuário" : "Cadastrar Usuário"}
+      <DialogHeader className="pb-2 border-b border-gray-200">
+        <Typography variant="h4" color="blue-gray">
+          {usuario ? "Editar Usuário" : "Novo Usuário"}
+        </Typography>
       </DialogHeader>
 
-      <DialogBody
-        className="overflow-auto max-h-[80vh]"
-        placeholder=""
-        onResize={() => {}}
-        onResizeCapture={() => {}}
-        onPointerEnterCapture={() => {}}
-        onPointerLeaveCapture={() => {}}
-      >
+      <DialogBody className="px-6 py-4 overflow-auto max-h-[80vh]">
         <UsuarioForm usuario={usuario} onSuccess={onSuccess} />
       </DialogBody>
 
-      <DialogFooter
-        placeholder=""
-        onResize={() => {}}
-        onResizeCapture={() => {}}
-        onPointerEnterCapture={() => {}}
-        onPointerLeaveCapture={() => {}}
-      >
+      <DialogFooter className="px-6 py-3 border-t border-gray-200 flex justify-end">
         <CustomButton
           onClick={onClose}
-          className="mr-1 bg-transparent text-red-600 hover:bg-red-50"
+          className="bg-transparent text-red-600 hover:bg-red-50 font-semibold"
           showArrow={false}
         >
           Cancelar

@@ -1,37 +1,19 @@
-import { useEffect, useState } from "react";
-import { Button as CustomButton } from "../../components/ui/Button";
+import { Edit, Trash2 } from "lucide-react";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import { MTCard as Card } from "../../components/ui/mt/MTCard";
 import type { Usuario } from "../../types/Usuario";
-import { useUsuarioStore } from "../../store/usuarioStore";
-import UsuarioFormModal from "./UsuarioFormModal";
 
-export default function UsuarioTable() {
-  const { usuarios, carregarUsuarios } = useUsuarioStore();
-  const [selected, setSelected] = useState<Usuario | null>(null);
-  const [open, setOpen] = useState(false);
+type Props = {
+  usuarios: Usuario[];
+  onEdit: (usuario: Usuario) => void;
+  onDelete: (id: string) => void;
+};
 
-  useEffect(() => {
-    carregarUsuarios();
-  }, []);
-
-  const handleSuccess = () => {
-    setOpen(false);
-    carregarUsuarios();
-  };
-
+export default function UsuarioTable({ usuarios, onEdit, onDelete }: Props) {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <Typography variant="h5">Usuários Cadastrados</Typography>
-        <CustomButton
-          onClick={() => {
-            setSelected(null);
-            setOpen(true);
-          }}
-        >
-          Novo Usuário
-        </CustomButton>
       </div>
 
       <Card className="overflow-x-auto">
@@ -41,7 +23,7 @@ export default function UsuarioTable() {
               <th className="p-2">Nome</th>
               <th className="p-2">Email</th>
               <th className="p-2">CPF</th>
-              <th className="p-2">Role</th>
+              <th className="p-2">Função</th>
               <th className="p-2">Ativo</th>
               <th className="p-2">Ações</th>
             </tr>
@@ -54,30 +36,27 @@ export default function UsuarioTable() {
                 <td className="p-2">{u.cpf}</td>
                 <td className="p-2">{u.role}</td>
                 <td className="p-2">{u.ativo ? "Sim" : "Não"}</td>
-                <td className="p-2">
-                  <CustomButton
-                    onClick={() => {
-                      setSelected(u);
-                      setOpen(true);
-                    }}
-                    className="w-auto px-4 py-2 text-sm"
-                    showArrow={false}
+                <td className="p-2 ">
+                  <button
+                    onClick={() => onEdit(u)}
+                    className="text-blue-600 hover:text-blue-800 transition-colors"
+                    title="Editar"
                   >
-                    Editar
-                  </CustomButton>
+                    <Edit className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => onDelete(u.id)}
+                    className="text-red-600 hover:text-red-800 transition-colors"
+                    title="Excluir"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </Card>
-
-      <UsuarioFormModal
-        open={open}
-        onClose={() => setOpen(false)}
-        usuario={selected}
-        onSuccess={handleSuccess}
-      />
     </div>
   );
 }

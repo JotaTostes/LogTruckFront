@@ -1,5 +1,5 @@
 export type Usuario = {
-  id?: string;
+  id: string;
   nome: string;
   email: string;
   cpf: string;
