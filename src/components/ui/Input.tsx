@@ -14,6 +14,7 @@ interface CustomInputProps {
   size?: "md" | "lg";
   color?: "blue" | "red" | "green" | "gray";
   className?: string;
+  maxLength?: number;
 }
 
 export const Input = (props: CustomInputProps) => {

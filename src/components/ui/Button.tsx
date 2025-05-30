@@ -5,6 +5,7 @@ import React from "react";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   showArrow?: boolean;
+  variant?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -12,13 +13,17 @@ export const Button: React.FC<ButtonProps> = ({
   isLoading = false,
   showArrow = true,
   className = "",
+  variant = "",
   ...props
 }) => {
   return (
     <button
       {...props}
+      // variant={variant}
       disabled={isLoading || props.disabled}
-      className={`w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 group ${className}`}
+      className={`w-full ${
+        variant === "primary" ? "bg-yellow-400 hover:bg-yellow-500" : ""
+      } text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 group ${className}`}
     >
       {isLoading ? (
         <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

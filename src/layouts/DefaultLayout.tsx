@@ -3,22 +3,27 @@ import Header from "../components/ui/Header";
 import { Footer } from "../components/ui/Footer";
 import Sidebar from "../components/ui/Sidebar";
 import { Toaster } from "react-hot-toast";
+import { useState } from "react";
 
 export default function DefaultLayout() {
-  return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <Sidebar />
-      <Toaster position="top-right" />
-      {/* Main content area */}
-      <div className="flex flex-col flex-1">
-        <Header />
+  const [isSidebarHovered, setIsSidebarHovered] = useState(false);
 
-        <main className="flex-grow p-4">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <Header
+        isSidebarHovered={isSidebarHovered}
+        setIsSidebarHovered={setIsSidebarHovered}
+      />
+      <Toaster position="top-right" />
+
+      <Sidebar isHovered={isSidebarHovered} setIsHovered={setIsSidebarHovered}>
+        <div className="flex flex-col min-h-screen">
+          <main className="flex-1 p-4 w-full">
+            <Outlet />
+          </main>
+        </div>
+      </Sidebar>
+      <Footer />
     </div>
   );
 }
