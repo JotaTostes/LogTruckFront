@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { Select, Option, Switch } from "@material-tailwind/react";
+import { Option } from "@material-tailwind/react";
 import { toast } from "react-hot-toast";
 import { useUsuarioStore } from "../../store/usuarioStore";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
+import { MTSwitch as Switch } from "../../components/ui/mt/MTSwitch";
+import { MTSelect as Select } from "../../components/ui/mt/MTSelect";
 import type { Usuario } from "../../types/Usuario";
 
 export type UsuarioFormProps = {
@@ -30,7 +32,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
       setCpf(usuario.cpf);
       setRole(usuario.role);
       setAtivo(usuario.ativo);
-      setSenha(""); // normalmente não trazemos a senha de volta
+      setSenha("");
     }
   }, [usuario]);
 
@@ -50,7 +52,6 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
 
       toast.success("Usuário cadastrado com sucesso!");
 
-      // limpa o formulário
       setNome("");
       setEmail("");
       setCpf("");
@@ -58,8 +59,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
       setRole("Operador");
       setAtivo(true);
 
-      // fecha modal se callback for passado
-      if (onSuccess) onSuccess();
+      onSuccess?.();
     } catch (err) {
       console.error(err);
       toast.error("Erro ao cadastrar usuário.");
@@ -69,10 +69,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-4 p-4 bg-white rounded shadow max-w-xl"
-    >
+    <form onSubmit={handleSubmit} className="space-y-5">
       <Input
         label="Nome"
         value={nome}
@@ -103,38 +100,31 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
         required
       />
 
-      <Select
-        label="Tipo de usuário"
-        value={role}
-        onChange={(value) =>
-          setRole(value as "Administrador" | "Operador" | "Motorista")
-        }
-        placeholder=""
-        onResize={() => {}}
-        onResizeCapture={() => {}}
-        onPointerEnterCapture={() => {}}
-        onPointerLeaveCapture={() => {}}
-      >
-        <Option value="Administrador">Administrador</Option>
-        <Option value="Operador">Operador</Option>
-        <Option value="Motorista">Motorista</Option>
-      </Select>
-
-      <div className="flex items-center justify-between pt-2">
-        <span className="text-sm text-gray-700">Usuário Ativo</span>
-        <Switch
-          checked={ativo}
-          onChange={() => setAtivo(!ativo)}
-          crossOrigin=""
-          onResize={() => {}}
-          onResizeCapture={() => {}}
-          onPointerEnterCapture={() => {}}
-          onPointerLeaveCapture={() => {}}
-        />
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium text-gray-700">
+          Tipo de Usuário
+        </label>
+        <Select
+          className="w-72"
+          label="Selecionar"
+          value={role}
+          onChange={(value) =>
+            setRole(value as "Administrador" | "Operador" | "Motorista")
+          }
+        >
+          <Option value="Administrador">Administrador</Option>
+          <Option value="Operador">Operador</Option>
+          <Option value="Motorista">Motorista</Option>
+        </Select>
       </div>
 
+      {/* <div className="flex items-center justify-between pt-2">
+        <span className="text-sm text-gray-700">Usuário Ativo</span>
+        <Switch checked={ativo} onChange={() => setAtivo(!ativo)} />
+      </div> */}
+
       <Button type="submit" isLoading={loading} disabled={loading}>
-        Cadastrar
+        {usuario ? "Salvar Alterações" : "Cadastrar"}
       </Button>
     </form>
   );

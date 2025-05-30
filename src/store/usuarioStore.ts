@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import axios from "axios";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
 
@@ -58,7 +57,7 @@ export const useUsuarioStore = create<UsuarioStore>((set, get) => ({
     }
   },
   editarUsuario: async (id, usuario) => {
-    await axios.put(`usuario/${id}`, usuario);
+    await api.put(`usuario/${id}`, usuario);
     await useUsuarioStore.getState().carregarUsuarios();
   },
 }));

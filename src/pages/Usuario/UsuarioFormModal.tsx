@@ -8,6 +8,7 @@ import {
   DialogFooter,
 } from "../../components/ui/Dialog";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
+import { X } from "lucide-react";
 
 type Props = {
   open: boolean;
@@ -27,22 +28,28 @@ export default function UsuarioFormModal({
       open={open}
       handler={onClose}
       size="md"
-      className="bg-white rounded-xl shadow-lg"
+      className="bg-white rounded-2xl shadow-2xl p-0"
     >
-      <DialogHeader className="pb-2 border-b border-gray-200">
+      <div className="flex justify-between items-center px-6 pt-6 pb-2 border-b border-gray-200">
         <Typography variant="h4" color="blue-gray">
           {usuario ? "Editar Usuário" : "Novo Usuário"}
         </Typography>
-      </DialogHeader>
+        <button
+          onClick={onClose}
+          className="text-gray-500 hover:text-red-500 transition"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
 
       <DialogBody className="px-6 py-4 overflow-auto max-h-[80vh]">
         <UsuarioForm usuario={usuario} onSuccess={onSuccess} />
       </DialogBody>
 
-      <DialogFooter className="px-6 py-3 border-t border-gray-200 flex justify-end">
+      <DialogFooter className="px-6 py-4 border-t border-gray-200">
         <CustomButton
           onClick={onClose}
-          className="bg-transparent text-red-600 hover:bg-red-50 font-semibold"
+          className="bg-red-50 text-red-600 hover:bg-red-100 font-medium"
           showArrow={false}
         >
           Cancelar
