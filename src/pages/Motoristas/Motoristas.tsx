@@ -2,17 +2,19 @@ import { useEffect, useState } from "react";
 import { Plus, Users, Search, Filter } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
+import { useMotoristaStore } from "../../store/motoristaStore";
 import { useUsuarioStore } from "../../store/usuarioStore";
-import { UsuarioFormModal } from "./UsuarioFormModal";
+import { MotoristaFormModal } from "./MotoristaFormModal";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
-import UsuarioTable from "./UsuarioTable";
-import type { Usuario } from "../../types/Usuario";
+import MotoristaTable from "./MotoristaTable";
+import type { Motorista } from "../../types/Motorista";
 import toast from "react-hot-toast";
 
-export default function Usuarios() {
-  const { usuarios, carregarUsuarios, removerUsuario } = useUsuarioStore();
+export default function Motoristas() {
+  const { motoristas, carregarMotoristas, removerMotorista } = useMotoristaStore();
+  const { usuariosMotoristas, carregarUsuariosMotoristas } = useUsuarioStore();
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Usuario | null>(null);
+  const [selected, setSelected] = useState<Motorista | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -20,7 +22,8 @@ export default function Usuarios() {
     const loadData = async () => {
       setLoading(true);
       try {
-        await carregarUsuarios();
+        await carregarMotoristas();
+        await carregarUsuariosMotoristas();
       } finally {
         setLoading(false);
       }
@@ -33,10 +36,11 @@ export default function Usuarios() {
     setOpen(true);
   };
 
-  const handleEdit = (usuario: Usuario) => {
-    setSelected(usuario);
+  const handleEdit = (motorista: Motorista) => {
+    setSelected(motorista);
     setOpen(true);
   };
+
   const handleDelete = async (id: string) => {
     setDeleteId(id);
   };
@@ -44,30 +48,26 @@ export default function Usuarios() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      await removerUsuario(deleteId);
-      toast.success("Usuário removido com sucesso!");
-      carregarUsuarios();
+      await removerMotorista(deleteId);
+      toast.success("Motorista removido com sucesso!");
+      carregarMotoristas();
     } catch (error) {
-      toast.error("Erro ao remover usuário");
-    }
-    finally {
+      toast.error("Erro ao remover motorista");
+    } finally {
       setDeleteId(null);
     }
   };
 
   const handleSuccess = () => {
     setOpen(false);
-    carregarUsuarios();
+    carregarMotoristas();
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
-      {/* Container Principal */}
       <div className="max-w-7xl mx-auto">
-        {/* Header com glassmorphism */}
         <div className="bg-white/80 backdrop-blur-xl border border-white/20 rounded-3xl p-8 mb-8 shadow-xl shadow-blue-500/10">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            {/* Título e Estatísticas */}
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <div className="relative">
@@ -82,19 +82,17 @@ export default function Usuarios() {
                     color="blue-gray"
                     className="font-bold text-3xl lg:text-4xl bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent"
                   >
-                    Gerenciar Usuários
+                    Gerenciar Motoristas
                   </Typography>
                   <p className="text-slate-500 mt-2 text-lg">
                     {loading
                       ? "Carregando..."
-                      : `${usuarios.length} usuário${usuarios.length !== 1 ? "s" : ""
-                      } cadastrado${usuarios.length !== 1 ? "s" : ""}`}
+                      : `${motoristas.length} motorista${motoristas.length !== 1 ? "s" : ""} cadastrado${motoristas.length !== 1 ? "s" : ""}`}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Ações */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 variant="outline"
@@ -120,15 +118,13 @@ export default function Usuarios() {
                 showArrow={false}
               >
                 <Plus className="h-5 w-5" />
-                Novo Usuário
+                Novo Motorista
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Área de Conteúdo Principal */}
         <div className="bg-white/90 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl shadow-slate-200/50 overflow-hidden">
-          {/* Header da Tabela */}
           <div className="bg-gradient-to-r from-slate-50 to-blue-50 px-8 py-6 border-b border-slate-200/50">
             <div className="flex items-center justify-between">
               <div>
@@ -137,10 +133,10 @@ export default function Usuarios() {
                   color="blue-gray"
                   className="font-semibold text-xl"
                 >
-                  Lista de Usuários
+                  Lista de Motoristas
                 </Typography>
                 <p className="text-slate-500 mt-1">
-                  Gerencie todos os usuários do sistema
+                  Gerencie todos os motoristas do sistema
                 </p>
               </div>
               {loading && (
@@ -152,16 +148,15 @@ export default function Usuarios() {
             </div>
           </div>
 
-          {/* Conteúdo da Tabela */}
           <div className="p-8">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-16 space-y-4">
                 <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
                 <p className="text-slate-500 font-medium">
-                  Carregando usuários...
+                  Carregando motoristas...
                 </p>
               </div>
-            ) : usuarios.length === 0 ? (
+            ) : motoristas.length === 0 ? (
               <div className="text-center py-16 space-y-4">
                 <div className="bg-gradient-to-br from-slate-100 to-slate-200 w-24 h-24 rounded-full mx-auto flex items-center justify-center">
                   <Users className="h-10 w-10 text-slate-400" />
@@ -172,10 +167,10 @@ export default function Usuarios() {
                     color="blue-gray"
                     className="font-semibold mb-2"
                   >
-                    Nenhum usuário encontrado
+                    Nenhum motorista encontrado
                   </Typography>
                   <p className="text-slate-500 mb-6">
-                    Comece criando seu primeiro usuário no sistema
+                    Comece criando seu primeiro motorista no sistema
                   </p>
                   <Button
                     onClick={handleCreate}
@@ -183,14 +178,14 @@ export default function Usuarios() {
                     showArrow={false}
                   >
                     <Plus className="h-4 w-4 mr-2" />
-                    Criar Primeiro Usuário
+                    Criar Primeiro Motorista
                   </Button>
                 </div>
               </div>
             ) : (
               <div className="overflow-hidden rounded-2xl border border-slate-200/50">
-                <UsuarioTable
-                  usuarios={usuarios}
+                <MotoristaTable
+                  motoristas={motoristas}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                 />
@@ -199,7 +194,6 @@ export default function Usuarios() {
           </div>
         </div>
 
-        {/* Cards de Estatísticas Rápidas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
             <div className="flex items-center gap-4">
@@ -208,10 +202,10 @@ export default function Usuarios() {
               </div>
               <div>
                 <p className="text-sm text-slate-500 font-medium">
-                  Total de Usuários
+                  Total de Motoristas
                 </p>
                 <p className="text-2xl font-bold text-slate-800">
-                  {usuarios.length}
+                  {motoristas.length}
                 </p>
               </div>
             </div>
@@ -224,10 +218,10 @@ export default function Usuarios() {
               </div>
               <div>
                 <p className="text-sm text-slate-500 font-medium">
-                  Usuários Ativos
+                  Motoristas Ativos
                 </p>
                 <p className="text-2xl font-bold text-slate-800">
-                  {usuarios.length}
+                  {motoristas.length}
                 </p>
               </div>
             </div>
@@ -240,29 +234,31 @@ export default function Usuarios() {
               </div>
               <div>
                 <p className="text-sm text-slate-500 font-medium">
-                  Último Cadastro
+                  Outros Dados
                 </p>
-                <p className="text-sm font-medium text-slate-600">Hoje</p>
+                <p className="text-2xl font-bold text-slate-800">
+                  --
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modal */}
-      <UsuarioFormModal
+      <MotoristaFormModal
         open={open}
         onClose={() => setOpen(false)}
-        usuario={selected}
+        motorista={selected}
         onSuccess={handleSuccess}
+        usuariosMotoristas={usuariosMotoristas}
       />
 
       <ConfirmDeleteModal
         open={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={confirmDelete}
-        title="Excluir usuario"
-        description="Tem certeza que deseja excluir este usuario?"
+        title="Excluir motorista"
+        description="Tem certeza que deseja excluir este motorista?"
       />
     </div>
   );

@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Usuarios from "../pages/Usuario/Usuarios";
+import Motoristas from "../pages/Motoristas/Motoristas";
 import PrivateRoute from "../routes/PrivateRoute";
 import DefaultLayout from "../layouts/DefaultLayout";
 
@@ -16,13 +17,9 @@ export function AppRoutes() {
         <Route element={<DefaultLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/usuarios" element={<Usuarios />} />
+          <Route path="/motoristas" element={<Motoristas />} />
         </Route>
       </Route>
-      {/* <Route element={<PrivateRoute roles={["Motorista"]} />}>
-        <Route element={<DefaultLayout />}>
-          <Route path="/" element={<Dashboard />} />
-        </Route>
-      </Route> */}
     </Routes>
   );
 }

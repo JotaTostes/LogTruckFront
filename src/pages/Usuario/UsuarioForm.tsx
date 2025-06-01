@@ -23,9 +23,10 @@ export type UsuarioFormProps = {
   usuario?: Usuario | null;
   onSuccess: () => void;
 };
+const roleMap = { Administrador: 1, Motorista: 2, Operador: 3 };
 
 export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
-  const { adicionarUsuario } = useUsuarioStore();
+  const { adicionarUsuario, editarUsuario } = useUsuarioStore();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
@@ -45,7 +46,11 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
       setNome(usuario.nome);
       setEmail(usuario.email);
       setCpf(usuario.cpf);
-      setRole(usuario.role);
+      // Convert numeric role to string role
+      const roleString =
+        Object.entries(roleMap).find(([, v]) => v === usuario.role)?.[0] ??
+        "Operador";
+      setRole(roleString as "Administrador" | "Operador" | "Motorista");
       setAtivo(usuario.ativo);
       setSenha("");
     }
@@ -95,20 +100,30 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
 
     setLoading(true);
     try {
-      await adicionarUsuario({
-        nome: nome.trim(),
-        email: email.trim().toLowerCase(),
-        cpf: cpf.replace(/\D/g, ""),
-        role,
-        ativo,
-        senhaHash: senha,
-      });
-
-      toast.success(
-        isEdit
-          ? "Usuário atualizado com sucesso!"
-          : "Usuário cadastrado com sucesso!"
-      );
+      if (isEdit && usuario?.id) {
+        await editarUsuario(usuario.id, {
+          nome: nome.trim(),
+          email: email.trim().toLowerCase(),
+          cpf: cpf.replace(/\D/g, ""),
+          role: roleMap[role],
+          ativo,
+          senha: senha,
+          id: "",
+          criadoEm: "",
+          atualizadoEm: ""
+        });
+        toast.success("Usuário atualizado com sucesso!");
+      } else {
+        await adicionarUsuario({
+          nome: nome.trim(),
+          email: email.trim().toLowerCase(),
+          cpf: cpf.replace(/\D/g, ""),
+          role: roleMap[role],
+          ativo,
+          senha: senha,
+        });
+        toast.success("Usuário cadastrado com sucesso!");
+      }
 
       if (!isEdit) {
         setNome("");

@@ -4,6 +4,6 @@ export type Usuario = {
   email: string;
   cpf: string;
   senhaHash?: string;
-  role: "Administrador" | "Operador" | "Motorista";
+  role: number;
   ativo: boolean;
 };

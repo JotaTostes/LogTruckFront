@@ -9,16 +9,18 @@ export interface Usuario {
   nome: string;
   email: string;
   cpf: string;
-  role: RoleUsuario;
+  role: number;
   ativo: boolean;
   criadoEm: string;
   atualizadoEm: string;
-  senhaHash: string;
+  senha: string;
 }
 
 interface UsuarioStore {
   usuarios: Usuario[];
+  usuariosMotoristas: Usuario[];
   carregarUsuarios: () => Promise<void>;
+  carregarUsuariosMotoristas: () => Promise<void>;
   adicionarUsuario: (
     usuario: Omit<Usuario, "id" | "criadoEm" | "atualizadoEm">
   ) => Promise<void>;
@@ -28,6 +30,7 @@ interface UsuarioStore {
 
 export const useUsuarioStore = create<UsuarioStore>((set, get) => ({
   usuarios: [],
+  usuariosMotoristas: [],
   carregarUsuarios: async () => {
     try {
       const { data } = await api.get<Usuario[]>("/usuario");
@@ -36,15 +39,33 @@ export const useUsuarioStore = create<UsuarioStore>((set, get) => ({
       toast.error("Erro ao carregar usuários");
     }
   },
-  adicionarUsuario: async (novoUsuario) => {
+  carregarUsuariosMotoristas: async () => {
     try {
-      const { data } = await api.post<Usuario>("/usuario", novoUsuario);
-      set((state) => ({ usuarios: [data, ...state.usuarios] }));
-      toast.success("Usuário adicionado com sucesso!");
+      const { data } = await api.get<Usuario[]>("/usuario/usuarios-motoristas");
+      set({ usuariosMotoristas: data });
     } catch (err) {
-      toast.error("Erro ao adicionar usuário");
+      toast.error("Erro ao carregar usuários motoristas");
     }
   },
+  adicionarUsuario: async (novoUsuario) => {
+  try {
+    // Se vier como string, converta para número (caso ainda não tenha sido convertido no form)
+    const roleMap = { Administrador: 1, Motorista: 2, Operador: 3 };
+    const usuarioParaEnviar = {
+      ...novoUsuario,
+      role: typeof novoUsuario.role === "string"
+        ? roleMap[novoUsuario.role as keyof typeof roleMap]
+        : novoUsuario.role,
+    };
+
+    console.log("Adicionando usuário:", usuarioParaEnviar);
+    const { data } = await api.post<Usuario>("/usuario", usuarioParaEnviar);
+    set((state) => ({ usuarios: [data, ...state.usuarios] }));
+    toast.success("Usuário adicionado com sucesso!");
+  } catch (err) {
+    toast.error("Erro ao adicionar usuário");
+  }
+},
   removerUsuario: async (id: string) => {
     try {
       await api.delete(`/usuario/${id}`);
