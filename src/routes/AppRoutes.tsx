@@ -3,9 +3,9 @@ import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Usuarios from "../pages/Usuario/Usuarios";
 import Motoristas from "../pages/Motoristas/Motoristas";
+import Viagens from "../pages/Viagens/Viagens";
 import PrivateRoute from "../routes/PrivateRoute";
 import DefaultLayout from "../layouts/DefaultLayout";
-
 export function AppRoutes() {
   return (
     <Routes>
@@ -18,6 +18,7 @@ export function AppRoutes() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/motoristas" element={<Motoristas />} />
+          <Route path="/viagens" element={<Viagens />} />
         </Route>
       </Route>
     </Routes>

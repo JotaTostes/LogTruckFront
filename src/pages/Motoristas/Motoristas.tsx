@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Plus, Users, Search, Filter } from "lucide-react";
+import { Plus, Users, Search, Filter, Icon } from "lucide-react";
+import { steeringWheel } from "@lucide/lab";
 import { Button } from "../../components/ui/Button";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import { useMotoristaStore } from "../../store/motoristaStore";
@@ -11,7 +12,8 @@ import type { Motorista } from "../../types/Motorista";
 import toast from "react-hot-toast";
 
 export default function Motoristas() {
-  const { motoristas, carregarMotoristas, removerMotorista } = useMotoristaStore();
+  const { motoristas, carregarMotoristas, removerMotorista } =
+    useMotoristaStore();
   const { usuariosMotoristas, carregarUsuariosMotoristas } = useUsuarioStore();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Motorista | null>(null);
@@ -73,7 +75,11 @@ export default function Motoristas() {
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur-xl opacity-30"></div>
                   <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 p-4 rounded-2xl">
-                    <Users className="h-8 w-8 text-white" />
+                    {/* <Users className="h-8 w-8 text-white" /> */}
+                    <Icon
+                      iconNode={steeringWheel}
+                      className="h-6 w-6 text-white"
+                    />
                   </div>
                 </div>
                 <div>
@@ -87,7 +93,9 @@ export default function Motoristas() {
                   <p className="text-slate-500 mt-2 text-lg">
                     {loading
                       ? "Carregando..."
-                      : `${motoristas.length} motorista${motoristas.length !== 1 ? "s" : ""} cadastrado${motoristas.length !== 1 ? "s" : ""}`}
+                      : `${motoristas.length} motorista${
+                          motoristas.length !== 1 ? "s" : ""
+                        } cadastrado${motoristas.length !== 1 ? "s" : ""}`}
                   </p>
                 </div>
               </div>
@@ -236,9 +244,7 @@ export default function Motoristas() {
                 <p className="text-sm text-slate-500 font-medium">
                   Outros Dados
                 </p>
-                <p className="text-2xl font-bold text-slate-800">
-                  --
-                </p>
+                <p className="text-2xl font-bold text-slate-800">--</p>
               </div>
             </div>
           </div>

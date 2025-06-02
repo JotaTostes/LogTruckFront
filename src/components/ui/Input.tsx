@@ -3,7 +3,7 @@ import { Input as MTInput } from "@material-tailwind/react";
 
 interface CustomInputProps {
   label?: string;
-  value?: string;
+  value?: any;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   placeholder?: string;

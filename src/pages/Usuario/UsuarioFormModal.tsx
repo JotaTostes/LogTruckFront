@@ -1,7 +1,7 @@
 import UsuarioForm from "./UsuarioForm";
 import type { Usuario } from "../../types/Usuario";
 import FormModal from "../../components/ui/FormModal";
-import {UserPlus} from "lucide-react";
+import { UserPlus } from "lucide-react";
 
 type Props = {
   open: boolean;
@@ -10,11 +10,11 @@ type Props = {
   onSuccess: () => void;
 };
 
-export function UsuarioFormModal({ 
-  open, 
-  onClose, 
-  usuario, 
-  onSuccess 
+export function UsuarioFormModal({
+  open,
+  onClose,
+  usuario,
+  onSuccess,
 }: {
   open: boolean;
   onClose: () => void;
@@ -27,7 +27,7 @@ export function UsuarioFormModal({
       onClose={onClose}
       title="Usuário"
       isEdit={!!usuario}
-      icon={UserPlus}
+      icon={<UserPlus className="h-6 w-6 text-white" />}
     >
       <UsuarioForm usuario={usuario} onSuccess={onSuccess} />
     </FormModal>
