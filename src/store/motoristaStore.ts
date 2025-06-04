@@ -11,11 +11,11 @@ interface MotoristaStore {
   adicionarMotorista: (motorista: Motorista) => Promise<void>;
   editarMotorista: (id: string, motorista: Partial<Motorista>) => Promise<void>;
   removerMotorista: (id: string) => Promise<void>;
-};
+}
 
 export const useMotoristaStore = create<MotoristaStore>((set) => ({
   motoristas: [],
-carregarMotoristas: async () => {
+  carregarMotoristas: async () => {
     try {
       const { data } = await api.get<Motorista[]>("/motorista");
       set({ motoristas: data });
@@ -44,7 +44,6 @@ carregarMotoristas: async () => {
 
   editarMotorista: async (id, motorista) => {
     try {
-        console.log("Editando motorista:", id, motorista);
       await api.put(`motorista/${id}`, motorista);
     } catch (error) {
       console.error("Erro ao editar motorista:", error);

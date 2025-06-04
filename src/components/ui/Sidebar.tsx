@@ -1,6 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../utils/cn";
-import { Users, Truck, Settings, ChartColumnIncreasing, IdCard  } from "lucide-react";
+import {
+  Users,
+  Truck,
+  Settings,
+  ChartColumnIncreasing,
+  IdCard,
+  MapPinned,
+} from "lucide-react";
 
 interface SidebarProps {
   children: React.ReactNode;
@@ -19,7 +26,8 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
     },
     { label: "Usuários", to: "/usuarios", icon: <Users size={18} /> },
     { label: "Motoristas", to: "/motoristas", icon: <IdCard size={18} /> },
-    { label: "Viagens", to: "/viagens", icon: <Truck size={18} /> },
+    { label: "Viagens", to: "/viagens", icon: <MapPinned size={18} /> },
+    { label: "Caminhões", to: "/caminhoes", icon: <Truck size={18} /> },
     { label: "Configurações", to: "/config", icon: <Settings size={18} /> },
   ];
 

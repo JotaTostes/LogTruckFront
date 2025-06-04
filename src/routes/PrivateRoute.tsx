@@ -7,7 +7,6 @@ interface Props {
 
 export default function PrivateRoute({ roles }: Props) {
   const { isAuthenticated, usuario } = useAuthStore();
-  console.log("Roles", roles);
   if (!isAuthenticated) return <Navigate to="/login" />;
 
   if (!roles.includes(usuario?.role ?? ""))

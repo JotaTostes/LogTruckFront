@@ -2,6 +2,7 @@ import { Edit, Trash2 } from "lucide-react";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import { MTCard as Card } from "../../components/ui/mt/MTCard";
 import type { Motorista } from "../../types/Motorista";
+import { formatarCPF } from "../../utils/formatadores";
 
 type Props = {
   motoristas: Motorista[];
@@ -9,7 +10,11 @@ type Props = {
   onDelete: (id: string) => void;
 };
 
-export default function MotoristaTable({ motoristas, onEdit, onDelete }: Props) {
+export default function MotoristaTable({
+  motoristas,
+  onEdit,
+  onDelete,
+}: Props) {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
@@ -32,7 +37,7 @@ export default function MotoristaTable({ motoristas, onEdit, onDelete }: Props) 
             {motoristas.map((m) => (
               <tr key={m.id} className="border-b hover:bg-gray-50">
                 <td className="p-2">{m.nome}</td>
-                <td className="p-2">{m.cpf}</td>
+                <td className="p-2">{formatarCPF(m.cpf)}</td>
                 <td className="p-2">{m.cnh}</td>
                 <td className="p-2">{m.telefone}</td>
                 <td className="p-2">{m.ativo ? "Sim" : "Não"}</td>

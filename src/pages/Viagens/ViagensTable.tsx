@@ -2,14 +2,21 @@ import { Edit, Trash2 } from "lucide-react";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import { MTCard as Card } from "../../components/ui/mt/MTCard";
 import type { Viagem, ViagemCompletas } from "../../types/Viagem";
+import { formatarPlaca, formatarDataISO } from "../../utils/formatadores";
 
 type Props = {
   viagens: ViagemCompletas[];
   onEdit: (viagem: ViagemCompletas) => void;
   onDelete: (id: string) => void;
+  onStatusUpdate: (id: string, currentStatus: number) => void;
 };
 
-export default function ViagemTable({ viagens, onEdit, onDelete }: Props) {
+export default function ViagemTable({
+  viagens,
+  onEdit,
+  onDelete,
+  onStatusUpdate,
+}: Props) {
   const getStatusText = (status: number) => {
     switch (status) {
       case 1:
@@ -22,6 +29,21 @@ export default function ViagemTable({ viagens, onEdit, onDelete }: Props) {
         return "Cancelada";
       default:
         return "Desconhecido";
+    }
+  };
+
+  const getStatusColor = (status: number) => {
+    switch (status) {
+      case 1:
+        return "bg-yellow-500";
+      case 2:
+        return "bg-blue-500";
+      case 3:
+        return "bg-green-500";
+      case 4:
+        return "bg-red-500";
+      default:
+        return "bg-gray-500";
     }
   };
 
@@ -42,6 +64,7 @@ export default function ViagemTable({ viagens, onEdit, onDelete }: Props) {
               <th className="p-2">Quilometragem</th>
               <th className="p-2">Valor Frete</th>
               <th className="p-2">Data Saída</th>
+              <th className="p-2">Data Retorno</th>
               <th className="p-2">Status</th>
               <th className="p-2">Ações</th>
             </tr>
@@ -50,14 +73,19 @@ export default function ViagemTable({ viagens, onEdit, onDelete }: Props) {
             {viagens.map((v) => (
               <tr key={v.id} className="border-b hover:bg-gray-50">
                 <td className="p-2">{v.motorista?.nome}</td>
-                <td className="p-2">{v.caminhao?.placa}</td>
+                <td className="p-2">{formatarPlaca(v.caminhao?.placa)}</td>
                 <td className="p-2">{v.origem}</td>
                 <td className="p-2">{v.destino}</td>
                 <td className="p-2">{v.quilometragem} km</td>
-                <td className="p-2">R$ {v.valorFrete.toFixed(2)}</td>
                 <td className="p-2">
-                  {new Date(v.dataSaida).toLocaleDateString()}
+                  {" "}
+                  {v.valorFrete.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
                 </td>
+                <td className="p-2">{v.dataSaida}</td>
+                <td className="p-2">{v.dataRetorno ? v.dataRetorno : "N/A"}</td>
                 <td className="p-2">{getStatusText(v.status ?? 0)}</td>
                 <td className="p-2">
                   <button
@@ -73,6 +101,19 @@ export default function ViagemTable({ viagens, onEdit, onDelete }: Props) {
                     title="Excluir"
                   >
                     <Trash2 className="w-5 h-5" />
+                  </button>
+                </td>
+                <td className="p-2">
+                  <button
+                    onClick={() => v.id && onStatusUpdate(v.id, v.status ?? 0)}
+                    className="flex items-center gap-2 px-3 py-1 rounded-lg hover:bg-gray-100"
+                  >
+                    <div
+                      className={`w-2 h-2 rounded-full ${getStatusColor(
+                        v.status ?? 0
+                      )}`}
+                    />
+                    <span>{getStatusText(v.status ?? 0)}</span>
                   </button>
                 </td>
               </tr>

@@ -12,10 +12,12 @@ import {
   Route,
   AlertCircle,
   User,
+  Percent,
 } from "lucide-react";
 import type { Motorista } from "../../types/Motorista";
 import type { Caminhao } from "../../types/Caminhao";
 import type { Viagem } from "../../types/Viagem";
+import { formatarPlaca } from "../../utils/formatadores";
 
 type ViagemFormProps = {
   motoristas: Motorista[];
@@ -39,6 +41,7 @@ export default function ViagemForm({
   const [quilometragem, setQuilometragem] = useState(
     viagem?.quilometragem ?? 0
   );
+  const [comissao, setComissao] = useState(viagem?.comissao ?? 0);
   const [valorFrete, setValorFrete] = useState(viagem?.valorFrete ?? 0);
   const [dataSaida, setDataSaida] = useState(
     viagem?.dataSaida ? viagem.dataSaida.slice(0, 10) : ""
@@ -50,14 +53,14 @@ export default function ViagemForm({
   // Opções para dropdowns
   const motoristasOptions = motoristas
     .map((m) => ({
-      id: m.id ?? "", // Ensure id is always a string
-      label: `${m.nome} (${m.cnh})`,
+      id: m.id ?? "",
+      label: `${m.nome}`,
     }))
     .filter((option) => option.id !== "");
 
   const caminhoesOptions = caminhoes.map((c) => ({
     id: c.id,
-    label: `${c.placa} - ${c.modelo}`,
+    label: `${formatarPlaca(c.placa)} - ${c.modelo}`,
   }));
 
   const selectedMotorista =
@@ -100,6 +103,9 @@ export default function ViagemForm({
     if (valorFrete <= 0)
       newErrors.valorFrete = "Valor do frete deve ser maior que zero";
     if (!dataSaida) newErrors.dataSaida = "Data de saída é obrigatória";
+    if (comissao < 0 || comissao > 100) {
+      newErrors.comissao = "Comissão deve estar entre 0 e 100%";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -122,6 +128,7 @@ export default function ViagemForm({
         quilometragem,
         valorFrete,
         dataSaida,
+        comissao,
       };
 
       if (isEdit && viagem?.id) {
@@ -270,7 +277,33 @@ export default function ViagemForm({
             </div>
           )}
         </div>
-
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+            <Percent className="h-4 w-4" />
+            Comissão do Motorista
+          </label>
+          <div className="relative">
+            <Input
+              type="number"
+              value={comissao}
+              onChange={(e) => setComissao(Number(e.target.value))}
+              placeholder="0"
+              min="0"
+              max="100"
+              step="0.1"
+              className={errors.comissao ? "border-red-300" : ""}
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+              %
+            </span>
+          </div>
+          {errors.comissao && (
+            <div className="flex items-center gap-1 text-red-500 text-sm">
+              <AlertCircle className="h-3 w-3" />
+              {errors.comissao}
+            </div>
+          )}
+        </div>
         {/* Data Saída */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700 flex items-center gap-2">

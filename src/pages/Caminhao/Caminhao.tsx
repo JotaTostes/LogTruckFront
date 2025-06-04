@@ -1,40 +1,31 @@
 import { useEffect, useState } from "react";
-import { Plus, MapPinned, Search, Filter } from "lucide-react";
+import { Plus, Truck, Search, Filter } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
-import { useViagemStore } from "../../store/viagemStore";
-import { ViagemFormModal } from "./ViagemFormModal";
-import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
-import ViagemTable from "./ViagensTable";
-import type { Viagem } from "../../types/Viagem";
-import toast from "react-hot-toast";
-import { useMotoristaStore } from "../../store/motoristaStore";
 import { useCaminhaoStore } from "../../store/caminhaoStore";
-import { StatusUpdateModal } from "./StatusUpdateModal";
+import { CaminhaoFormModal } from "./CaminhaoFormModal";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import type { Caminhao, UpdateCaminhaoDto } from "../../types/Caminhao";
+import toast from "react-hot-toast";
+import CaminhaoTable from "./CaminhaoTable";
 
-export default function Viagens() {
+export default function Caminhao() {
   const {
-    viagens,
-    viagensCompletas,
-    carregarViagensCompletas,
-    removerViagem,
-    editarStatusViagem,
-  } = useViagemStore();
-  const { motoristas, carregarMotoristas } = useMotoristaStore();
-  const { caminhoes, carregarCaminhoes } = useCaminhaoStore();
+    caminhoes,
+    caminhoesCompletos,
+    carregarCaminhoes,
+    carregarCaminhoesCompletos,
+    removerCaminhao,
+  } = useCaminhaoStore();
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Viagem | null>(null);
+  const [selected, setSelected] = useState<UpdateCaminhaoDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [statusUpdateId, setStatusUpdateId] = useState<string | null>(null);
-  const [currentStatus, setCurrentStatus] = useState<number>(1);
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       try {
-        await carregarViagensCompletas();
-        await carregarMotoristas();
         await carregarCaminhoes();
       } finally {
         setLoading(false);
@@ -43,18 +34,13 @@ export default function Viagens() {
     loadData();
   }, []);
 
-  const handleStatusUpdate = (id: string, status: number) => {
-    setStatusUpdateId(id);
-    setCurrentStatus(status);
-  };
-
   const handleCreate = () => {
     setSelected(null);
     setOpen(true);
   };
 
-  const handleEdit = (viagem: Viagem) => {
-    setSelected(viagem);
+  const handleEdit = (caminhao: UpdateCaminhaoDto) => {
+    setSelected(caminhao);
     setOpen(true);
   };
 
@@ -65,31 +51,19 @@ export default function Viagens() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      await removerViagem(deleteId);
-      toast.success("Viagem removida com sucesso!");
-      carregarViagensCompletas();
+      await removerCaminhao(deleteId);
+      toast.success("Caminhão removida com sucesso!");
+      carregarCaminhoesCompletos();
     } catch (error) {
-      toast.error("Erro ao remover viagem");
+      toast.error("Erro ao remover caminhão");
     } finally {
       setDeleteId(null);
     }
   };
 
-  const confirmStatusUpdate = async (newStatus: number) => {
-    if (!statusUpdateId) return;
-    try {
-      await editarStatusViagem(statusUpdateId, newStatus);
-      await carregarViagensCompletas();
-    } catch (error) {
-      toast.error("Erro ao atualizar status");
-    } finally {
-      setStatusUpdateId(null);
-    }
-  };
-
   const handleSuccess = () => {
     setOpen(false);
-    carregarViagensCompletas();
+    carregarCaminhoesCompletos();
   };
 
   return (
@@ -102,7 +76,7 @@ export default function Viagens() {
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur-xl opacity-30"></div>
                   <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 p-4 rounded-2xl">
-                    <MapPinned className="h-6 w-6 text-white" />
+                    <Truck className="h-6 w-6 text-white" />
                   </div>
                 </div>
                 <div>
@@ -111,15 +85,15 @@ export default function Viagens() {
                     color="blue-gray"
                     className="font-bold text-3xl lg:text-4xl bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent"
                   >
-                    Gerenciar Viagens
+                    Gerenciar Caminhões
                   </Typography>
                   <p className="text-slate-500 mt-2 text-lg">
                     {loading
                       ? "Carregando..."
-                      : `${viagens.length} ${
-                          viagens.length === 1
-                            ? "viagem cadastrada"
-                            : "viagens cadastradas"
+                      : `${caminhoes.length} ${
+                          caminhoes.length === 1
+                            ? "caminhão cadastrado"
+                            : "caminhões cadastrados"
                         }`}
                   </p>
                 </div>
@@ -151,7 +125,7 @@ export default function Viagens() {
                 showArrow={false}
               >
                 <Plus className="h-5 w-5" />
-                Nova Viagem
+                Novo Caminhão
               </Button>
             </div>
           </div>
@@ -166,10 +140,10 @@ export default function Viagens() {
                   color="blue-gray"
                   className="font-semibold text-xl"
                 >
-                  Lista de Viagens
+                  Lista de Caminhões
                 </Typography>
                 <p className="text-slate-500 mt-1">
-                  Gerencie todas as viagens cadastradas
+                  Gerencie todas os caminhões cadastradas
                 </p>
               </div>
               {loading && (
@@ -182,38 +156,28 @@ export default function Viagens() {
           </div>
 
           <div className="p-8">
-            <ViagemTable
-              viagens={viagensCompletas}
+            <CaminhaoTable
+              caminhoes={caminhoes}
               onEdit={handleEdit}
               onDelete={handleDelete}
-              onStatusUpdate={handleStatusUpdate}
             />
           </div>
         </div>
       </div>
 
-      <ViagemFormModal
+      <CaminhaoFormModal
         open={open}
         onClose={() => setOpen(false)}
-        viagem={selected}
-        caminhoes={caminhoes}
+        caminhao={selected}
         onSuccess={handleSuccess}
-        motoristas={motoristas}
       />
 
       <ConfirmDeleteModal
         open={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={confirmDelete}
-        title="Remover Viagem"
-        description="Tem certeza que deseja remover esta viagem? Esta ação não poderá ser desfeita."
-      />
-
-      <StatusUpdateModal
-        open={!!statusUpdateId}
-        onClose={() => setStatusUpdateId(null)}
-        onConfirm={confirmStatusUpdate}
-        currentStatus={currentStatus}
+        title="Remover Caminhão"
+        description="Tem certeza que deseja remover este caminhão? Esta ação não poderá ser desfeita."
       />
     </div>
   );

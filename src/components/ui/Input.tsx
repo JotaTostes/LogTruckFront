@@ -15,6 +15,9 @@ interface CustomInputProps {
   color?: "blue" | "red" | "green" | "gray";
   className?: string;
   maxLength?: number;
+  step?: number | string;
+  min?: number | string;
+  max?: number | string;
 }
 
 export const Input = (props: CustomInputProps) => {

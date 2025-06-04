@@ -48,24 +48,24 @@ export const useUsuarioStore = create<UsuarioStore>((set, get) => ({
     }
   },
   adicionarUsuario: async (novoUsuario) => {
-  try {
-    // Se vier como string, converta para número (caso ainda não tenha sido convertido no form)
-    const roleMap = { Administrador: 1, Motorista: 2, Operador: 3 };
-    const usuarioParaEnviar = {
-      ...novoUsuario,
-      role: typeof novoUsuario.role === "string"
-        ? roleMap[novoUsuario.role as keyof typeof roleMap]
-        : novoUsuario.role,
-    };
+    try {
+      // Se vier como string, converta para número (caso ainda não tenha sido convertido no form)
+      const roleMap = { Administrador: 1, Motorista: 2, Operador: 3 };
+      const usuarioParaEnviar = {
+        ...novoUsuario,
+        role:
+          typeof novoUsuario.role === "string"
+            ? roleMap[novoUsuario.role as keyof typeof roleMap]
+            : novoUsuario.role,
+      };
 
-    console.log("Adicionando usuário:", usuarioParaEnviar);
-    const { data } = await api.post<Usuario>("/usuario", usuarioParaEnviar);
-    set((state) => ({ usuarios: [data, ...state.usuarios] }));
-    toast.success("Usuário adicionado com sucesso!");
-  } catch (err) {
-    toast.error("Erro ao adicionar usuário");
-  }
-},
+      const { data } = await api.post<Usuario>("/usuario", usuarioParaEnviar);
+      set((state) => ({ usuarios: [data, ...state.usuarios] }));
+      toast.success("Usuário adicionado com sucesso!");
+    } catch (err) {
+      toast.error("Erro ao adicionar usuário");
+    }
+  },
   removerUsuario: async (id: string) => {
     try {
       await api.delete(`/usuario/${id}`);

@@ -2,6 +2,7 @@ import { Edit, Trash2 } from "lucide-react";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import { MTCard as Card } from "../../components/ui/mt/MTCard";
 import type { Usuario } from "../../types/Usuario";
+import { formatarCPF } from "../../utils/formatadores";
 
 type Props = {
   usuarios: Usuario[];
@@ -33,7 +34,7 @@ export default function UsuarioTable({ usuarios, onEdit, onDelete }: Props) {
               <tr key={u.id} className="border-b hover:bg-gray-50">
                 <td className="p-2">{u.nome}</td>
                 <td className="p-2">{u.email}</td>
-                <td className="p-2">{u.cpf}</td>
+                <td className="p-2">{formatarCPF(u.cpf)}</td>
                 <td className="p-2">{u.role}</td>
                 <td className="p-2">{u.ativo ? "Sim" : "Não"}</td>
                 <td className="p-2 ">

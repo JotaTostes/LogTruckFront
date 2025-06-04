@@ -2,7 +2,7 @@ import type { Viagem } from "../../types/Viagem";
 import type { Motorista } from "../../types/Motorista";
 import type { Caminhao } from "../../types/Caminhao";
 import FormModal from "../../components/ui/FormModal";
-import { MapPinPlus, Icon } from "lucide-react";
+import { MapPlus, Icon } from "lucide-react";
 import ViagemForm from "./ViagemForm";
 
 type Props = {
@@ -33,9 +33,9 @@ export function ViagemFormModal({
     <FormModal
       open={open}
       onClose={onClose}
-      title="Motorista"
+      title="Registro de Viagem"
       isEdit={!!viagem}
-      icon={<MapPinPlus className="h-6 w-6 text-white" />}
+      icon={<MapPlus className="h-6 w-6 text-white" />}
     >
       <ViagemForm
         viagem={viagem}
