@@ -1,6 +1,6 @@
 import type { Caminhao } from "./Caminhao";
 import type { Motorista } from "./Motorista";
-// import { CustoViagem } from './CustoViagem';
+import type { CustoViagem } from "./CustoViagem";
 
 export type Viagem = {
   id?: string;
@@ -19,6 +19,6 @@ export type Viagem = {
 export type ViagemCompletas = Viagem & {
   motorista: Motorista;
   caminhao: Caminhao;
-  // custos: CustoViagem[];
+  custos: CustoViagem[];
   // comissao?: Comissao;
 };

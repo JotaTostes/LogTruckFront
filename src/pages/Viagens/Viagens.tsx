@@ -4,9 +4,10 @@ import { Button } from "../../components/ui/Button";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import { useViagemStore } from "../../store/viagemStore";
 import { ViagemFormModal } from "./ViagemFormModal";
+import { ViagemCustosFormModal } from "./Custos/ViagemCustosFormModal";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ViagemTable from "./ViagensTable";
-import type { Viagem } from "../../types/Viagem";
+import type { Viagem, ViagemCompletas } from "../../types/Viagem";
 import toast from "react-hot-toast";
 import { useMotoristaStore } from "../../store/motoristaStore";
 import { useCaminhaoStore } from "../../store/caminhaoStore";
@@ -28,6 +29,9 @@ export default function Viagens() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [statusUpdateId, setStatusUpdateId] = useState<string | null>(null);
   const [currentStatus, setCurrentStatus] = useState<number>(1);
+  const [isCustosModalOpen, setIsCustosModalOpen] = useState(false);
+  const [selectedViagemParaCustos, setSelectedViagemParaCustos] =
+    useState<ViagemCompletas | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -69,7 +73,6 @@ export default function Viagens() {
       toast.success("Viagem removida com sucesso!");
       carregarViagensCompletas();
     } catch (error) {
-      toast.error("Erro ao remover viagem");
     } finally {
       setDeleteId(null);
     }
@@ -85,6 +88,11 @@ export default function Viagens() {
     } finally {
       setStatusUpdateId(null);
     }
+  };
+
+  const handleOpenCustosModal = (viagem: ViagemCompletas) => {
+    setSelectedViagemParaCustos(viagem);
+    setIsCustosModalOpen(true);
   };
 
   const handleSuccess = () => {
@@ -187,6 +195,7 @@ export default function Viagens() {
               onEdit={handleEdit}
               onDelete={handleDelete}
               onStatusUpdate={handleStatusUpdate}
+              onOpenCustosModal={handleOpenCustosModal}
             />
           </div>
         </div>
@@ -199,6 +208,21 @@ export default function Viagens() {
         caminhoes={caminhoes}
         onSuccess={handleSuccess}
         motoristas={motoristas}
+      />
+
+      <ViagemCustosFormModal
+        open={isCustosModalOpen}
+        onClose={() => {
+          setIsCustosModalOpen(false);
+          setSelectedViagemParaCustos(null);
+        }}
+        viagem={selectedViagemParaCustos}
+        onSuccess={() => {
+          setIsCustosModalOpen(false);
+          setSelectedViagemParaCustos(null);
+          carregarViagensCompletas(); // Recarrega a lista de viagens para exibir os novos custos (ou o total atualizado)
+          toast.success("Custo adicionado com sucesso!");
+        }}
       />
 
       <ConfirmDeleteModal

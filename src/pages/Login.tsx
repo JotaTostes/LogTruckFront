@@ -50,12 +50,14 @@ export default function Login() {
       {/* Login Card */}
       <div className="w-full max-w-md relative">
         {/* Header com Logo */}
-        <div className="mb-2">
-          <img
-            src="/logtruck-logo.png"
-            alt="Logotipo LogTruck"
-            className="mx-auto w-80 h-80 object-contain"
-          />
+        <div className="mb-8">
+          <div className="bg-white/90 rounded-full p-6 w-48 h-48 mx-auto">
+            <img
+              src="/logtruck-logo-login.png"
+              alt="Logotipo LogTruck"
+              className="w-full h-full object-contain"
+            />
+          </div>
         </div>
 
         {/* Glassmorphism Card */}

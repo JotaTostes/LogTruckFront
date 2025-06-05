@@ -1,4 +1,4 @@
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, DollarSign, RefreshCcw } from "lucide-react";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import { MTCard as Card } from "../../components/ui/mt/MTCard";
 import type { Viagem, ViagemCompletas } from "../../types/Viagem";
@@ -9,6 +9,7 @@ type Props = {
   onEdit: (viagem: ViagemCompletas) => void;
   onDelete: (id: string) => void;
   onStatusUpdate: (id: string, currentStatus: number) => void;
+  onOpenCustosModal: (viagem: ViagemCompletas) => void;
 };
 
 export default function ViagemTable({
@@ -16,6 +17,7 @@ export default function ViagemTable({
   onEdit,
   onDelete,
   onStatusUpdate,
+  onOpenCustosModal,
 }: Props) {
   const getStatusText = (status: number) => {
     switch (status) {
@@ -88,33 +90,48 @@ export default function ViagemTable({
                 <td className="p-2">{v.dataRetorno ? v.dataRetorno : "N/A"}</td>
                 <td className="p-2">{getStatusText(v.status ?? 0)}</td>
                 <td className="p-2">
-                  <button
-                    onClick={() => onEdit(v)}
-                    className="text-blue-600 hover:text-blue-800 transition-colors mr-2"
-                    title="Editar"
-                  >
-                    <Edit className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => v.id && onDelete(v.id)}
-                    className="text-red-600 hover:text-red-800 transition-colors"
-                    title="Excluir"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </td>
-                <td className="p-2">
-                  <button
-                    onClick={() => v.id && onStatusUpdate(v.id, v.status ?? 0)}
-                    className="flex items-center gap-2 px-3 py-1 rounded-lg hover:bg-gray-100"
-                  >
-                    <div
-                      className={`w-2 h-2 rounded-full ${getStatusColor(
-                        v.status ?? 0
-                      )}`}
-                    />
-                    <span>{getStatusText(v.status ?? 0)}</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => onEdit(v)}
+                      className="text-blue-600 hover:text-blue-800 p-1 rounded-md hover:bg-blue-100 transition-all"
+                      title="Editar"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        v.id && onStatusUpdate(v.id, v.status ?? 0)
+                      }
+                      className="text-yellow-600 hover:text-yellow-800 p-1 rounded-md hover:bg-yellow-100 transition-all flex items-center gap-1"
+                      title="Alterar Status"
+                    >
+                      <div
+                        className={`w-2 h-2 rounded-full ${getStatusColor(
+                          v.status ?? 0
+                        )}`}
+                      />
+                      <span className="text-xs font-medium">
+                        {getStatusText(v.status ?? 0)}
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => v.id && onOpenCustosModal(v)}
+                      className="text-green-600 hover:text-green-800 p-1 rounded-md hover:bg-green-100 transition-all"
+                      title="Adicionar Custos"
+                    >
+                      <DollarSign className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={() => v.id && onDelete(v.id)}
+                      className="text-red-600 hover:text-red-800 p-1 rounded-md hover:bg-red-100 transition-all"
+                      title="Excluir"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
