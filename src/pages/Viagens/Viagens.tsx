@@ -1,17 +1,28 @@
 import { useEffect, useState } from "react";
 import { Plus, MapPinned, Search, Filter } from "lucide-react";
+
+import toast from "react-hot-toast";
+
 import { Button } from "../../components/ui/Button";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import { DataTable } from "../../components/ui/DataTable";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
-import { useViagemStore } from "../../store/viagemStore";
+
 import { ViagemFormModal } from "./ViagemFormModal";
 import { ViagemCustosFormModal } from "./Custos/ViagemCustosFormModal";
-import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
-import ViagemTable from "./ViagensTable";
-import type { Viagem, ViagemCompletas } from "../../types/Viagem";
-import toast from "react-hot-toast";
+import { ViagemDetailsModal } from "./ViagemDetailsModal";
+import { StatusUpdateModal } from "./StatusUpdateModal";
+
+import { useViagemStore } from "../../store/viagemStore";
 import { useMotoristaStore } from "../../store/motoristaStore";
 import { useCaminhaoStore } from "../../store/caminhaoStore";
-import { StatusUpdateModal } from "./StatusUpdateModal";
+
+import {
+  createViagemActions,
+  viagemColumns,
+} from "../../layouts/Table/ViagensTableConfig";
+
+import type { Viagem, ViagemCompletas } from "../../types/Viagem";
 
 export default function Viagens() {
   const {
@@ -23,6 +34,7 @@ export default function Viagens() {
   } = useViagemStore();
   const { motoristas, carregarMotoristas } = useMotoristaStore();
   const { caminhoes, carregarCaminhoes } = useCaminhaoStore();
+
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Viagem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,6 +43,8 @@ export default function Viagens() {
   const [currentStatus, setCurrentStatus] = useState<number>(1);
   const [isCustosModalOpen, setIsCustosModalOpen] = useState(false);
   const [selectedViagemParaCustos, setSelectedViagemParaCustos] =
+    useState<ViagemCompletas | null>(null);
+  const [selectedViagemForDetails, setSelectedViagemForDetails] =
     useState<ViagemCompletas | null>(null);
 
   useEffect(() => {
@@ -45,11 +59,11 @@ export default function Viagens() {
       }
     };
     loadData();
-  }, []);
+  }, [carregarViagensCompletas, carregarMotoristas, carregarCaminhoes]);
 
-  const handleStatusUpdate = (id: string, status: number) => {
-    setStatusUpdateId(id);
-    setCurrentStatus(status);
+  const handleStatusUpdate = (viagem: ViagemCompletas) => {
+    setStatusUpdateId(viagem.id ?? null);
+    setCurrentStatus(viagem.status ?? 1);
   };
 
   const handleCreate = () => {
@@ -71,8 +85,9 @@ export default function Viagens() {
     try {
       await removerViagem(deleteId);
       toast.success("Viagem removida com sucesso!");
-      carregarViagensCompletas();
+      await carregarViagensCompletas();
     } catch (error) {
+      toast.error("Erro ao remover viagem");
     } finally {
       setDeleteId(null);
     }
@@ -83,6 +98,7 @@ export default function Viagens() {
     try {
       await editarStatusViagem(statusUpdateId, newStatus);
       await carregarViagensCompletas();
+      toast.success("Status atualizado com sucesso!");
     } catch (error) {
       toast.error("Erro ao atualizar status");
     } finally {
@@ -124,8 +140,8 @@ export default function Viagens() {
                   <p className="text-slate-500 mt-2 text-lg">
                     {loading
                       ? "Carregando..."
-                      : `${viagens.length} ${
-                          viagens.length === 1
+                      : `${viagensCompletas.length} ${
+                          viagensCompletas.length === 1
                             ? "viagem cadastrada"
                             : "viagens cadastradas"
                         }`}
@@ -136,29 +152,10 @@ export default function Viagens() {
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
-                variant="outline"
-                className="flex items-center gap-2 px-6 py-3 border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 rounded-xl font-medium"
-                showArrow={false}
-              >
-                <Search className="h-4 w-4" />
-                Buscar
-              </Button>
-
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 px-6 py-3 border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 rounded-xl font-medium"
-                showArrow={false}
-              >
-                <Filter className="h-4 w-4" />
-                Filtros
-              </Button>
-
-              <Button
                 onClick={handleCreate}
                 className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 transition-all duration-300 rounded-xl font-medium text-white border-0"
                 showArrow={false}
               >
-                <Plus className="h-5 w-5" />
                 Nova Viagem
               </Button>
             </div>
@@ -176,9 +173,6 @@ export default function Viagens() {
                 >
                   Lista de Viagens
                 </Typography>
-                <p className="text-slate-500 mt-1">
-                  Gerencie todas as viagens cadastradas
-                </p>
               </div>
               {loading && (
                 <div className="flex items-center gap-2 text-blue-600">
@@ -190,12 +184,20 @@ export default function Viagens() {
           </div>
 
           <div className="p-8">
-            <ViagemTable
-              viagens={viagensCompletas}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onStatusUpdate={handleStatusUpdate}
-              onOpenCustosModal={handleOpenCustosModal}
+            <DataTable
+              data={viagensCompletas}
+              columns={viagemColumns}
+              actions={createViagemActions(
+                handleEdit,
+                handleDelete,
+                handleStatusUpdate,
+                handleOpenCustosModal,
+                setSelectedViagemForDetails
+              )}
+              title="Viagens Cadastradas"
+              subtitle="Gerencie todas as viagens cadastradas"
+              loading={loading}
+              filterPlaceholder="Buscar viagens..."
             />
           </div>
         </div>
@@ -220,9 +222,15 @@ export default function Viagens() {
         onSuccess={() => {
           setIsCustosModalOpen(false);
           setSelectedViagemParaCustos(null);
-          carregarViagensCompletas(); // Recarrega a lista de viagens para exibir os novos custos (ou o total atualizado)
+          carregarViagensCompletas();
           toast.success("Custo adicionado com sucesso!");
         }}
+      />
+
+      <ViagemDetailsModal
+        open={!!selectedViagemForDetails}
+        onClose={() => setSelectedViagemForDetails(null)}
+        viagem={selectedViagemForDetails}
       />
 
       <ConfirmDeleteModal

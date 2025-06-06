@@ -77,9 +77,6 @@ export default function ViagemCustosForm({ viagemId, onSuccess }: Props) {
         valor,
         descricao: descricao.trim(),
       });
-
-      toast.success("Custo registrado com sucesso!");
-
       // Reset form
       setTipo("1");
       setValor(0);
@@ -88,8 +85,6 @@ export default function ViagemCustosForm({ viagemId, onSuccess }: Props) {
 
       onSuccess?.();
     } catch (err) {
-      console.error(err);
-      toast.error("Erro ao registrar custo.");
     } finally {
       setLoading(false);
     }

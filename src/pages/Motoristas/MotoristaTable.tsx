@@ -1,6 +1,6 @@
 import { Edit, Trash2 } from "lucide-react";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
-import { MTCard as Card } from "../../components/ui/mt/MTCard";
+import { Card } from "../../components/ui/mt/MTCard";
 import type { Motorista } from "../../types/Motorista";
 import { formatarCPF } from "../../utils/formatadores";
 

@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { Plus, Truck, Search, Filter } from "lucide-react";
-import { Button } from "../../components/ui/Button";
-import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
-import { useCaminhaoStore } from "../../store/caminhaoStore";
-import { CaminhaoFormModal } from "./CaminhaoFormModal";
-import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
-import type { Caminhao, UpdateCaminhaoDto } from "../../types/Caminhao";
 import toast from "react-hot-toast";
+
+import { Button } from "../../components/ui/Button";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
+
+import { useCaminhaoStore } from "../../store/caminhaoStore";
+
+import { CaminhaoFormModal } from "./CaminhaoFormModal";
 import CaminhaoTable from "./CaminhaoTable";
+
+import type { Caminhao, UpdateCaminhaoDto } from "../../types/Caminhao";
 
 export default function Caminhao() {
   const {

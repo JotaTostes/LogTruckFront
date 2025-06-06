@@ -110,7 +110,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           senha: senha,
           id: "",
           criadoEm: "",
-          atualizadoEm: ""
+          atualizadoEm: "",
         });
         toast.success("Usuário atualizado com sucesso!");
       } else {
@@ -201,7 +201,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           {/* Nome Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
+              <div className="absolute left-3 inset-y-0 z-10 flex items-center pointer-events-none">
                 <User className="h-4 w-4 text-slate-400" />
               </div>
               <Input
@@ -229,7 +229,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           {/* Email Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
+              <div className="absolute left-3 inset-y-0 z-10 flex items-center pointer-events-none">
                 <Mail className="h-4 w-4 text-slate-400" />
               </div>
               <Input
@@ -258,7 +258,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           {/* CPF Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
+              <div className="absolute left-3 inset-y-0 z-10 flex items-center pointer-events-none">
                 <CreditCard className="h-4 w-4 text-slate-400" />
               </div>
               <Input
@@ -295,7 +295,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           {/* Password Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
+              <div className="absolute left-3 inset-y-0 z-10 flex items-center pointer-events-none">
                 <Lock className="h-4 w-4 text-slate-400" />
               </div>
               <Input
@@ -319,7 +319,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                className="absolute right-3 inset-y-0 text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center"
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4" />

@@ -1,11 +1,7 @@
 import { Edit, Trash2 } from "lucide-react";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
-import { MTCard as Card } from "../../components/ui/mt/MTCard";
-import type {
-  Caminhao,
-  CaminhaoCompletos,
-  UpdateCaminhaoDto,
-} from "../../types/Caminhao";
+import { Card } from "../../components/ui/mt/MTCard";
+import type { Caminhao, UpdateCaminhaoDto } from "../../types/Caminhao";
 import { formatarPlaca } from "../../utils/formatadores";
 
 type Props = {

@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
 import { Plus, Users, Search, Filter } from "lucide-react";
-import { Button } from "../../components/ui/Button";
-import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
-import { useUsuarioStore } from "../../store/usuarioStore";
-import { UsuarioFormModal } from "./UsuarioFormModal";
-import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
-import UsuarioTable from "./UsuarioTable";
-import type { Usuario } from "../../types/Usuario";
 import toast from "react-hot-toast";
+
+import { Button } from "../../components/ui/Button";
+import { DataTable } from "../../components/ui/DataTable";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
+
+import { useUsuarioStore } from "../../store/usuarioStore";
+
+import { UsuarioFormModal } from "./UsuarioFormModal";
+import {
+  createUsuarioActions,
+  usuarioColumns,
+} from "../../layouts/Table/UsuarioTableConfig";
+
+import type { Usuario } from "../../types/Usuario";
 
 export default function Usuarios() {
   const { usuarios, carregarUsuarios, removerUsuario } = useUsuarioStore();
@@ -26,7 +34,7 @@ export default function Usuarios() {
       }
     };
     loadData();
-  }, []);
+  }, [carregarUsuarios]);
 
   const handleCreate = () => {
     setSelected(null);
@@ -37,6 +45,7 @@ export default function Usuarios() {
     setSelected(usuario);
     setOpen(true);
   };
+
   const handleDelete = async (id: string) => {
     setDeleteId(id);
   };
@@ -46,11 +55,10 @@ export default function Usuarios() {
     try {
       await removerUsuario(deleteId);
       toast.success("Usuário removido com sucesso!");
-      carregarUsuarios();
+      await carregarUsuarios();
     } catch (error) {
       toast.error("Erro ao remover usuário");
-    }
-    finally {
+    } finally {
       setDeleteId(null);
     }
   };
@@ -87,8 +95,9 @@ export default function Usuarios() {
                   <p className="text-slate-500 mt-2 text-lg">
                     {loading
                       ? "Carregando..."
-                      : `${usuarios.length} usuário${usuarios.length !== 1 ? "s" : ""
-                      } cadastrado${usuarios.length !== 1 ? "s" : ""}`}
+                      : `${usuarios.length} usuário${
+                          usuarios.length !== 1 ? "s" : ""
+                        } cadastrado${usuarios.length !== 1 ? "s" : ""}`}
                   </p>
                 </div>
               </div>
@@ -97,29 +106,10 @@ export default function Usuarios() {
             {/* Ações */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
-                variant="outline"
-                className="flex items-center gap-2 px-6 py-3 border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 rounded-xl font-medium"
-                showArrow={false}
-              >
-                <Search className="h-4 w-4" />
-                Buscar
-              </Button>
-
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 px-6 py-3 border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 rounded-xl font-medium"
-                showArrow={false}
-              >
-                <Filter className="h-4 w-4" />
-                Filtros
-              </Button>
-
-              <Button
                 onClick={handleCreate}
                 className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 transition-all duration-300 rounded-xl font-medium text-white border-0"
                 showArrow={false}
               >
-                <Plus className="h-5 w-5" />
                 Novo Usuário
               </Button>
             </div>
@@ -139,9 +129,6 @@ export default function Usuarios() {
                 >
                   Lista de Usuários
                 </Typography>
-                <p className="text-slate-500 mt-1">
-                  Gerencie todos os usuários do sistema
-                </p>
               </div>
               {loading && (
                 <div className="flex items-center gap-2 text-blue-600">
@@ -188,13 +175,15 @@ export default function Usuarios() {
                 </div>
               </div>
             ) : (
-              <div className="overflow-hidden rounded-2xl border border-slate-200/50">
-                <UsuarioTable
-                  usuarios={usuarios}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              </div>
+              <DataTable
+                data={usuarios}
+                columns={usuarioColumns}
+                actions={createUsuarioActions(handleEdit, handleDelete)}
+                title="Usuários Cadastrados"
+                subtitle="Gerencie todos os usuários do sistema"
+                loading={loading}
+                filterPlaceholder="Buscar usuários..."
+              />
             )}
           </div>
         </div>
