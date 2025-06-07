@@ -1,15 +1,23 @@
 import { useEffect, useState } from "react";
 import { Plus, Users, Search, Filter, Icon } from "lucide-react";
 import { steeringWheel } from "@lucide/lab";
+import toast from "react-hot-toast";
+
 import { Button } from "../../components/ui/Button";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import { DataTable } from "../../components/ui/DataTable";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
+
 import { useMotoristaStore } from "../../store/motoristaStore";
 import { useUsuarioStore } from "../../store/usuarioStore";
+
 import { MotoristaFormModal } from "./MotoristaFormModal";
-import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
-import MotoristaTable from "./MotoristaTable";
+import {
+  createMotoristaActions,
+  motoristaColumns,
+} from "../../layouts/Table/MotoristaTableConfig";
+
 import type { Motorista } from "../../types/Motorista";
-import toast from "react-hot-toast";
 
 export default function Motoristas() {
   const { motoristas, carregarMotoristas, removerMotorista } =
@@ -103,29 +111,10 @@ export default function Motoristas() {
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
-                variant="outline"
-                className="flex items-center gap-2 px-6 py-3 border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 rounded-xl font-medium"
-                showArrow={false}
-              >
-                <Search className="h-4 w-4" />
-                Buscar
-              </Button>
-
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 px-6 py-3 border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 rounded-xl font-medium"
-                showArrow={false}
-              >
-                <Filter className="h-4 w-4" />
-                Filtros
-              </Button>
-
-              <Button
                 onClick={handleCreate}
                 className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 transition-all duration-300 rounded-xl font-medium text-white border-0"
                 showArrow={false}
               >
-                <Plus className="h-5 w-5" />
                 Novo Motorista
               </Button>
             </div>
@@ -191,13 +180,15 @@ export default function Motoristas() {
                 </div>
               </div>
             ) : (
-              <div className="overflow-hidden rounded-2xl border border-slate-200/50">
-                <MotoristaTable
-                  motoristas={motoristas}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              </div>
+              <DataTable
+                data={motoristas}
+                columns={motoristaColumns}
+                actions={createMotoristaActions(handleEdit, handleDelete)}
+                title="Motoristas Cadastrados"
+                subtitle="Gerencie todos os motoristas do sistema"
+                loading={loading}
+                filterPlaceholder="Buscar motorista..."
+              />
             )}
           </div>
         </div>

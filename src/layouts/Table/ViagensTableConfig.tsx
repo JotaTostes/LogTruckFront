@@ -48,12 +48,14 @@ export const viagemColumns: Column<ViagemCompletas>[] = [
     label: "Motorista",
     width: "15%",
     render: (item) => item.motorista?.nome,
+    filtrable: true,
   },
   {
     key: "caminhao",
     label: "Caminhão",
     width: "10%",
     render: (item) => formatarPlaca(item.caminhao?.placa),
+    filtrable: true,
   },
   {
     key: "origem",

@@ -16,6 +16,7 @@ import {
   Gauge,
   Sparkles,
   RefreshCw,
+  BanknoteX,
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -169,6 +170,13 @@ export default function Dashboard() {
       icon: <TrendingUp className="h-6 w-6" />,
       gradient: "from-emerald-600 to-teal-600",
       bgGradient: "from-emerald-50 to-teal-50",
+    },
+    {
+      title: "Comisões a Pagar",
+      value: `R$ ${dados.totalComissoesPagar.toFixed(2)}`,
+      icon: <BanknoteX className="h-6 w-6" />,
+      gradient: "from-blue-600 to-cyan-600",
+      bgGradient: "from-blue-50 to-cyan-50",
     },
     {
       title: "Média % Comissão",

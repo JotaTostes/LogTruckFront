@@ -37,7 +37,6 @@ export const useMotoristaStore = create<MotoristaStore>((set) => ({
     try {
       await api.post("/motorista", motorista);
     } catch (error) {
-      console.error("Erro ao adicionar motorista:", error);
       throw error;
     }
   },
@@ -46,7 +45,6 @@ export const useMotoristaStore = create<MotoristaStore>((set) => ({
     try {
       await api.put(`motorista/${id}`, motorista);
     } catch (error) {
-      console.error("Erro ao editar motorista:", error);
       throw error;
     }
   },

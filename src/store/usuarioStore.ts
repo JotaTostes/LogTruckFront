@@ -1,24 +1,13 @@
 import { create } from "zustand";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
+import type { Usuario, UsuarioDto } from "../types/Usuario";
 
 type RoleUsuario = "Administrador" | "Operador" | "Motorista";
 
-export interface Usuario {
-  id: string;
-  nome: string;
-  email: string;
-  cpf: string;
-  role: number;
-  ativo: boolean;
-  criadoEm: string;
-  atualizadoEm: string;
-  senha: string;
-}
-
 interface UsuarioStore {
   usuarios: Usuario[];
-  usuariosMotoristas: Usuario[];
+  usuariosMotoristas: UsuarioDto[];
   carregarUsuarios: () => Promise<void>;
   carregarUsuariosMotoristas: () => Promise<void>;
   adicionarUsuario: (
@@ -41,7 +30,9 @@ export const useUsuarioStore = create<UsuarioStore>((set, get) => ({
   },
   carregarUsuariosMotoristas: async () => {
     try {
-      const { data } = await api.get<Usuario[]>("/usuario/usuarios-motoristas");
+      const { data } = await api.get<UsuarioDto[]>(
+        "/usuario/usuarios-motoristas"
+      );
       set({ usuariosMotoristas: data });
     } catch (err) {
       toast.error("Erro ao carregar usuários motoristas");

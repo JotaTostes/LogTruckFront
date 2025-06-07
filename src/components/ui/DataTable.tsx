@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "./mt/MTCard";
 import { MTTypography as Typography } from "./mt/MTTypography";
 import { MTIconBtt as IconButton } from "./mt/MTIcon";
 import { Input } from "./Input";
-import { Search, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import {
+  Search,
+  FilterIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "lucide-react";
 
 export interface ActionButton<T> {
   icon: React.ReactNode;
@@ -18,6 +23,7 @@ export type Column<T> = {
   label: string;
   width?: string;
   render?: (item: T) => React.ReactNode;
+  filtrable?: boolean;
 };
 
 type DataTableProps<T> = {
@@ -43,31 +49,47 @@ export function DataTable<T extends { id?: string | number }>({
 }: DataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filterText, setFilterText] = useState("");
-  const itemsPerPage = 10;
+  const [filterColumn, setFilterColumn] = useState("all");
+  const itemsPerPage = 5;
 
-  const filterData = (items: T[]) => {
-    if (!filterText) return items;
+  const filterableColumns = useMemo(
+    () => columns.filter((c) => c.filtrable),
+    [columns]
+  );
 
-    return items.filter((item) =>
-      Object.values(item).some((value) =>
-        value?.toString().toLowerCase().includes(filterText.toLowerCase())
-      )
-    );
-  };
+  const filteredData = useMemo(() => {
+    if (!filterText) return data;
 
-  const filteredData = filterData(data);
+    return data.filter((item) => {
+      // Se o filtro selecionado for 'all', busca em todas as colunas marcadas como 'filterable'
+      if (filterColumn === "all") {
+        return filterableColumns.some((column) => {
+          const value = (item as any)[column.key];
+          return value
+            ?.toString()
+            .toLowerCase()
+            .includes(filterText.toLowerCase());
+        });
+      }
+
+      // Se uma coluna específica foi selecionada, busca apenas nela
+      const value = (item as any)[filterColumn];
+      return value?.toString().toLowerCase().includes(filterText.toLowerCase());
+    });
+  }, [data, filterText, filterColumn, filterableColumns]);
+
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const handleFilter = (value: string) => {
+  const handleFilterTextChange = (value: string) => {
     setFilterText(value);
     setCurrentPage(1);
-    if (onFilter) {
-      onFilter(filterData(data));
-    }
+    // if (onFilter) {
+    //   onFilter(filterData(data));
+    // }
   };
 
   return (
@@ -89,16 +111,42 @@ export function DataTable<T extends { id?: string | number }>({
                 </Typography>
               )}
             </div>
-            <div className="w-full md:w-72 relative">
-              <Input
-                type="search"
-                value={filterText}
-                onChange={(e) => handleFilter(e.target.value)}
-                placeholder={filterPlaceholder}
-                className="bg-white/10 border border-white/20 text-white placeholder-white/60 rounded-full pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              />
-              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-white/60" />
+            <div className="w-full md:w-auto flex flex-col md:flex-row items-center gap-2">
+              {/* Dropdown para selecionar a coluna */}
+              <div className="w-full md:w-48 relative">
+                <select
+                  value={filterColumn}
+                  onChange={(e) => setFilterColumn(e.target.value)}
+                  className="w-full appearance-none bg-white/10 border border-white/20 text-white placeholder-white/60 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  <option value="all" className="text-black">
+                    Todas as Colunas
+                  </option>
+                  {filterableColumns.map((col) => (
+                    <option
+                      key={col.key}
+                      value={col.key}
+                      className="text-black"
+                    >
+                      {col.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                  <FilterIcon className="h-5 w-5 text-white/60" />
+                </div>
+              </div>
+              <div className="w-full md:w-72 relative">
+                <Input
+                  type="search"
+                  value={filterText}
+                  onChange={(e) => handleFilterTextChange(e.target.value)}
+                  placeholder={filterPlaceholder}
+                  className="bg-white/10 border border-white/20 text-white placeholder-white/60 rounded-full pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                />
+                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-white/60" />
+                </div>
               </div>
             </div>
           </div>

@@ -32,6 +32,7 @@ export function ViagemDetailsModal({ open, onClose, viagem }: Props) {
       onClose={onClose}
       title="Detalhes da Viagem"
       isEdit={false}
+      mode="view"
       icon={<Eye className="h-6 w-6 text-white" />}
     >
       <div className="space-y-6">

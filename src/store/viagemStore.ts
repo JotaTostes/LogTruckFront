@@ -8,7 +8,6 @@ interface ViagemStore {
   viagensCompletas: ViagemCompletas[];
   carregarViagens: () => Promise<void>;
   carregarViagensCompletas: () => Promise<void>;
-  //   fetchMotoristas: (filtro?: string) => Promise<void>;
   adicionarViagem: (viagem: Omit<Viagem, "status">) => Promise<void>;
   editarViagem: (id: string, viagem: Partial<Viagem>) => Promise<void>;
   editarStatusViagem: (id: string, status: number) => Promise<void>;
@@ -61,7 +60,6 @@ export const useViagemStore = create<ViagemStore>((set) => ({
   },
   editarStatusViagem: async (id: string, status: number) => {
     try {
-      console.log("Atualizando status da viagem:", id, status);
       await api.put(`/viagem/${id}/status/${status}`);
       set((state) => ({
         viagens: state.viagens.map((v) => (v.id === id ? { ...v, status } : v)),

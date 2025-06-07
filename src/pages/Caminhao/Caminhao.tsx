@@ -9,7 +9,11 @@ import { MTTypography as Typography } from "../../components/ui/mt/MTTypography"
 import { useCaminhaoStore } from "../../store/caminhaoStore";
 
 import { CaminhaoFormModal } from "./CaminhaoFormModal";
-import CaminhaoTable from "./CaminhaoTable";
+import { DataTable } from "../../components/ui/DataTable";
+import {
+  caminhaoColumns,
+  createCaminhaoActions,
+} from "../../layouts/Table/CaminhaoTableConfig";
 
 import type { Caminhao, UpdateCaminhaoDto } from "../../types/Caminhao";
 
@@ -106,29 +110,10 @@ export default function Caminhao() {
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
-                variant="outline"
-                className="flex items-center gap-2 px-6 py-3 border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 rounded-xl font-medium"
-                showArrow={false}
-              >
-                <Search className="h-4 w-4" />
-                Buscar
-              </Button>
-
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 px-6 py-3 border-2 border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 rounded-xl font-medium"
-                showArrow={false}
-              >
-                <Filter className="h-4 w-4" />
-                Filtros
-              </Button>
-
-              <Button
                 onClick={handleCreate}
                 className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 transition-all duration-300 rounded-xl font-medium text-white border-0"
                 showArrow={false}
               >
-                <Plus className="h-5 w-5" />
                 Novo Caminhão
               </Button>
             </div>
@@ -146,25 +131,56 @@ export default function Caminhao() {
                 >
                   Lista de Caminhões
                 </Typography>
-                <p className="text-slate-500 mt-1">
-                  Gerencie todas os caminhões cadastradas
-                </p>
               </div>
               {loading && (
                 <div className="flex items-center gap-2 text-blue-600">
                   <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-sm font-medium">Carregando...</span>
+                  <span className="text-sm font-medium">
+                    Carregando Caminhões...
+                  </span>
                 </div>
               )}
             </div>
           </div>
 
           <div className="p-8">
-            <CaminhaoTable
-              caminhoes={caminhoes}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            {caminhoes.length === 0 ? (
+              <div className="text-center py-16 space-y-4">
+                <div className="bg-gradient-to-br from-slate-100 to-slate-200 w-24 h-24 rounded-full mx-auto flex items-center justify-center">
+                  <Truck className="h-10 w-10 text-slate-400" />
+                </div>
+                <div>
+                  <Typography
+                    variant="h4"
+                    color="blue-gray"
+                    className="font-semibold mb-2"
+                  >
+                    Nenhum caminhão encontrado
+                  </Typography>
+                  <p className="text-slate-500 mb-6">
+                    Comece criando seu primeiro caminhão no sistema
+                  </p>
+                  <Button
+                    onClick={handleCreate}
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 px-6 py-3 rounded-xl font-medium"
+                    showArrow={false}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Criar Primeiro Caminhão
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <DataTable
+                data={caminhoes}
+                columns={caminhaoColumns}
+                actions={createCaminhaoActions(handleEdit, handleDelete)}
+                title="Caminhões Cadastrados"
+                subtitle="Gerencie todos os caminhões do sistema"
+                loading={loading}
+                filterPlaceholder="Buscar caminhão..."
+              />
+            )}
           </div>
         </div>
       </div>

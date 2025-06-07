@@ -1,21 +1,7 @@
 import { create } from "zustand";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
-
-export type DashboardDto = {
-  totalViagens: number;
-  viagensPlanejadas: number;
-  viagensEmAndamento: number;
-  viagensConcluidas: number;
-  viagensCanceladas: number;
-  quilometragemTotal: number;
-  valorTotalFretes: number;
-  totalCaminhoesAtivos: number;
-  totalMotoristasAtivos: number;
-  custoTotalViagens: number;
-  totalComissoesPagas: number;
-  percentualMedioComissao: number;
-};
+import type { DashboardDto } from "../types/Dashboard";
 
 type DashboardState = {
   dados: DashboardDto | null;

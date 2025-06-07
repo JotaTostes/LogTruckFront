@@ -5,6 +5,7 @@ import Usuarios from "../pages/Usuario/Usuarios";
 import Motoristas from "../pages/Motoristas/Motoristas";
 import Viagens from "../pages/Viagens/Viagens";
 import Caminhao from "../pages/Caminhao/Caminhao";
+import Comissao from "../pages/Comissao/Comissao";
 import PrivateRoute from "../routes/PrivateRoute";
 import DefaultLayout from "../layouts/DefaultLayout";
 export function AppRoutes() {
@@ -20,6 +21,7 @@ export function AppRoutes() {
           <Route path="/motoristas" element={<Motoristas />} />
           <Route path="/viagens" element={<Viagens />} />
           <Route path="/caminhoes" element={<Caminhao />} />
+          <Route path="/custos/comissoes" element={<Comissao />} />
         </Route>
       </Route>
     </Routes>
