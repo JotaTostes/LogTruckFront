@@ -1,22 +1,27 @@
 import type { Usuario } from "../../types/Usuario";
 import type { Column, ActionButton } from "../../components/ui/DataTable";
 import { Edit, Trash2 } from "lucide-react";
+import { formatarCPF } from "../../utils/formatadores";
 
 export const usuarioColumns: Column<Usuario>[] = [
   {
     key: "nome",
     label: "Nome",
     width: "25%",
+    filtrable: true,
   },
   {
     key: "email",
     label: "Email",
     width: "25%",
+    filtrable: true,
   },
   {
     key: "cpf",
     label: "CPF",
     width: "25%",
+    render: (item) => formatarCPF(item.cpf),
+    filtrable: true,
   },
   {
     key: "role",

@@ -57,3 +57,16 @@ export const getTextRoleUsuario = (role: number) => {
       return "Desconhecido";
   }
 };
+
+export const getIdRoleUsuario = (role: string) => {
+  switch (role) {
+    case "Administrador":
+      return 1;
+    case "Motorista":
+      return 2;
+    case "Operador":
+      return 3;
+    default:
+      return 0;
+  }
+};

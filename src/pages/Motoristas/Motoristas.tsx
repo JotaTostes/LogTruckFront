@@ -132,9 +132,6 @@ export default function Motoristas() {
                 >
                   Lista de Motoristas
                 </Typography>
-                <p className="text-slate-500 mt-1">
-                  Gerencie todos os motoristas do sistema
-                </p>
               </div>
               {loading && (
                 <div className="flex items-center gap-2 text-blue-600">

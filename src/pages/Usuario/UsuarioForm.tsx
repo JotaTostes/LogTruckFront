@@ -23,6 +23,7 @@ export type UsuarioFormProps = {
   usuario?: Usuario | null;
   onSuccess: () => void;
 };
+
 const roleMap = { Administrador: 1, Motorista: 2, Operador: 3 };
 
 export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
@@ -46,11 +47,34 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
       setNome(usuario.nome);
       setEmail(usuario.email);
       setCpf(usuario.cpf);
-      // Convert numeric role to string role
-      const roleString =
-        Object.entries(roleMap).find(([, v]) => v === usuario.role)?.[0] ??
-        "Operador";
-      setRole(roleString as "Administrador" | "Operador" | "Motorista");
+
+      // Se o role já vem como string, use diretamente
+      // Se vier como número, converta usando o mapa inverso
+      let roleString: "Administrador" | "Operador" | "Motorista";
+
+      if (typeof usuario.role === "string") {
+        // Role já é string, valide se é um valor válido
+        if (["Administrador", "Operador", "Motorista"].includes(usuario.role)) {
+          roleString = usuario.role as
+            | "Administrador"
+            | "Operador"
+            | "Motorista";
+        } else {
+          roleString = "Operador"; // fallback
+        }
+      } else {
+        // Role é número, converta para string
+        const roleMapInverse = {
+          1: "Administrador",
+          2: "Motorista",
+          3: "Operador",
+        };
+        roleString = (roleMapInverse[
+          usuario.role as keyof typeof roleMapInverse
+        ] || "Operador") as "Administrador" | "Operador" | "Motorista";
+      }
+
+      setRole(roleString);
       setAtivo(usuario.ativo);
       setSenha("");
     }
@@ -107,10 +131,8 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           cpf: cpf.replace(/\D/g, ""),
           role: roleMap[role],
           ativo,
-          senha: senha,
+          senhaHash: senha,
           id: "",
-          criadoEm: "",
-          atualizadoEm: "",
         });
         toast.success("Usuário atualizado com sucesso!");
       } else {
@@ -120,7 +142,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           cpf: cpf.replace(/\D/g, ""),
           role: roleMap[role],
           ativo,
-          senha: senha,
+          senhaHash: senha,
         });
         toast.success("Usuário cadastrado com sucesso!");
       }

@@ -9,12 +9,14 @@ export const comissoesColumns: Column<ComissaoCompleta>[] = [
     label: "Motorista",
     width: "25%",
     render: (item) => item.viagem.motorista.nome,
+    filtrable: true,
   },
   {
     key: "viagem.motorista.cpf",
     label: "CPF",
     width: "20%",
     render: (item) => formatarCPF(item.viagem.motorista.cpf),
+    filtrable: true,
   },
   {
     key: "viagem.valorFrete",
@@ -50,6 +52,7 @@ export const comissoesColumns: Column<ComissaoCompleta>[] = [
         <span>{item.pago ? "Pago" : "A Pagar"}</span>
       </div>
     ),
+    filtrable: true,
   },
 ];
 

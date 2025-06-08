@@ -8,12 +8,14 @@ export const motoristaColumns: Column<Motorista>[] = [
     key: "nome",
     label: "Nome",
     width: "25%",
+    filtrable: true,
   },
   {
     key: "cpf",
     label: "CPF",
     width: "25%",
     render: (item) => formatarCPF(item.cpf),
+    filtrable: true,
   },
   {
     key: "cnh",
@@ -24,6 +26,7 @@ export const motoristaColumns: Column<Motorista>[] = [
     key: "telefone",
     label: "Telefone",
     width: "25%",
+    filtrable: true,
   },
 ];
 

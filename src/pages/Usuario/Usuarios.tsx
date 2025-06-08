@@ -161,7 +161,7 @@ export default function Usuarios() {
                   >
                     Nenhum usuário encontrado
                   </Typography>
-                  <p className="text-slate-500 mb-6">
+                  {/* <p className="text-slate-500 mb-6">
                     Comece criando seu primeiro usuário no sistema
                   </p>
                   <Button
@@ -171,7 +171,7 @@ export default function Usuarios() {
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Criar Primeiro Usuário
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             ) : (

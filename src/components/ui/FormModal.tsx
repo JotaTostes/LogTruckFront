@@ -235,13 +235,13 @@ export default function FormModal({
                         </span>
                       </div>
                       <div className="flex flex-col sm:flex-row gap-3 sm:ml-auto">
-                        <div className="hidden sm:flex items-center gap-2 text-slate-400 text-sm">
+                        {/* <div className="hidden sm:flex items-center gap-2 text-slate-400 text-sm">
                           <span>Use o botão</span>
                           <div className="px-2 py-1 bg-blue-100 rounded text-blue-600 font-mono text-xs">
                             {isEdit ? "Salvar" : "Criar"}
                           </div>
                           <span>no formulário</span>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   )}
@@ -253,7 +253,6 @@ export default function FormModal({
                     className="px-6 py-3 bg-white/80 backdrop-blur-sm border-2 border-slate-200 text-slate-600 hover:bg-red-50 hover:border-red-300 hover:text-red-600 font-medium rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                     showArrow={false}
                   >
-                    <X className="h-4 w-4 mr-2" />
                     {isView ? "Fechar" : "Cancelar"}
                   </CustomButton>
                 </div>

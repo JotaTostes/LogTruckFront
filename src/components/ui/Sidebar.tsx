@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../utils/cn";
+import { APP_VERSION } from "../../config/version";
 import {
   Users,
   Truck,
@@ -11,7 +13,6 @@ import {
   ChevronRight,
   Receipt,
 } from "lucide-react";
-import { useState } from "react";
 
 interface SidebarProps {
   children: React.ReactNode;
@@ -67,8 +68,6 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
             isHovered ? "opacity-100" : "opacity-0"
           )}
         >
-          {/* ...existing header code... */}
-
           <nav className="flex flex-col gap-2">
             {navItems.map((item) => (
               <div key={item.label}>
@@ -136,6 +135,15 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
               </div>
             ))}
           </nav>
+          <div className="pt-4 border-t border-white/10">
+            <div className="flex items-center gap-2 text-xs text-white/60">
+              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400" />
+              <span>
+                v{APP_VERSION.current}
+                {APP_VERSION.environment === "development" && " (Dev)"}
+              </span>
+            </div>
+          </div>
         </div>
       </aside>
 
