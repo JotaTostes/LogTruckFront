@@ -1,15 +1,14 @@
-// src/components/mt/MTCard.tsx
-import { Card, type CardProps } from "@material-tailwind/react";
+// components/ui/mt/MTCard.tsx
 
-export function MTCard(props: CardProps) {
-  return (
-    <Card
-      placeholder=""
-      onResize={() => {}}
-      onResizeCapture={() => {}}
-      onPointerEnterCapture={() => {}}
-      onPointerLeaveCapture={() => {}}
-      {...props}
-    />
-  );
-}
+import {
+  Card as MTCard,
+  CardHeader as MTCardHeader,
+  CardBody as MTCardBody,
+  CardFooter as MTCardFooter,
+  type CardProps as MTCardProps,
+} from "@material-tailwind/react";
+
+export const Card = (props: any) => <MTCard {...props} />;
+export const CardHeader = (props: any) => <MTCardHeader {...props} />;
+export const CardBody = (props: any) => <MTCardBody {...props} />;
+export const CardFooter = (props: any) => <MTCardFooter {...props} />;

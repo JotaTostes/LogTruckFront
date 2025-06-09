@@ -1,28 +1,29 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/Login";
-import Dashboard from "../pages/Dashboard";
+import Dashboard from "../pages/Dashboard/Dashboard";
 import Usuarios from "../pages/Usuario/Usuarios";
+import Motoristas from "../pages/Motoristas/Motoristas";
+import Viagens from "../pages/Viagens/Viagens";
+import Caminhao from "../pages/Caminhao/Caminhao";
+import Comissao from "../pages/Comissao/Comissao";
 import PrivateRoute from "../routes/PrivateRoute";
 import DefaultLayout from "../layouts/DefaultLayout";
-
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" />} />
       <Route path="/login" element={<Login />} />
 
-      {/* Rotas privadas com layout */}
       <Route element={<PrivateRoute roles={["Administrador", "Operador"]} />}>
         <Route element={<DefaultLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/usuarios" element={<Usuarios />} />
+          <Route path="/motoristas" element={<Motoristas />} />
+          <Route path="/viagens" element={<Viagens />} />
+          <Route path="/caminhoes" element={<Caminhao />} />
+          <Route path="/custos/comissoes" element={<Comissao />} />
         </Route>
       </Route>
-      {/* <Route element={<PrivateRoute roles={["Motorista"]} />}>
-        <Route element={<DefaultLayout />}>
-          <Route path="/" element={<Dashboard />} />
-        </Route>
-      </Route> */}
     </Routes>
   );
 }

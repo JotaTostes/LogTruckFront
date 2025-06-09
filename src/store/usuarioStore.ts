@@ -1,25 +1,15 @@
 import { create } from "zustand";
-import axios from "axios";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
+import type { Usuario, UsuarioDto } from "../types/Usuario";
 
 type RoleUsuario = "Administrador" | "Operador" | "Motorista";
 
-export interface Usuario {
-  id: string;
-  nome: string;
-  email: string;
-  cpf: string;
-  role: RoleUsuario;
-  ativo: boolean;
-  criadoEm: string;
-  atualizadoEm: string;
-  senhaHash: string;
-}
-
 interface UsuarioStore {
   usuarios: Usuario[];
+  usuariosMotoristas: UsuarioDto[];
   carregarUsuarios: () => Promise<void>;
+  carregarUsuariosMotoristas: () => Promise<void>;
   adicionarUsuario: (
     usuario: Omit<Usuario, "id" | "criadoEm" | "atualizadoEm">
   ) => Promise<void>;
@@ -29,6 +19,7 @@ interface UsuarioStore {
 
 export const useUsuarioStore = create<UsuarioStore>((set, get) => ({
   usuarios: [],
+  usuariosMotoristas: [],
   carregarUsuarios: async () => {
     try {
       const { data } = await api.get<Usuario[]>("/usuario");
@@ -37,9 +28,29 @@ export const useUsuarioStore = create<UsuarioStore>((set, get) => ({
       toast.error("Erro ao carregar usuários");
     }
   },
+  carregarUsuariosMotoristas: async () => {
+    try {
+      const { data } = await api.get<UsuarioDto[]>(
+        "/usuario/usuarios-motoristas"
+      );
+      set({ usuariosMotoristas: data });
+    } catch (err) {
+      toast.error("Erro ao carregar usuários motoristas");
+    }
+  },
   adicionarUsuario: async (novoUsuario) => {
     try {
-      const { data } = await api.post<Usuario>("/usuario", novoUsuario);
+      // Se vier como string, converta para número (caso ainda não tenha sido convertido no form)
+      const roleMap = { Administrador: 1, Motorista: 2, Operador: 3 };
+      const usuarioParaEnviar = {
+        ...novoUsuario,
+        role:
+          typeof novoUsuario.role === "string"
+            ? roleMap[novoUsuario.role as keyof typeof roleMap]
+            : novoUsuario.role,
+      };
+
+      const { data } = await api.post<Usuario>("/usuario", usuarioParaEnviar);
       set((state) => ({ usuarios: [data, ...state.usuarios] }));
       toast.success("Usuário adicionado com sucesso!");
     } catch (err) {
@@ -58,7 +69,7 @@ export const useUsuarioStore = create<UsuarioStore>((set, get) => ({
     }
   },
   editarUsuario: async (id, usuario) => {
-    await axios.put(`usuario/${id}`, usuario);
+    await api.put(`usuario/${id}`, usuario);
     await useUsuarioStore.getState().carregarUsuarios();
   },
 }));

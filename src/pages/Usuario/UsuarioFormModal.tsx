@@ -1,13 +1,7 @@
 import UsuarioForm from "./UsuarioForm";
 import type { Usuario } from "../../types/Usuario";
-import { Button as CustomButton } from "../../components/ui/Button";
-import {
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-} from "../../components/ui/Dialog";
-import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
+import FormModal from "../../components/ui/FormModal";
+import { UserPlus } from "lucide-react";
 
 type Props = {
   open: boolean;
@@ -16,38 +10,26 @@ type Props = {
   onSuccess: () => void;
 };
 
-export default function UsuarioFormModal({
+export function UsuarioFormModal({
   open,
   onClose,
   usuario,
   onSuccess,
-}: Props) {
+}: {
+  open: boolean;
+  onClose: () => void;
+  usuario: any;
+  onSuccess: () => void;
+}) {
   return (
-    <Dialog
+    <FormModal
       open={open}
-      handler={onClose}
-      size="md"
-      className="bg-white rounded-xl shadow-lg"
+      onClose={onClose}
+      title="Usuário"
+      isEdit={!!usuario}
+      icon={<UserPlus className="h-6 w-6 text-white" />}
     >
-      <DialogHeader className="pb-2 border-b border-gray-200">
-        <Typography variant="h4" color="blue-gray">
-          {usuario ? "Editar Usuário" : "Novo Usuário"}
-        </Typography>
-      </DialogHeader>
-
-      <DialogBody className="px-6 py-4 overflow-auto max-h-[80vh]">
-        <UsuarioForm usuario={usuario} onSuccess={onSuccess} />
-      </DialogBody>
-
-      <DialogFooter className="px-6 py-3 border-t border-gray-200 flex justify-end">
-        <CustomButton
-          onClick={onClose}
-          className="bg-transparent text-red-600 hover:bg-red-50 font-semibold"
-          showArrow={false}
-        >
-          Cancelar
-        </CustomButton>
-      </DialogFooter>
-    </Dialog>
+      <UsuarioForm usuario={usuario} onSuccess={onSuccess} />
+    </FormModal>
   );
 }

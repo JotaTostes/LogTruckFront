@@ -1,28 +1,69 @@
-// components/Input.tsx
 import { Input as MTInput } from "@material-tailwind/react";
+import { type ReactNode, useId } from "react";
 
-interface CustomInputProps {
+type CustomInputProps = {
+  icon?: ReactNode;
   label?: string;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
-  placeholder?: string;
-  type?: string;
-  disabled?: boolean;
-  error?: boolean;
+  error?: string | boolean;
   success?: boolean;
-  size?: "md" | "lg";
-  color?: "blue" | "red" | "green" | "gray";
   className?: string;
-}
+  [key: string]: any;
+};
 
-export const Input = (props: CustomInputProps) => {
+export const Input = ({
+  icon,
+  label,
+  error,
+  success,
+  className = "",
+  ...rest
+}: CustomInputProps) => {
+  const inputId = useId();
+
+  const borderColor = error
+    ? "border-red-500 focus:ring-red-500"
+    : success
+    ? "border-green-500 focus:ring-green-500"
+    : "border-gray-300 focus:ring-blue-500";
+
   return (
-    <MTInput
-      {...(props as any)}
-      onPointerEnterCapture={() => {}}
-      onPointerLeaveCapture={() => {}}
-      crossOrigin=""
-    />
+    <div className="relative w-full">
+      {label && (
+        <label
+          htmlFor={inputId}
+          className="block mb-2 text-sm font-medium text-gray-700"
+        >
+          {label}
+        </label>
+      )}
+      <div className="relative">
+        {icon && (
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10 text-gray-500">
+            {icon}
+          </div>
+        )}
+        <MTInput
+          onResize={undefined}
+          onResizeCapture={undefined}
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
+          crossOrigin={undefined}
+          id={inputId}
+          {...rest}
+          className={`w-full rounded-lg ${
+            icon ? "pl-10" : "pl-4"
+          } pr-4 ${borderColor} focus:outline-none focus:ring-2 ${className}`}
+          containerProps={{
+            className: "min-w-0",
+          }}
+          labelProps={{
+            className: "hidden",
+          }}
+        />
+      </div>
+      {error && typeof error === "string" && (
+        <p className="mt-1 text-sm text-red-500">{error}</p>
+      )}
+    </div>
   );
 };
