@@ -1,5 +1,6 @@
 import { useAuthStore } from "../../store/authStore";
 import { LogOut, Menu } from "lucide-react";
+import { systemTheme } from "../../config/systemTheme";
 
 interface HeaderProps {
   isSidebarHovered: boolean;
@@ -12,7 +13,7 @@ const getInitials = (name: string = ""): string => {
   return name
     .split(" ")
     .map((word) => word[0])
-    .filter(Boolean) // Garante que não haja undefined se houver espaços extras
+    .filter(Boolean)
     .slice(0, 2)
     .join("")
     .toUpperCase();
@@ -25,7 +26,7 @@ const Header = ({ isSidebarHovered, setIsSidebarHovered }: HeaderProps) => {
   const userInitials = usuario ? getInitials(usuario.nome) : "";
 
   return (
-    <header className="w-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 dark:bg-gradient-to-r dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white">
+    <header className={systemTheme.colors.background.header}>
       <div className="px-4 py-3 flex items-center justify-between">
         {/* Menu + Logo */}
         <div className="flex items-center gap-3">

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button as CustomButton } from "../../components/ui/Button";
+import { Button } from "../../components/ui/Button";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import {
   X,
@@ -247,14 +247,16 @@ export default function FormModal({
                   )}
 
                   {/* Botão de fechar padrão para todos os modos */}
-                  <CustomButton
+                  <Button
                     onClick={onClose}
                     disabled={isLoading}
                     className="px-6 py-3 bg-white/80 backdrop-blur-sm border-2 border-slate-200 text-slate-600 hover:bg-red-50 hover:border-red-300 hover:text-red-600 font-medium rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                     showArrow={false}
+                    icon={<X className="h-5 w-5" />}
+                    variant="outline"
                   >
                     {isView ? "Fechar" : "Cancelar"}
-                  </CustomButton>
+                  </Button>
                 </div>
               )}
             </div>

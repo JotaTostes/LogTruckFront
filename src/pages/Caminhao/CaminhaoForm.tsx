@@ -143,19 +143,15 @@ export default function CaminhaoForm({
           {/* Placa Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
-                <Tag className="h-4 w-4 text-slate-400" />
-              </div>
               <Input
+                icon={<Tag className="h-4 w-4 text-slate-400" />}
                 label="Placa"
                 value={placa}
                 onChange={(e) => {
                   setPlaca(e.target.value.toUpperCase());
                   if (errors.placa) setErrors({ ...errors, placa: "" });
                 }}
-                className={`pl-10 uppercase ${
-                  errors.placa ? "border-red-300 focus:border-red-500" : ""
-                }`}
+                error={!!errors.placa}
                 placeholder="ABC1234"
                 maxLength={7}
               />
@@ -171,19 +167,15 @@ export default function CaminhaoForm({
           {/* Modelo Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
-                <Truck className="h-4 w-4 text-slate-400" />
-              </div>
               <Input
+                icon={<Truck className="h-4 w-4 text-slate-400" />}
                 label="Modelo"
                 value={modelo}
                 onChange={(e) => {
                   setModelo(e.target.value);
                   if (errors.modelo) setErrors({ ...errors, modelo: "" });
                 }}
-                className={`pl-10 ${
-                  errors.modelo ? "border-red-300 focus:border-red-500" : ""
-                }`}
+                error={!!errors.modelo}
                 placeholder="FH 460"
               />
             </div>
@@ -198,19 +190,15 @@ export default function CaminhaoForm({
           {/* Marca Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
-                <Building className="h-4 w-4 text-slate-400" />
-              </div>
               <Input
+                icon={<Building className="h-4 w-4 text-slate-400" />}
                 label="Marca"
                 value={marca}
                 onChange={(e) => {
                   setMarca(e.target.value);
                   if (errors.marca) setErrors({ ...errors, marca: "" });
                 }}
-                className={`pl-10 ${
-                  errors.marca ? "border-red-300 focus:border-red-500" : ""
-                }`}
+                error={!!errors.marca}
                 placeholder="Volvo"
               />
             </div>
@@ -225,10 +213,8 @@ export default function CaminhaoForm({
           {/* Ano Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
-                <Calendar className="h-4 w-4 text-slate-400" />
-              </div>
               <Input
+                icon={<Calendar className="h-4 w-4 text-slate-400" />}
                 type="number"
                 label="Ano"
                 value={ano}
@@ -236,9 +222,7 @@ export default function CaminhaoForm({
                   setAno(Number(e.target.value));
                   if (errors.ano) setErrors({ ...errors, ano: "" });
                 }}
-                className={`pl-10 ${
-                  errors.ano ? "border-red-300 focus:border-red-500" : ""
-                }`}
+                error={!!errors.ano}
                 min={1900}
                 max={new Date().getFullYear() + 1}
               />
@@ -254,10 +238,8 @@ export default function CaminhaoForm({
           {/* Capacidade Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10">
-                <Weight className="h-4 w-4 text-slate-400" />
-              </div>
               <Input
+                icon={<Weight className="h-4 w-4 text-slate-400" />}
                 type="number"
                 label="Capacidade (toneladas)"
                 value={capacidadeToneladas}
@@ -266,11 +248,7 @@ export default function CaminhaoForm({
                   if (errors.capacidadeToneladas)
                     setErrors({ ...errors, capacidadeToneladas: "" });
                 }}
-                className={`pl-10 ${
-                  errors.capacidadeToneladas
-                    ? "border-red-300 focus:border-red-500"
-                    : ""
-                }`}
+                error={!!errors.capacidadeToneladas}
                 step="0.1"
                 min="0"
               />

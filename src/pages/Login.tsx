@@ -150,10 +150,10 @@ export default function Login() {
 
             {/* Submit Button */}
             <Button
-              type="submit"
+              variant="primary"
               isLoading={isLoading}
               disabled={isLoading || !email || !senha}
-              className="w-full"
+              className="w-full py-4 text-lg"
             >
               {isLoading ? "Entrando..." : "Entrar"}
             </Button>

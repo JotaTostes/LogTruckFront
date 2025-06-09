@@ -63,7 +63,7 @@ export function StatusUpdateModal({
         {/* Botão de fechar */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-red-100 transition-colors"
         >
           <X className="w-4 h-4 text-gray-500" />
         </button>
@@ -105,13 +105,14 @@ export function StatusUpdateModal({
         </div>
 
         {/* Botões de ação */}
-        <div className="flex flex-col-reverse sm:flex-row gap-3 mt-8">
+        <div className="flex flex-col-reverse sm:flex-row gap-3 mt-8 justify-center">
           <Button
             variant="outline"
             size="md"
             onClick={onClose}
             showArrow={false}
             className="flex-1"
+            icon={<X className="h-5 w-5" />}
           >
             Cancelar
           </Button>

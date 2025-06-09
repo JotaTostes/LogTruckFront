@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Receipt,
 } from "lucide-react";
+import { systemTheme } from "../../config/systemTheme";
 
 interface SidebarProps {
   children: React.ReactNode;
@@ -50,7 +51,7 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
   ];
 
   return (
-    <div className="flex flex-1">
+    <div className={systemTheme.colors.background.sidebar}>
       <aside
         className={cn(
           "bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 dark:bg-gradient-to-r dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white transition-all duration-300 ease-in-out overflow-hidden",

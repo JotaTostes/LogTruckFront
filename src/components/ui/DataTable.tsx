@@ -10,6 +10,8 @@ import {
   ChevronRightIcon,
 } from "lucide-react";
 
+import { systemTheme } from "../../config/systemTheme";
+
 export interface ActionButton<T> {
   icon: React.ReactNode;
   onClick: (item: T) => void;
@@ -132,12 +134,10 @@ export function DataTable<T extends { id?: string | number }>({
                     </option>
                   ))}
                 </select>
-                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                  <FilterIcon className="h-5 w-5 text-white/60" />
-                </div>
               </div>
               <div className="w-full md:w-72 relative">
                 <Input
+                  icon={<Search className="h-5 w-5 text-white/60" />}
                   type="search"
                   value={filterText}
                   onChange={(e) => handleFilterTextChange(e.target.value)}

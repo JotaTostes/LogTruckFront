@@ -164,14 +164,14 @@ export default function MotoristaForm({
         {/* CNH */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-            <IdCard className="h-4 w-4" />
             CNH
           </label>
           <Input
+            icon={<IdCard className="h-4 w-4" />}
             value={cnh}
             onChange={(e) => setCnh(e.target.value)}
             placeholder="Digite o número da CNH"
-            className={errors.cnh ? "border-red-300" : ""}
+            error={!!errors.cnh}
           />
           {errors.cnh && (
             <div className="flex items-center gap-1 text-red-500 text-sm">
@@ -184,14 +184,14 @@ export default function MotoristaForm({
         {/* Data de Nascimento */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
             Data de Nascimento
           </label>
           <Input
+            icon={<Calendar className="h-4 w-4" />}
             type="date"
             value={dataNascimento}
             onChange={(e) => setDataNascimento(e.target.value)}
-            className={errors.dataNascimento ? "border-red-300" : ""}
+            error={!!errors.dataNascimento}
           />
           {errors.dataNascimento && (
             <div className="flex items-center gap-1 text-red-500 text-sm">
@@ -204,14 +204,14 @@ export default function MotoristaForm({
         {/* Telefone */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-            <Phone className="h-4 w-4" />
             Telefone
           </label>
           <Input
+            icon={<Phone className="h-4 w-4" />}
             value={telefone}
             onChange={(e) => setTelefone(e.target.value)}
             placeholder="(99) 99999-9999"
-            className={errors.telefone ? "border-red-300" : ""}
+            error={!!errors.telefone}
           />
           {errors.telefone && (
             <div className="flex items-center gap-1 text-red-500 text-sm">

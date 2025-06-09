@@ -152,9 +152,11 @@ export default function Viagens() {
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
+                variant="secondary"
                 onClick={handleCreate}
                 className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 transition-all duration-300 rounded-xl font-medium text-white border-0"
                 showArrow={false}
+                icon={<Plus className="h-4 w-4" />}
               >
                 Nova Viagem
               </Button>

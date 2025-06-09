@@ -1,25 +1,14 @@
 import { Input as MTInput } from "@material-tailwind/react";
 import { type ReactNode, useId } from "react";
 
-interface CustomInputProps {
-  label?: string;
-  value?: any;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
-  placeholder?: string;
-  type?: string;
-  disabled?: boolean;
-  error?: boolean | string;
-  success?: boolean;
-  size?: "md" | "lg";
-  color?: "blue" | "red" | "green" | "gray";
-  className?: string;
-  maxLength?: number;
-  step?: number | string;
-  min?: number | string;
-  max?: number | string;
+type CustomInputProps = {
   icon?: ReactNode;
-}
+  label?: string;
+  error?: string | boolean;
+  success?: boolean;
+  className?: string;
+  [key: string]: any;
+};
 
 export const Input = ({
   icon,
@@ -32,10 +21,10 @@ export const Input = ({
   const inputId = useId();
 
   const borderColor = error
-    ? "border-red-500"
+    ? "border-red-500 focus:ring-red-500"
     : success
-    ? "border-green-500"
-    : "border-gray-300";
+    ? "border-green-500 focus:ring-green-500"
+    : "border-gray-300 focus:ring-blue-500";
 
   return (
     <div className="relative w-full">
@@ -47,8 +36,12 @@ export const Input = ({
           {label}
         </label>
       )}
-      <div className="relative flex items-center">
-        {icon && <span className="absolute left-3 text-gray-400">{icon}</span>}
+      <div className="relative">
+        {icon && (
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10 text-gray-500">
+            {icon}
+          </div>
+        )}
         <MTInput
           onResize={undefined}
           onResizeCapture={undefined}
@@ -57,9 +50,15 @@ export const Input = ({
           crossOrigin={undefined}
           id={inputId}
           {...rest}
-          className={`w-full rounded-lg border ${borderColor} bg-white py-2 px-${
-            icon ? "10" : "4"
-          } text-sm text-gray-700 placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 disabled:bg-gray-100 disabled:cursor-not-allowed ${className}`}
+          className={`w-full rounded-lg ${
+            icon ? "pl-10" : "pl-4"
+          } pr-4 ${borderColor} focus:outline-none focus:ring-2 ${className}`}
+          containerProps={{
+            className: "min-w-0",
+          }}
+          labelProps={{
+            className: "hidden",
+          }}
         />
       </div>
       {error && typeof error === "string" && (

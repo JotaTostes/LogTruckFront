@@ -12,7 +12,7 @@ import {
   Route,
   AlertCircle,
   User,
-  Percent,
+  Banknote,
 } from "lucide-react";
 import type { Motorista } from "../../types/Motorista";
 import type { Caminhao } from "../../types/Caminhao";
@@ -103,8 +103,8 @@ export default function ViagemForm({
     if (valorFrete <= 0)
       newErrors.valorFrete = "Valor do frete deve ser maior que zero";
     if (!dataSaida) newErrors.dataSaida = "Data de saída é obrigatória";
-    if (comissao < 0 || comissao > 100) {
-      newErrors.comissao = "Comissão deve estar entre 0 e 100%";
+    if (comissao < 1 || comissao > 100) {
+      newErrors.comissao = "Comissão deve estar entre 1 e 100%";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -198,14 +198,17 @@ export default function ViagemForm({
         {/* Origem */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
             Origem
           </label>
           <Input
             value={origem}
-            onChange={(e) => setOrigem(e.target.value)}
+            onChange={(e) => {
+              setOrigem(e.target.value);
+              if (errors.origem) setErrors({ ...errors, origem: "" });
+            }}
             placeholder="Digite a origem"
-            className={errors.origem ? "border-red-300" : ""}
+            error={!!errors.origem}
+            icon={<MapPin className="h-4 w-4" />}
           />
           {errors.origem && (
             <div className="flex items-center gap-1 text-red-500 text-sm">
@@ -218,14 +221,18 @@ export default function ViagemForm({
         {/* Destino */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
             Destino
           </label>
           <Input
             value={destino}
-            onChange={(e) => setDestino(e.target.value)}
+            onChange={(e) => {
+              setDestino(e.target.value);
+              if (errors.destino) setErrors({ ...errors, destino: "" });
+            }}
             placeholder="Digite o destino"
             className={errors.destino ? "border-red-300" : ""}
+            icon={<MapPin className="h-4 w-4" />}
+            error={!!errors.destino}
           />
           {errors.destino && (
             <div className="flex items-center gap-1 text-red-500 text-sm">
@@ -238,15 +245,19 @@ export default function ViagemForm({
         {/* Quilometragem */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-            <Route className="h-4 w-4" />
             Quilometragem
           </label>
           <Input
             type="number"
             value={quilometragem}
-            onChange={(e) => setQuilometragem(Number(e.target.value))}
+            onChange={(e) => {
+              setQuilometragem(Number(e.target.value));
+              if (errors.quilometragem)
+                setErrors({ ...errors, quilometragem: "" });
+            }}
             placeholder="0"
-            className={errors.quilometragem ? "border-red-300" : ""}
+            icon={<Route className="h-4 w-4" />}
+            error={!!errors.quilometragem}
           />
           {errors.quilometragem && (
             <div className="flex items-center gap-1 text-red-500 text-sm">
@@ -259,16 +270,19 @@ export default function ViagemForm({
         {/* Valor Frete */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-            <DollarSign className="h-4 w-4" />
             Valor do Frete
           </label>
           <Input
             type="number"
             value={valorFrete}
-            onChange={(e) => setValorFrete(Number(e.target.value))}
+            onChange={(e) => {
+              setValorFrete(Number(e.target.value));
+              if (errors.valorFrete) setErrors({ ...errors, valorFrete: "" });
+            }}
             placeholder="0.00"
             step="0.01"
-            className={errors.valorFrete ? "border-red-300" : ""}
+            icon={<DollarSign className="h-4 w-4" />}
+            error={!!errors.valorFrete}
           />
           {errors.valorFrete && (
             <div className="flex items-center gap-1 text-red-500 text-sm">
@@ -279,19 +293,23 @@ export default function ViagemForm({
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-            <Percent className="h-4 w-4" />
             Comissão do Motorista
           </label>
           <div className="relative">
             <Input
               type="number"
               value={comissao}
-              onChange={(e) => setComissao(Number(e.target.value))}
+              onChange={(e) => {
+                setComissao(Number(e.target.value));
+                if (errors.comissao) setErrors({ ...errors, comissao: "" });
+              }}
               placeholder="0"
               min="0"
               max="100"
               step="0.1"
               className={errors.comissao ? "border-red-300" : ""}
+              error={!!errors.comissao}
+              icon={<Banknote className="h-4 w-4" />}
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
               %
@@ -307,14 +325,17 @@ export default function ViagemForm({
         {/* Data Saída */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
             Data de Saída
           </label>
           <Input
             type="date"
             value={dataSaida}
-            onChange={(e) => setDataSaida(e.target.value)}
-            className={errors.dataSaida ? "border-red-300" : ""}
+            onChange={(e) => {
+              setDataSaida(e.target.value);
+              if (errors.dataSaida) setErrors({ ...errors, dataSaida: "" });
+            }}
+            error={!!errors.dataSaida}
+            icon={<Calendar className="h-4 w-4" />}
           />
           {errors.dataSaida && (
             <div className="flex items-center gap-1 text-red-500 text-sm">

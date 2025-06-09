@@ -18,6 +18,7 @@ import {
   RefreshCw,
   BanknoteX,
 } from "lucide-react";
+import { Button } from "../../components/ui/Button";
 
 export default function Dashboard() {
   const { dados, carregarDashboard, carregando } = useDashboardStore();
@@ -217,13 +218,15 @@ export default function Dashboard() {
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="text-sm font-medium">Dados Atualizados</span>
               </div>
-              <button
+              <Button
+                showArrow={false}
+                icon={<RefreshCw className="h-4 w-4" />}
                 onClick={handleRefresh}
+                variant="secondary"
                 className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-lg shadow-blue-500/30 transition-all duration-300 hover:shadow-blue-500/40"
               >
-                <RefreshCw className="h-4 w-4" />
                 Atualizar
-              </button>
+              </Button>
             </div>
           </div>
         </div>

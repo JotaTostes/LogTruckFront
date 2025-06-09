@@ -223,10 +223,8 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           {/* Nome Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 inset-y-0 z-10 flex items-center pointer-events-none">
-                <User className="h-4 w-4 text-slate-400" />
-              </div>
               <Input
+                icon={<User className="h-4 w-4 text-slate-400" />}
                 label="Nome Completo"
                 value={nome}
                 onChange={(e) => {
@@ -251,10 +249,8 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           {/* Email Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 inset-y-0 z-10 flex items-center pointer-events-none">
-                <Mail className="h-4 w-4 text-slate-400" />
-              </div>
               <Input
+                icon={<Mail className="h-4 w-4 text-slate-400" />}
                 label="Email"
                 type="email"
                 value={email}
@@ -280,10 +276,8 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           {/* CPF Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 inset-y-0 z-10 flex items-center pointer-events-none">
-                <CreditCard className="h-4 w-4 text-slate-400" />
-              </div>
               <Input
+                icon={<CreditCard className="h-4 w-4 text-slate-400" />}
                 label="CPF"
                 value={cpf}
                 onChange={handleCPFChange}
@@ -317,10 +311,8 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           {/* Password Field */}
           <div className="space-y-2">
             <div className="relative">
-              <div className="absolute left-3 inset-y-0 z-10 flex items-center pointer-events-none">
-                <Lock className="h-4 w-4 text-slate-400" />
-              </div>
               <Input
+                icon={<Lock className="h-4 w-4 text-slate-400" />}
                 label={
                   isEdit ? "Nova Senha (deixe vazio para manter)" : "Senha"
                 }
@@ -341,7 +333,12 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 inset-y-0 text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center"
+                className="absolute right-3 z-20 text-gray-500 hover:text-gray-700 transition-colors p-1 flex items-center justify-center"
+                style={{
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  marginTop: "12px", // Compensa o espaço do label
+                }}
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4" />
@@ -363,7 +360,6 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
               </div>
             )}
           </div>
-
           {/* Role Selection */}
           <div className="space-y-3">
             <label className="text-sm font-medium text-slate-700 flex items-center gap-2">

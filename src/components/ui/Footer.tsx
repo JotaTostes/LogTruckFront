@@ -1,9 +1,10 @@
 import React from "react";
+import { systemTheme } from "../../config/systemTheme";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="w-full bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 dark:bg-gradient-to-r dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white">
+    <footer className={systemTheme.colors.background.footer}>
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center">
           <h3 className="text-xl font-bold mb-4 text-white">
