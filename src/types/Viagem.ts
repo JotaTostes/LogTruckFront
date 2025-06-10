@@ -12,9 +12,9 @@ export type Viagem = {
   quilometragem: number;
   dataSaida: string;
   dataRetorno?: string;
-  status?: number; // 1: Planejada, 2: EmAndamento, 3: Concluída, 4: Cancelada
+  status: number; // 1: Planejada, 2: EmAndamento, 3: Concluída, 4: Cancelada
   valorFrete: number;
-  comissao: number; // Percentual de comissão sobre o valor do frete
+  comissao: Comissao; // Percentual de comissão sobre o valor do frete
 };
 
 export type ViagemCompletas = Viagem & {

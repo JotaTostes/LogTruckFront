@@ -1,12 +1,14 @@
 import { create } from "zustand";
 import api from "../utils/api";
-import type { Motorista } from "../types/Motorista";
+import type { Motorista, MotoristaCompleto } from "../types/Motorista";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 
 interface MotoristaStore {
   motoristas: Motorista[];
+  motoristasCompletos: MotoristaCompleto[];
   carregarMotoristas: () => Promise<void>;
+  carregarMotoristasCompletos: () => Promise<void>;
   fetchMotoristas: (filtro?: string) => Promise<void>;
   adicionarMotorista: (motorista: Motorista) => Promise<void>;
   editarMotorista: (id: string, motorista: Partial<Motorista>) => Promise<void>;
@@ -15,6 +17,7 @@ interface MotoristaStore {
 
 export const useMotoristaStore = create<MotoristaStore>((set) => ({
   motoristas: [],
+  motoristasCompletos: [],
   carregarMotoristas: async () => {
     try {
       const { data } = await api.get<Motorista[]>("/motorista");
@@ -22,6 +25,14 @@ export const useMotoristaStore = create<MotoristaStore>((set) => ({
     } catch (err) {
       toast.error("Erro ao carregar motoristas");
     }
+  },
+  carregarMotoristasCompletos: async () => {
+    try {
+      const { data } = await api.get<MotoristaCompleto[]>(
+        "motorista/motoristas-completos"
+      );
+      set({ motoristasCompletos: data });
+    } catch (err) {}
   },
   fetchMotoristas: async (filtro) => {
     try {

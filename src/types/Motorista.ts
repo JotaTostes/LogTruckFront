@@ -1,3 +1,7 @@
+import type { Comissao } from "./Comissao";
+import { type Usuario } from "./Usuario";
+import type { Viagem } from "./Viagem";
+
 export type Motorista = {
   id?: string;
   usuarioId: string;
@@ -7,4 +11,9 @@ export type Motorista = {
   telefone: string;
   ativo: boolean;
   dataNascimento: string;
+};
+
+export type MotoristaCompleto = Motorista & {
+  viagens?: Viagem[];
+  comissoes?: Comissao[];
 };

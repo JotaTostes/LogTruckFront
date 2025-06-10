@@ -17,16 +17,24 @@ import {
   motoristaColumns,
 } from "../../layouts/Table/MotoristaTableConfig";
 
-import type { Motorista } from "../../types/Motorista";
+import type { Motorista, MotoristaCompleto } from "../../types/Motorista";
+import { MotoristaDetailsModal } from "./MotoristaDetailModal";
 
 export default function Motoristas() {
-  const { motoristas, carregarMotoristas, removerMotorista } =
-    useMotoristaStore();
+  const {
+    motoristas,
+    motoristasCompletos,
+    carregarMotoristas,
+    removerMotorista,
+    carregarMotoristasCompletos,
+  } = useMotoristaStore();
   const { usuariosMotoristas, carregarUsuariosMotoristas } = useUsuarioStore();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Motorista | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selectedMotoristaForDetails, setSelectedViagemParaCustos] =
+    useState<MotoristaCompleto | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -34,6 +42,7 @@ export default function Motoristas() {
       try {
         await carregarMotoristas();
         await carregarUsuariosMotoristas();
+        await carregarMotoristasCompletos();
       } finally {
         setLoading(false);
       }
@@ -180,9 +189,13 @@ export default function Motoristas() {
               </div>
             ) : (
               <DataTable
-                data={motoristas}
+                data={motoristasCompletos}
                 columns={motoristaColumns}
-                actions={createMotoristaActions(handleEdit, handleDelete)}
+                actions={createMotoristaActions(
+                  handleEdit,
+                  handleDelete,
+                  setSelectedViagemParaCustos
+                )}
                 title="Motoristas Cadastrados"
                 subtitle="Gerencie todos os motoristas do sistema"
                 loading={loading}
@@ -255,6 +268,12 @@ export default function Motoristas() {
         onConfirm={confirmDelete}
         title="Excluir motorista"
         description="Tem certeza que deseja excluir este motorista?"
+      />
+
+      <MotoristaDetailsModal
+        open={!!selectedMotoristaForDetails}
+        onClose={() => setSelectedViagemParaCustos(null)}
+        motorista={selectedMotoristaForDetails}
       />
     </div>
   );

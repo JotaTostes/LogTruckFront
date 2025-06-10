@@ -2,6 +2,7 @@ import { Edit, Trash2, DollarSign, Clock, Eye } from "lucide-react";
 import type { Column, ActionButton } from "../../components/ui/DataTable";
 import type { ViagemCompletas } from "../../types/Viagem";
 import { formatarPlaca } from "../../utils/formatadores";
+import { getStatusText } from "../../utils/status";
 
 export const createViagemActions = (
   onEdit: (viagem: ViagemCompletas) => void,
@@ -70,13 +71,13 @@ export const viagemColumns: Column<ViagemCompletas>[] = [
   {
     key: "quilometragem",
     label: "Quilometragem",
-    width: "10%",
+    width: "5%",
     render: (item) => `${item.quilometragem} km`,
   },
   {
     key: "valorFrete",
     label: "Valor Frete",
-    width: "10%",
+    width: "5%",
     render: (item) =>
       item.valorFrete.toLocaleString("pt-BR", {
         style: "currency",
@@ -88,5 +89,12 @@ export const viagemColumns: Column<ViagemCompletas>[] = [
     label: "Data Saída",
     width: "10%",
     render: (item) => item.dataSaida,
+  },
+  {
+    key: "status",
+    label: "Status",
+    width: "10%",
+    filtrable: true,
+    render: (item) => getStatusText(item.status),
   },
 ];
