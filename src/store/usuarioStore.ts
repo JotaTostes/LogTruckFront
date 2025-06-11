@@ -40,7 +40,6 @@ export const useUsuarioStore = create<UsuarioStore>((set, get) => ({
   },
   adicionarUsuario: async (novoUsuario) => {
     try {
-      // Se vier como string, converta para número (caso ainda não tenha sido convertido no form)
       const roleMap = { Administrador: 1, Motorista: 2, Operador: 3 };
       const usuarioParaEnviar = {
         ...novoUsuario,

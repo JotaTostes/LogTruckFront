@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import type { Usuario, UsuarioDto } from "../../types/Usuario";
 import type { Motorista } from "../../types/Motorista";
+import { formatarTelefone } from "../../utils/formatadores";
 
 type MotoristaFormProps = {
   usuariosMotoristas: UsuarioDto[];
@@ -63,10 +64,19 @@ export default function MotoristaForm({
       });
     }
   };
+
+  const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatarTelefone(e.target.value);
+    setTelefone(formatted);
+    if (errors.telefone) {
+      setErrors({ ...errors, telefone: "" });
+    }
+  };
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     if (!usuarioId) newErrors.usuarioId = "Selecione o usuário";
     if (!cnh.trim()) newErrors.cnh = "CNH é obrigatória";
+    if (cnh.length < 11) newErrors.cnh = "CNH deve ter 11 dígitos";
     if (!dataNascimento)
       newErrors.dataNascimento = "Data de nascimento é obrigatória";
     if (!telefone.trim()) newErrors.telefone = "Telefone é obrigatório";
@@ -83,43 +93,63 @@ export default function MotoristaForm({
     }
 
     setLoading(true);
+
     try {
+      const telefoneNumerico = telefone.replace(/\D/g, "");
+
+      // Dados base para criação/edição
+      const dadosMotorista = {
+        nome: nome.trim(),
+        dataNascimento,
+        cnh: cnh.trim(),
+        telefone: telefoneNumerico,
+      };
+
       if (isEdit && motorista?.id) {
+        // Atualização de motorista existente
         await editarMotorista(motorista.id, {
           id: motorista.id,
-          nome: nome.trim(),
-          dataNascimento,
-          cnh: cnh.trim(),
-          telefone: telefone.trim(),
+          ...dadosMotorista,
         });
         toast.success("Motorista atualizado com sucesso!");
       } else {
         await adicionarMotorista({
           usuarioId,
-          cnh: cnh.trim(),
-          dataNascimento,
-          telefone: telefone.trim(),
+          ...dadosMotorista,
           nome: "",
           cpf: "",
           ativo: true,
         });
         toast.success("Motorista cadastrado com sucesso!");
+
+        resetForm();
       }
 
-      if (!isEdit) {
-        setNome("");
-        setAtivo(true);
+      if (onSuccess && typeof onSuccess === "function") {
+        onSuccess();
       }
+    } catch (err: any) {
+      let errorMessage = isEdit
+        ? "Erro ao atualizar motorista."
+        : "Erro ao cadastrar motorista.";
 
-      onSuccess?.();
-    } catch (err) {
-      console.error(err);
-      toast.error(
-        isEdit ? "Erro ao atualizar motorista." : "Erro ao cadastrar motorista."
-      );
+      if (err?.message) {
+        errorMessage += ` ${err.message}`;
+      } else if (err?.response?.data?.message) {
+        errorMessage += ` ${err.response.data.message}`;
+      }
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
+  };
+
+  const resetForm = () => {
+    setNome("");
+    setAtivo(true);
+    setCnh("");
+    setTelefone("");
+    setDataNascimento("");
   };
 
   return (
@@ -134,7 +164,7 @@ export default function MotoristaForm({
           {isEdit ? (
             <Input
               value={nome}
-              onChange={(e) => setNome(e.target.value)}
+              onChange={(e: any) => setNome(e.target.value)}
               placeholder="Nome do motorista"
               className={errors.nome ? "border-red-300" : ""}
             />
@@ -169,9 +199,10 @@ export default function MotoristaForm({
           <Input
             icon={<IdCard className="h-4 w-4" />}
             value={cnh}
-            onChange={(e) => setCnh(e.target.value)}
+            onChange={(e: any) => setCnh(e.target.value)}
             placeholder="Digite o número da CNH"
             error={!!errors.cnh}
+            maxLength={11}
           />
           {errors.cnh && (
             <div className="flex items-center gap-1 text-red-500 text-sm">
@@ -190,7 +221,7 @@ export default function MotoristaForm({
             icon={<Calendar className="h-4 w-4" />}
             type="date"
             value={dataNascimento}
-            onChange={(e) => setDataNascimento(e.target.value)}
+            onChange={(e: any) => setDataNascimento(e.target.value)}
             error={!!errors.dataNascimento}
           />
           {errors.dataNascimento && (
@@ -209,8 +240,8 @@ export default function MotoristaForm({
           <Input
             icon={<Phone className="h-4 w-4" />}
             value={telefone}
-            onChange={(e) => setTelefone(e.target.value)}
-            placeholder="(99) 99999-9999"
+            onChange={handleTelefoneChange}
+            placeholder="(99)99999-9999"
             error={!!errors.telefone}
           />
           {errors.telefone && (

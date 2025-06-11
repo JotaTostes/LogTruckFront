@@ -22,4 +22,7 @@ export type ViagemCompletas = Viagem & {
   caminhao: Caminhao;
   custos: CustoViagem[];
   comissao?: Comissao;
+  motoristaNome: string;
+  caminhaoPlaca: string;
+  statusNome: string;
 };

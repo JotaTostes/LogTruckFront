@@ -4,7 +4,7 @@ export type Usuario = {
   nome: string;
   email: string;
   cpf: string;
-  senhaHash?: string;
+  senha?: string;
   role: number;
   ativo: boolean;
 };
@@ -14,7 +14,7 @@ export type UsuarioDto = {
   nome: string;
   email: string;
   cpf: string;
-  senhaHash?: string;
+  senhah?: string;
   role: number;
   ativo: boolean;
   motorista?: Motorista | null;

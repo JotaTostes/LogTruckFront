@@ -48,12 +48,9 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
       setEmail(usuario.email);
       setCpf(usuario.cpf);
 
-      // Se o role já vem como string, use diretamente
-      // Se vier como número, converta usando o mapa inverso
       let roleString: "Administrador" | "Operador" | "Motorista";
 
       if (typeof usuario.role === "string") {
-        // Role já é string, valide se é um valor válido
         if (["Administrador", "Operador", "Motorista"].includes(usuario.role)) {
           roleString = usuario.role as
             | "Administrador"
@@ -63,7 +60,6 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
           roleString = "Operador"; // fallback
         }
       } else {
-        // Role é número, converta para string
         const roleMapInverse = {
           1: "Administrador",
           2: "Motorista",
@@ -97,6 +93,16 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
     return Object.keys(newErrors).length === 0;
   };
 
+  const resetForm = () => {
+    setNome("");
+    setEmail("");
+    setCpf("");
+    setSenha("");
+    setRole("Operador");
+    setAtivo(true);
+    setErrors({});
+  };
+
   const formatCPF = (value: string) => {
     const cleaned = value.replace(/\D/g, "");
     return cleaned
@@ -123,50 +129,46 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
     }
 
     setLoading(true);
+
     try {
+      const userData = {
+        nome: nome.trim(),
+        email: email.trim().toLowerCase(),
+        cpf: cpf.replace(/\D/g, ""),
+        role: roleMap[role],
+        ativo,
+        senha: senha.trim(),
+      };
       if (isEdit && usuario?.id) {
         await editarUsuario(usuario.id, {
-          nome: nome.trim(),
-          email: email.trim().toLowerCase(),
-          cpf: cpf.replace(/\D/g, ""),
-          role: roleMap[role],
-          ativo,
-          senhaHash: senha,
-          id: "",
+          ...userData,
+          id: usuario.id,
         });
         toast.success("Usuário atualizado com sucesso!");
       } else {
-        await adicionarUsuario({
-          nome: nome.trim(),
-          email: email.trim().toLowerCase(),
-          cpf: cpf.replace(/\D/g, ""),
-          role: roleMap[role],
-          ativo,
-          senhaHash: senha,
-        });
+        await adicionarUsuario(userData);
         toast.success("Usuário cadastrado com sucesso!");
+        resetForm();
       }
 
-      if (!isEdit) {
-        setNome("");
-        setEmail("");
-        setCpf("");
-        setSenha("");
-        setRole("Operador");
-        setAtivo(true);
+      if (onSuccess && typeof onSuccess === "function") {
+        onSuccess();
       }
+    } catch (err: any) {
+      let errorMessage = isEdit
+        ? "Erro ao atualizar usuário."
+        : "Erro ao cadastrar usuário.";
 
-      onSuccess?.();
-    } catch (err) {
-      console.error(err);
-      toast.error(
-        isEdit ? "Erro ao atualizar usuário." : "Erro ao cadastrar usuário."
-      );
+      if (err?.message) {
+        errorMessage += ` ${err.message}`;
+      } else if (err?.response?.data?.message) {
+        errorMessage += ` ${err.response.data.message}`;
+      }
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
-
   const getRoleColor = (roleValue: string) => {
     switch (roleValue) {
       case "Administrador":
@@ -227,7 +229,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
                 icon={<User className="h-4 w-4 text-slate-400" />}
                 label="Nome Completo"
                 value={nome}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setNome(e.target.value);
                   if (errors.nome) setErrors({ ...errors, nome: "" });
                 }}
@@ -254,7 +256,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
                 label="Email"
                 type="email"
                 value={email}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setEmail(e.target.value);
                   if (errors.email) setErrors({ ...errors, email: "" });
                 }}
@@ -318,7 +320,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
                 }
                 type={showPassword ? "text" : "password"}
                 value={senha}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setSenha(e.target.value);
                   if (errors.senha) setErrors({ ...errors, senha: "" });
                 }}

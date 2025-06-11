@@ -12,6 +12,7 @@ interface ViagemStore {
   editarViagem: (id: string, viagem: Partial<Viagem>) => Promise<void>;
   editarStatusViagem: (id: string, status: number) => Promise<void>;
   removerViagem: (id: string) => Promise<void>;
+  aprovarViagem: (id: string) => Promise<void>;
 }
 
 export enum ViagemStatus {
@@ -57,6 +58,11 @@ export const useViagemStore = create<ViagemStore>((set) => ({
     } catch (error) {
       throw error;
     }
+  },
+  aprovarViagem: async (id: string) => {
+    await api.put(`/viagem/${id}/aprovar`);
+    const response = await api.get("/viagens");
+    set({ viagensCompletas: response.data });
   },
   editarStatusViagem: async (id: string, status: number) => {
     try {

@@ -12,6 +12,7 @@ import {
   DollarSign,
   ChevronRight,
   Receipt,
+  MapPinCheck,
 } from "lucide-react";
 import { systemTheme } from "../../config/systemTheme";
 
@@ -25,29 +26,89 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
   const { pathname } = useLocation();
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
-  const navItems = [
+  const navSections = [
     {
-      label: "Dashboard",
-      to: "/dashboard",
-      icon: <ChartColumnIncreasing size={18} />,
-    },
-    { label: "Usuários", to: "/usuarios", icon: <Users size={18} /> },
-    { label: "Motoristas", to: "/motoristas", icon: <IdCard size={18} /> },
-    { label: "Viagens", to: "/viagens", icon: <MapPinned size={18} /> },
-    { label: "Caminhões", to: "/caminhoes", icon: <Truck size={18} /> },
-    {
-      label: "Centro de Custos",
-      icon: <DollarSign size={18} />,
-      submenu: [
+      title: "Principal",
+      items: [
         {
-          label: "Comissões a Pagar",
-          to: "/custos/comissoes",
-          icon: <Receipt size={16} />,
+          label: "Dashboard",
+          to: "/dashboard",
+          icon: <ChartColumnIncreasing size={18} />,
+          description: "Visão geral do sistema",
         },
-        // Adicione mais itens do submenu aqui
       ],
     },
-    { label: "Configurações", to: "/config", icon: <Settings size={18} /> },
+    {
+      title: "Gestão",
+      items: [
+        {
+          label: "Usuários",
+          to: "/usuarios",
+          icon: <Users size={18} />,
+          description: "Gerencie os usuários do sistema",
+        },
+        {
+          label: "Motoristas",
+          to: "/motoristas",
+          icon: <IdCard size={18} />,
+          description: "Lista e detalhes dos motoristas",
+        },
+        {
+          label: "Viagens",
+          icon: <MapPinned size={18} />,
+          description: "Gerencie e aprove viagens",
+          submenu: [
+            {
+              label: "Listagem de Viagens",
+              to: "/viagens",
+              icon: <MapPinned size={16} />,
+              description: "Lista e gerenciamento de viagens",
+            },
+            {
+              label: "Aprovar Viagens",
+              to: "/viagens/aprovar",
+              icon: <MapPinCheck size={16} />,
+              description: "Aprovação de viagens em planejamento",
+            },
+          ],
+        },
+        {
+          label: "Caminhões",
+          to: "/caminhoes",
+          icon: <Truck size={18} />,
+          description: "Gerencie os caminhões cadastrados",
+        },
+      ],
+    },
+    {
+      title: "Financeiro",
+      items: [
+        {
+          label: "Centro de Custos",
+          icon: <DollarSign size={18} />,
+          description: "Controle financeiro e custos",
+          submenu: [
+            {
+              label: "Comissões a Pagar",
+              to: "/custos/comissoes",
+              icon: <Receipt size={16} />,
+              description: "Gerencie as comissões pendentes",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: "Configurações",
+      items: [
+        {
+          label: "Configurações",
+          to: "/config",
+          icon: <Settings size={18} />,
+          description: "Ajuste as configurações do sistema",
+        },
+      ],
+    },
   ];
 
   return (
@@ -69,70 +130,84 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
             isHovered ? "opacity-100" : "opacity-0"
           )}
         >
-          <nav className="flex flex-col gap-2">
-            {navItems.map((item) => (
-              <div key={item.label}>
-                {item.submenu ? (
-                  <div
-                    className="relative"
-                    onMouseEnter={() => setOpenSubmenu(item.label)}
-                    onMouseLeave={() => setOpenSubmenu(null)}
-                  >
-                    <div
-                      className={cn(
-                        "flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200 cursor-pointer",
-                        openSubmenu === item.label && "bg-white bg-opacity-20"
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="flex-shrink-0">{item.icon}</span>
-                        <span className="whitespace-nowrap">{item.label}</span>
-                      </div>
-                      <ChevronRight
-                        size={16}
-                        className={cn(
-                          "transition-transform duration-200",
-                          openSubmenu === item.label && "transform rotate-90"
-                        )}
-                      />
-                    </div>
-                    {/* Submenu */}
-                    {openSubmenu === item.label && (
-                      <div className="pl-4 mt-1 space-y-1">
-                        {item.submenu.map((subItem) => (
-                          <Link
-                            key={subItem.to}
-                            to={subItem.to}
+          <nav className="flex flex-col gap-4">
+            {navSections.map((section) => (
+              <div key={section.title}>
+                <h3 className="text-sm font-semibold text-white/60 uppercase mb-2">
+                  {section.title}
+                </h3>
+                <div className="flex flex-col gap-2">
+                  {section.items.map((item) => (
+                    <div key={item.label}>
+                      {item.submenu ? (
+                        <div
+                          className="relative"
+                          onMouseEnter={() => setOpenSubmenu(item.label)}
+                          onMouseLeave={() => setOpenSubmenu(null)}
+                        >
+                          <div
                             className={cn(
-                              "flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200 hover:translate-x-1",
-                              pathname === subItem.to &&
-                                "bg-white bg-opacity-20 font-semibold"
+                              "flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200 cursor-pointer",
+                              openSubmenu === item.label &&
+                                "bg-white bg-opacity-20"
                             )}
                           >
-                            <span className="flex-shrink-0">
-                              {subItem.icon}
-                            </span>
-                            <span className="whitespace-nowrap">
-                              {subItem.label}
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <Link
-                    to={item.to!}
-                    className={cn(
-                      "flex items-center gap-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200 hover:translate-x-1",
-                      pathname.startsWith(item.to!) &&
-                        "bg-white bg-opacity-20 font-semibold"
-                    )}
-                  >
-                    <span className="flex-shrink-0">{item.icon}</span>
-                    <span className="whitespace-nowrap">{item.label}</span>
-                  </Link>
-                )}
+                            <div className="flex items-center gap-3">
+                              <span className="flex-shrink-0">{item.icon}</span>
+                              <span className="whitespace-nowrap">
+                                {item.label}
+                              </span>
+                            </div>
+                            <ChevronRight
+                              size={16}
+                              className={cn(
+                                "transition-transform duration-200",
+                                openSubmenu === item.label &&
+                                  "transform rotate-90"
+                              )}
+                            />
+                          </div>
+                          {openSubmenu === item.label && (
+                            <div className="pl-4 mt-1 space-y-1">
+                              {item.submenu.map((subItem) => (
+                                <Link
+                                  key={subItem.to}
+                                  to={subItem.to}
+                                  className={cn(
+                                    "flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200 hover:translate-x-1",
+                                    pathname === subItem.to &&
+                                      "bg-white bg-opacity-20 font-semibold"
+                                  )}
+                                >
+                                  <span className="flex-shrink-0">
+                                    {subItem.icon}
+                                  </span>
+                                  <span className="whitespace-nowrap">
+                                    {subItem.label}
+                                  </span>
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <Link
+                          to={item.to!}
+                          className={cn(
+                            "flex items-center gap-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-all duration-200 hover:translate-x-1",
+                            pathname.startsWith(item.to!) &&
+                              "bg-white bg-opacity-20 font-semibold"
+                          )}
+                        >
+                          <span className="flex-shrink-0">{item.icon}</span>
+                          <span className="whitespace-nowrap">
+                            {item.label}
+                          </span>
+                        </Link>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </nav>

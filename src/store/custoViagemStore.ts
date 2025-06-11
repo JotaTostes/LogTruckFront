@@ -17,8 +17,11 @@ export const useCustoViagemStore = create<CustoViagemStore>((set) => ({
     try {
       await api.post("/custoviagem", custoData);
       toast.success("Custo adicionado com sucesso!");
-    } catch (error) {
-      toast.error("Erro ao adicionar custo na viagem");
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.errors?.[0] ||
+        "Erro ao adicionar custo na viagem";
+      toast.error(errorMessage);
       throw error;
     }
   },

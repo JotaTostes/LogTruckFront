@@ -54,6 +54,7 @@ export default function Viagens() {
         await carregarViagensCompletas();
         await carregarMotoristas();
         await carregarCaminhoes();
+        console.log("Viagens carregadas:", viagensCompletas);
       } finally {
         setLoading(false);
       }
