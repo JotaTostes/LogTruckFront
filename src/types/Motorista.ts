@@ -1,5 +1,4 @@
 import type { Comissao } from "./Comissao";
-import { type Usuario } from "./Usuario";
 import type { Viagem } from "./Viagem";
 
 export type Motorista = {

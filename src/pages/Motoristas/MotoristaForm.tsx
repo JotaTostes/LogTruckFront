@@ -111,7 +111,6 @@ export default function MotoristaForm({
           id: motorista.id,
           ...dadosMotorista,
         });
-        toast.success("Motorista atualizado com sucesso!");
       } else {
         await adicionarMotorista({
           usuarioId,
@@ -120,7 +119,6 @@ export default function MotoristaForm({
           cpf: "",
           ativo: true,
         });
-        toast.success("Motorista cadastrado com sucesso!");
 
         resetForm();
       }

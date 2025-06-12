@@ -16,6 +16,7 @@ import { StatusUpdateModal } from "./StatusUpdateModal";
 import { useViagemStore } from "../../store/viagemStore";
 import { useMotoristaStore } from "../../store/motoristaStore";
 import { useCaminhaoStore } from "../../store/caminhaoStore";
+import { caminhaoController } from "../../controllers/caminhaoController";
 
 import {
   createViagemActions,
@@ -33,8 +34,10 @@ export default function Viagens() {
     editarStatusViagem,
   } = useViagemStore();
   const { motoristas, carregarMotoristas } = useMotoristaStore();
-  const { caminhoes, carregarCaminhoes } = useCaminhaoStore();
-
+  const caminhoes = useCaminhaoStore((state) => state.caminhoes);
+  const caminhoesCompletos = useCaminhaoStore(
+    (state) => state.caminhoesCompletos
+  );
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Viagem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,14 +56,22 @@ export default function Viagens() {
       try {
         await carregarViagensCompletas();
         await carregarMotoristas();
-        await carregarCaminhoes();
-        console.log("Viagens carregadas:", viagensCompletas);
+        loadCaminhoes();
       } finally {
         setLoading(false);
       }
     };
     loadData();
-  }, [carregarViagensCompletas, carregarMotoristas, carregarCaminhoes]);
+  }, [carregarViagensCompletas, carregarMotoristas]);
+
+  const loadCaminhoes = async () => {
+    setLoading(true);
+    try {
+      await caminhaoController.fetchCaminhoes();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleStatusUpdate = (viagem: ViagemCompletas) => {
     setStatusUpdateId(viagem.id ?? null);

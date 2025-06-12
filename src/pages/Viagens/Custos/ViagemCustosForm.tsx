@@ -123,7 +123,7 @@ export default function ViagemCustosForm({ viagemId, onSuccess }: Props) {
           <Input
             type="number"
             value={valor}
-            onChange={(e) => setValor(Number(e.target.value))}
+            onChange={(e: any) => setValor(Number(e.target.value))}
             placeholder="0.00"
             step="0.01"
             className={errors.valor ? "border-red-300" : ""}
@@ -144,7 +144,7 @@ export default function ViagemCustosForm({ viagemId, onSuccess }: Props) {
           </label>
           <Input
             value={descricao}
-            onChange={(e) => setDescricao(e.target.value)}
+            onChange={(e: any) => setDescricao(e.target.value)}
             placeholder="Digite a descrição"
             className={errors.descricao ? "border-red-300" : ""}
           />
@@ -165,7 +165,7 @@ export default function ViagemCustosForm({ viagemId, onSuccess }: Props) {
           <Input
             type="date"
             value={dataRegistro}
-            onChange={(e) => setDataRegistro(e.target.value)}
+            onChange={(e: any) => setDataRegistro(e.target.value)}
             className={errors.dataRegistro ? "border-red-300" : ""}
           />
           {errors.dataRegistro && (

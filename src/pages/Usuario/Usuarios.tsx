@@ -16,25 +16,27 @@ import {
 } from "../../layouts/Table/UsuarioTableConfig";
 
 import type { Usuario } from "../../types/Usuario";
+import { usuarioController } from "../../controllers/usuarioController";
 
 export default function Usuarios() {
-  const { usuarios, carregarUsuarios, removerUsuario } = useUsuarioStore();
+  const usuarios = useUsuarioStore((state) => state.usuarios);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        await carregarUsuarios();
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, [carregarUsuarios]);
+    loadUsuarios();
+  }, []);
+
+  const loadUsuarios = async () => {
+    setLoading(true);
+    try {
+      await usuarioController.fetchUsuarios();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCreate = () => {
     setSelected(null);
@@ -53,11 +55,8 @@ export default function Usuarios() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      await removerUsuario(deleteId);
-      toast.success("Usuário removido com sucesso!");
-      await carregarUsuarios();
+      await usuarioController.deleteUsuario(deleteId);
     } catch (error) {
-      toast.error("Erro ao remover usuário");
     } finally {
       setDeleteId(null);
     }
@@ -65,7 +64,7 @@ export default function Usuarios() {
 
   const handleSuccess = () => {
     setOpen(false);
-    carregarUsuarios();
+    loadUsuarios();
   };
 
   return (

@@ -35,6 +35,7 @@ export default function AprovarViagens() {
     try {
       if (viagem.id) {
         await aprovarViagem(viagem.id);
+        // loadViagens();
       } else {
         toast.error("Viagem não encontrada para aprovação.");
       }

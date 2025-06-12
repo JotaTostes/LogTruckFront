@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { useUsuarioStore } from "../../store/usuarioStore";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { MTSwitch as Switch } from "../../components/ui/mt/MTSwitch";
@@ -17,7 +16,12 @@ import {
   EyeOff,
   Truck,
 } from "lucide-react";
-import type { Usuario } from "../../types/Usuario";
+import type {
+  CreateUsuarioDto,
+  UpdateUsuarioDto,
+  Usuario,
+} from "../../types/Usuario";
+import { usuarioController } from "../../controllers/usuarioController";
 
 export type UsuarioFormProps = {
   usuario?: Usuario | null;
@@ -27,7 +31,6 @@ export type UsuarioFormProps = {
 const roleMap = { Administrador: 1, Motorista: 2, Operador: 3 };
 
 export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
-  const { adicionarUsuario, editarUsuario } = useUsuarioStore();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
@@ -47,32 +50,10 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
       setNome(usuario.nome);
       setEmail(usuario.email);
       setCpf(usuario.cpf);
-
-      let roleString: "Administrador" | "Operador" | "Motorista";
-
-      if (typeof usuario.role === "string") {
-        if (["Administrador", "Operador", "Motorista"].includes(usuario.role)) {
-          roleString = usuario.role as
-            | "Administrador"
-            | "Operador"
-            | "Motorista";
-        } else {
-          roleString = "Operador"; // fallback
-        }
-      } else {
-        const roleMapInverse = {
-          1: "Administrador",
-          2: "Motorista",
-          3: "Operador",
-        };
-        roleString = (roleMapInverse[
-          usuario.role as keyof typeof roleMapInverse
-        ] || "Operador") as "Administrador" | "Operador" | "Motorista";
-      }
-
-      setRole(roleString);
+      setRole(
+        usuario.role.toString() as "Administrador" | "Operador" | "Motorista"
+      );
       setAtivo(usuario.ativo);
-      setSenha("");
     }
   }, [usuario]);
 
@@ -127,48 +108,42 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
       toast.error("Por favor, corrija os campos destacados");
       return;
     }
-
     setLoading(true);
-
     try {
-      const userData = {
-        nome: nome.trim(),
-        email: email.trim().toLowerCase(),
-        cpf: cpf.replace(/\D/g, ""),
-        role: roleMap[role],
-        ativo,
-        senha: senha.trim(),
-      };
+      const usuarioData: CreateUsuarioDto | UpdateUsuarioDto =
+        isEdit && usuario?.id
+          ? {
+              id: usuario.id,
+              nome: nome.trim(),
+              email: email.trim().toLowerCase(),
+              senha: senha.trim() || "",
+              cpf: cpf.replace(/\D/g, ""),
+              role: roleMap[role],
+            }
+          : {
+              nome: nome.trim(),
+              email: email.trim().toLowerCase(),
+              senha: senha.trim() || "",
+              cpf: cpf.replace(/\D/g, ""),
+              role: roleMap[role],
+            };
+
       if (isEdit && usuario?.id) {
-        await editarUsuario(usuario.id, {
-          ...userData,
-          id: usuario.id,
-        });
-        toast.success("Usuário atualizado com sucesso!");
+        await usuarioController.editUsuario(
+          usuario.id,
+          usuarioData as UpdateUsuarioDto
+        );
       } else {
-        await adicionarUsuario(userData);
-        toast.success("Usuário cadastrado com sucesso!");
+        await usuarioController.addUsuario(usuarioData as CreateUsuarioDto);
         resetForm();
       }
-
-      if (onSuccess && typeof onSuccess === "function") {
-        onSuccess();
-      }
-    } catch (err: any) {
-      let errorMessage = isEdit
-        ? "Erro ao atualizar usuário."
-        : "Erro ao cadastrar usuário.";
-
-      if (err?.message) {
-        errorMessage += ` ${err.message}`;
-      } else if (err?.response?.data?.message) {
-        errorMessage += ` ${err.response.data.message}`;
-      }
-      toast.error(errorMessage);
+      onSuccess();
+    } catch (error) {
     } finally {
       setLoading(false);
     }
   };
+
   const getRoleColor = (roleValue: string) => {
     switch (roleValue) {
       case "Administrador":
@@ -339,7 +314,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
                 style={{
                   top: "50%",
                   transform: "translateY(-50%)",
-                  marginTop: "12px", // Compensa o espaço do label
+                  marginTop: "12px",
                 }}
               >
                 {showPassword ? (

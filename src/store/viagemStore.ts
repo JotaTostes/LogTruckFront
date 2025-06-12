@@ -46,8 +46,10 @@ export const useViagemStore = create<ViagemStore>((set) => ({
         ...viagem,
         status: ViagemStatus.PLANEJADA,
       });
-    } catch (error) {
-      console.error("Erro ao adicionar viagem:", error);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.errors?.[0] || "Erro ao cadastrar nova vaigem";
+      toast.error(errorMessage);
       throw error;
     }
   },
@@ -60,9 +62,18 @@ export const useViagemStore = create<ViagemStore>((set) => ({
     }
   },
   aprovarViagem: async (id: string) => {
-    await api.put(`/viagem/${id}/aprovar`);
-    const response = await api.get("/viagens");
-    set({ viagensCompletas: response.data });
+    try {
+      await api.put(`/viagem/${id}/aprovar`);
+      set((state) => ({
+        viagensCompletas: state.viagensCompletas.map((v) =>
+          v.id === id ? { ...v } : v
+        ),
+      }));
+      toast.success("Viagem aprovada com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao aprovar a viagem");
+      throw error;
+    }
   },
   editarStatusViagem: async (id: string, status: number) => {
     try {
