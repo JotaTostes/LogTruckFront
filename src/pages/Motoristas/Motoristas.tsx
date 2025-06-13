@@ -19,16 +19,17 @@ import {
 
 import type { Motorista, MotoristaCompleto } from "../../types/Motorista";
 import { MotoristaDetailsModal } from "./MotoristaDetailModal";
+import { motoristaController } from "../../controllers/motoristaController";
+import { usuarioController } from "../../controllers/usuarioController";
 
 export default function Motoristas() {
-  const {
-    motoristas,
-    motoristasCompletos,
-    carregarMotoristas,
-    removerMotorista,
-    carregarMotoristasCompletos,
-  } = useMotoristaStore();
-  const { usuariosMotoristas, carregarUsuariosMotoristas } = useUsuarioStore();
+  const motoristas = useMotoristaStore((state) => state.motoristas);
+  const motoristasCompletos = useMotoristaStore(
+    (state) => state.motoristasCompletos
+  );
+  const usuariosMotoristas = useUsuarioStore(
+    (state) => state.usuariosMotoristas
+  );
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Motorista | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,15 +41,33 @@ export default function Motoristas() {
     const loadData = async () => {
       setLoading(true);
       try {
-        await carregarMotoristas();
-        await carregarUsuariosMotoristas();
-        await carregarMotoristasCompletos();
+        await loadMotoristas();
+        await loadUsuariosMotoristas();
       } finally {
         setLoading(false);
       }
     };
     loadData();
   }, []);
+
+  const loadMotoristas = async () => {
+    setLoading(true);
+    try {
+      await motoristaController.fetchMotoristas();
+      await motoristaController.fetchMotoristasCompletos();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadUsuariosMotoristas = async () => {
+    setLoading(true);
+    try {
+      await usuarioController.fetchUsuariosMotoristas();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCreate = () => {
     setSelected(null);
@@ -67,11 +86,8 @@ export default function Motoristas() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      await removerMotorista(deleteId);
-      toast.success("Motorista removido com sucesso!");
-      carregarMotoristas();
+      motoristaController.deleteMotorista(deleteId);
     } catch (error) {
-      toast.error("Erro ao remover motorista");
     } finally {
       setDeleteId(null);
     }
@@ -79,7 +95,7 @@ export default function Motoristas() {
 
   const handleSuccess = () => {
     setOpen(false);
-    carregarMotoristas();
+    loadMotoristas();
   };
 
   return (

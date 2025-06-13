@@ -46,11 +46,18 @@ export const useViagemStore = create<ViagemStore>((set) => ({
         ...viagem,
         status: ViagemStatus.PLANEJADA,
       });
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.errors?.[0] || "Erro ao cadastrar nova vaigem";
-      toast.error(errorMessage);
-      throw error;
+    } catch (err: any) {
+      if (
+        err.response &&
+        err.response.data &&
+        err.response.data.errors &&
+        Array.isArray(err.response.data.errors)
+      ) {
+        err.response.data.errors.forEach((error: string) => toast.error(error));
+      } else {
+        toast.error("Erro ao adicionar viagem");
+      }
+      throw err;
     }
   },
 
