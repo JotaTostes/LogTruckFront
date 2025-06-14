@@ -142,9 +142,6 @@ export default function ViagemForm({
       onSuccess?.();
     } catch (err) {
       console.error(err);
-      toast.error(
-        isEdit ? "Erro ao atualizar viagem." : "Erro ao cadastrar viagem."
-      );
     } finally {
       setLoading(false);
     }
@@ -202,7 +199,7 @@ export default function ViagemForm({
           </label>
           <Input
             value={origem}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setOrigem(e.target.value);
               if (errors.origem) setErrors({ ...errors, origem: "" });
             }}
@@ -225,7 +222,7 @@ export default function ViagemForm({
           </label>
           <Input
             value={destino}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setDestino(e.target.value);
               if (errors.destino) setErrors({ ...errors, destino: "" });
             }}
@@ -250,7 +247,7 @@ export default function ViagemForm({
           <Input
             type="number"
             value={quilometragem}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setQuilometragem(Number(e.target.value));
               if (errors.quilometragem)
                 setErrors({ ...errors, quilometragem: "" });
@@ -275,7 +272,7 @@ export default function ViagemForm({
           <Input
             type="number"
             value={valorFrete}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setValorFrete(Number(e.target.value));
               if (errors.valorFrete) setErrors({ ...errors, valorFrete: "" });
             }}
@@ -299,7 +296,7 @@ export default function ViagemForm({
             <Input
               type="number"
               value={comissao}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setComissao(Number(e.target.value));
                 if (errors.comissao) setErrors({ ...errors, comissao: "" });
               }}
@@ -330,7 +327,7 @@ export default function ViagemForm({
           <Input
             type="date"
             value={dataSaida}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setDataSaida(e.target.value);
               if (errors.dataSaida) setErrors({ ...errors, dataSaida: "" });
             }}

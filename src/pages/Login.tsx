@@ -149,14 +149,16 @@ export default function Login() {
             </div> */}
 
             {/* Submit Button */}
-            <Button
-              variant="primary"
-              isLoading={isLoading}
-              disabled={isLoading || !email || !senha}
-              className="w-full py-4 text-lg"
-            >
-              {isLoading ? "Entrando..." : "Entrar"}
-            </Button>
+            <div className="flex justify-center">
+              <Button
+                variant="primary"
+                isLoading={isLoading}
+                disabled={isLoading || !email || !senha}
+                size="lg"
+              >
+                {isLoading ? "Entrando..." : "Entrar"}
+              </Button>
+            </div>
           </form>
 
           {/* Footer */}

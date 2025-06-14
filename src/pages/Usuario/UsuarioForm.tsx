@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { useUsuarioStore } from "../../store/usuarioStore";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { MTSwitch as Switch } from "../../components/ui/mt/MTSwitch";
@@ -17,7 +16,12 @@ import {
   EyeOff,
   Truck,
 } from "lucide-react";
-import type { Usuario } from "../../types/Usuario";
+import type {
+  CreateUsuarioDto,
+  UpdateUsuarioDto,
+  Usuario,
+} from "../../types/Usuario";
+import { usuarioController } from "../../controllers/usuarioController";
 
 export type UsuarioFormProps = {
   usuario?: Usuario | null;
@@ -27,7 +31,6 @@ export type UsuarioFormProps = {
 const roleMap = { Administrador: 1, Motorista: 2, Operador: 3 };
 
 export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
-  const { adicionarUsuario, editarUsuario } = useUsuarioStore();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
@@ -47,36 +50,10 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
       setNome(usuario.nome);
       setEmail(usuario.email);
       setCpf(usuario.cpf);
-
-      // Se o role já vem como string, use diretamente
-      // Se vier como número, converta usando o mapa inverso
-      let roleString: "Administrador" | "Operador" | "Motorista";
-
-      if (typeof usuario.role === "string") {
-        // Role já é string, valide se é um valor válido
-        if (["Administrador", "Operador", "Motorista"].includes(usuario.role)) {
-          roleString = usuario.role as
-            | "Administrador"
-            | "Operador"
-            | "Motorista";
-        } else {
-          roleString = "Operador"; // fallback
-        }
-      } else {
-        // Role é número, converta para string
-        const roleMapInverse = {
-          1: "Administrador",
-          2: "Motorista",
-          3: "Operador",
-        };
-        roleString = (roleMapInverse[
-          usuario.role as keyof typeof roleMapInverse
-        ] || "Operador") as "Administrador" | "Operador" | "Motorista";
-      }
-
-      setRole(roleString);
+      setRole(
+        usuario.role.toString() as "Administrador" | "Operador" | "Motorista"
+      );
       setAtivo(usuario.ativo);
-      setSenha("");
     }
   }, [usuario]);
 
@@ -95,6 +72,16 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const resetForm = () => {
+    setNome("");
+    setEmail("");
+    setCpf("");
+    setSenha("");
+    setRole("Operador");
+    setAtivo(true);
+    setErrors({});
   };
 
   const formatCPF = (value: string) => {
@@ -121,47 +108,37 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
       toast.error("Por favor, corrija os campos destacados");
       return;
     }
-
     setLoading(true);
     try {
+      const usuarioData: CreateUsuarioDto | UpdateUsuarioDto =
+        isEdit && usuario?.id
+          ? {
+              id: usuario.id,
+              nome: nome.trim(),
+              email: email.trim().toLowerCase(),
+              senha: senha.trim() || "",
+              cpf: cpf.replace(/\D/g, ""),
+              role: roleMap[role],
+            }
+          : {
+              nome: nome.trim(),
+              email: email.trim().toLowerCase(),
+              senha: senha.trim() || "",
+              cpf: cpf.replace(/\D/g, ""),
+              role: roleMap[role],
+            };
+
       if (isEdit && usuario?.id) {
-        await editarUsuario(usuario.id, {
-          nome: nome.trim(),
-          email: email.trim().toLowerCase(),
-          cpf: cpf.replace(/\D/g, ""),
-          role: roleMap[role],
-          ativo,
-          senhaHash: senha,
-          id: "",
-        });
-        toast.success("Usuário atualizado com sucesso!");
+        await usuarioController.editUsuario(
+          usuario.id,
+          usuarioData as UpdateUsuarioDto
+        );
       } else {
-        await adicionarUsuario({
-          nome: nome.trim(),
-          email: email.trim().toLowerCase(),
-          cpf: cpf.replace(/\D/g, ""),
-          role: roleMap[role],
-          ativo,
-          senhaHash: senha,
-        });
-        toast.success("Usuário cadastrado com sucesso!");
+        await usuarioController.addUsuario(usuarioData as CreateUsuarioDto);
+        resetForm();
       }
-
-      if (!isEdit) {
-        setNome("");
-        setEmail("");
-        setCpf("");
-        setSenha("");
-        setRole("Operador");
-        setAtivo(true);
-      }
-
-      onSuccess?.();
-    } catch (err) {
-      console.error(err);
-      toast.error(
-        isEdit ? "Erro ao atualizar usuário." : "Erro ao cadastrar usuário."
-      );
+      onSuccess();
+    } catch (error) {
     } finally {
       setLoading(false);
     }
@@ -227,7 +204,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
                 icon={<User className="h-4 w-4 text-slate-400" />}
                 label="Nome Completo"
                 value={nome}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setNome(e.target.value);
                   if (errors.nome) setErrors({ ...errors, nome: "" });
                 }}
@@ -254,7 +231,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
                 label="Email"
                 type="email"
                 value={email}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setEmail(e.target.value);
                   if (errors.email) setErrors({ ...errors, email: "" });
                 }}
@@ -318,7 +295,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
                 }
                 type={showPassword ? "text" : "password"}
                 value={senha}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setSenha(e.target.value);
                   if (errors.senha) setErrors({ ...errors, senha: "" });
                 }}
@@ -337,7 +314,7 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
                 style={{
                   top: "50%",
                   transform: "translateY(-50%)",
-                  marginTop: "12px", // Compensa o espaço do label
+                  marginTop: "12px",
                 }}
               >
                 {showPassword ? (

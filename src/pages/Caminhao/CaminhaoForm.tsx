@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { useCaminhaoStore } from "../../store/caminhaoStore";
+import { caminhaoController } from "../../controllers/caminhaoController";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { MTSwitch as Switch } from "../../components/ui/mt/MTSwitch";
@@ -14,7 +14,11 @@ import {
   Tag,
   Building,
 } from "lucide-react";
-import type { Caminhao } from "../../types/Caminhao";
+import type {
+  Caminhao,
+  CreateCaminhaoDto,
+  UpdateCaminhaoDto,
+} from "../../types/Caminhao";
 
 type CaminhaoFormProps = {
   caminhao?: Caminhao | null;
@@ -25,7 +29,6 @@ export default function CaminhaoForm({
   caminhao,
   onSuccess,
 }: CaminhaoFormProps) {
-  const { adicionarCaminhao, editarCaminhao } = useCaminhaoStore();
   const [placa, setPlaca] = useState(caminhao?.placa ?? "");
   const [modelo, setModelo] = useState(caminhao?.modelo ?? "");
   const [marca, setMarca] = useState(caminhao?.marca ?? "");
@@ -49,6 +52,15 @@ export default function CaminhaoForm({
       setAtivo(caminhao.ativo);
     }
   }, [caminhao]);
+
+  const resetForm = () => {
+    setPlaca("");
+    setModelo("");
+    setMarca("");
+    setAno(new Date().getFullYear());
+    setCapacidadeToneladas(0);
+    setAtivo(true);
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -76,7 +88,7 @@ export default function CaminhaoForm({
 
     setLoading(true);
     try {
-      const caminhaoData = {
+      const caminhaoData: CreateCaminhaoDto | UpdateCaminhaoDto = {
         placa: placa.trim().toUpperCase(),
         modelo: modelo.trim(),
         marca: marca.trim(),
@@ -85,31 +97,15 @@ export default function CaminhaoForm({
       };
 
       if (isEdit && caminhao?.id) {
-        await editarCaminhao(caminhao.id, {
-          ...caminhaoData,
-          id: caminhao.id,
-        });
-        toast.success("Caminhão atualizado com sucesso!");
+        await caminhaoController.editCaminhao(
+          caminhao.id,
+          caminhaoData as UpdateCaminhaoDto
+        );
       } else {
-        await adicionarCaminhao(caminhaoData);
-        toast.success("Caminhão cadastrado com sucesso!");
+        await caminhaoController.addCaminhao(caminhaoData as CreateCaminhaoDto);
       }
-
-      if (!isEdit) {
-        setPlaca("");
-        setModelo("");
-        setMarca("");
-        setAno(new Date().getFullYear());
-        setCapacidadeToneladas(0);
-        setAtivo(true);
-      }
-
-      onSuccess?.();
-    } catch (err) {
-      console.error(err);
-      toast.error(
-        isEdit ? "Erro ao atualizar caminhão." : "Erro ao cadastrar caminhão."
-      );
+      resetForm();
+      onSuccess();
     } finally {
       setLoading(false);
     }
@@ -147,7 +143,7 @@ export default function CaminhaoForm({
                 icon={<Tag className="h-4 w-4 text-slate-400" />}
                 label="Placa"
                 value={placa}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setPlaca(e.target.value.toUpperCase());
                   if (errors.placa) setErrors({ ...errors, placa: "" });
                 }}
@@ -171,7 +167,7 @@ export default function CaminhaoForm({
                 icon={<Truck className="h-4 w-4 text-slate-400" />}
                 label="Modelo"
                 value={modelo}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setModelo(e.target.value);
                   if (errors.modelo) setErrors({ ...errors, modelo: "" });
                 }}
@@ -194,7 +190,7 @@ export default function CaminhaoForm({
                 icon={<Building className="h-4 w-4 text-slate-400" />}
                 label="Marca"
                 value={marca}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setMarca(e.target.value);
                   if (errors.marca) setErrors({ ...errors, marca: "" });
                 }}
@@ -218,7 +214,7 @@ export default function CaminhaoForm({
                 type="number"
                 label="Ano"
                 value={ano}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setAno(Number(e.target.value));
                   if (errors.ano) setErrors({ ...errors, ano: "" });
                 }}
@@ -243,7 +239,7 @@ export default function CaminhaoForm({
                 type="number"
                 label="Capacidade (toneladas)"
                 value={capacidadeToneladas}
-                onChange={(e) => {
+                onChange={(e: any) => {
                   setCapacidadeToneladas(Number(e.target.value));
                   if (errors.capacidadeToneladas)
                     setErrors({ ...errors, capacidadeToneladas: "" });

@@ -1,7 +1,8 @@
-import { Edit, Trash2, DollarSign, Clock, Eye } from "lucide-react";
+import { Edit, Trash2, DollarSign, Clock, Eye, Check } from "lucide-react";
 import type { Column, ActionButton } from "../../components/ui/DataTable";
 import type { ViagemCompletas } from "../../types/Viagem";
 import { formatarPlaca } from "../../utils/formatadores";
+import { getStatusText } from "../../utils/status";
 
 export const createViagemActions = (
   onEdit: (viagem: ViagemCompletas) => void,
@@ -44,17 +45,17 @@ export const createViagemActions = (
 
 export const viagemColumns: Column<ViagemCompletas>[] = [
   {
-    key: "motorista",
+    key: "motoristaNome",
     label: "Motorista",
-    width: "15%",
-    render: (item) => item.motorista?.nome,
+    width: "20%",
+    render: (item) => item.motoristaNome,
     filtrable: true,
   },
   {
-    key: "caminhao",
+    key: "caminhaoPlaca",
     label: "Caminhão",
     width: "10%",
-    render: (item) => formatarPlaca(item.caminhao?.placa),
+    render: (item) => formatarPlaca(item.caminhaoPlaca || ""),
     filtrable: true,
   },
   {
@@ -70,13 +71,13 @@ export const viagemColumns: Column<ViagemCompletas>[] = [
   {
     key: "quilometragem",
     label: "Quilometragem",
-    width: "10%",
+    width: "5%",
     render: (item) => `${item.quilometragem} km`,
   },
   {
     key: "valorFrete",
     label: "Valor Frete",
-    width: "10%",
+    width: "5%",
     render: (item) =>
       item.valorFrete.toLocaleString("pt-BR", {
         style: "currency",
@@ -86,7 +87,66 @@ export const viagemColumns: Column<ViagemCompletas>[] = [
   {
     key: "dataSaida",
     label: "Data Saída",
-    width: "10%",
+    width: "5%",
     render: (item) => item.dataSaida,
+  },
+  {
+    key: "statusNome",
+    label: "Status",
+    width: "5%",
+    filtrable: true,
+    render: (item) => getStatusText(item.status),
+  },
+];
+
+export const aprovarViagemColumns: Column<ViagemCompletas>[] = [
+  {
+    key: "motorista",
+    label: "Motorista",
+    render: (item) => item.motoristaNome,
+  },
+  {
+    key: "caminhao",
+    label: "Caminhão",
+    render: (item) => item.caminhaoPlaca,
+  },
+  {
+    key: "origem",
+    label: "Origem",
+  },
+  {
+    key: "destino",
+    label: "Destino",
+  },
+  {
+    key: "valorFrete",
+    label: "Valor Frete",
+    render: (item) =>
+      item.valorFrete.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }),
+  },
+  {
+    key: "dataSaida",
+    label: "Data Saída",
+  },
+];
+
+export const aprovarViagemActions = (
+  setSelectedViagem: (viagem: ViagemCompletas) => void,
+  handleAprovar: (id: string) => void
+): ActionButton<any>[] => [
+  {
+    icon: <Eye className="h-4 w-4" />,
+    onClick: setSelectedViagem,
+    color: "blue-gray",
+    title: "Visualizar Detalhes",
+  },
+  {
+    icon: <Check className="h-4 w-4" />,
+    onClick: (viagem) => handleAprovar(viagem.id),
+    color: "green",
+    title: "Aprovar Viagem",
   },
 ];

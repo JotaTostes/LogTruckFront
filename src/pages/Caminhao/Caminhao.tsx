@@ -7,6 +7,7 @@ import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 
 import { useCaminhaoStore } from "../../store/caminhaoStore";
+import { caminhaoController } from "../../controllers/caminhaoController";
 
 import { CaminhaoFormModal } from "./CaminhaoFormModal";
 import { DataTable } from "../../components/ui/DataTable";
@@ -18,29 +19,24 @@ import {
 import type { Caminhao, UpdateCaminhaoDto } from "../../types/Caminhao";
 
 export default function Caminhao() {
-  const {
-    caminhoes,
-    caminhoesCompletos,
-    carregarCaminhoes,
-    carregarCaminhoesCompletos,
-    removerCaminhao,
-  } = useCaminhaoStore();
+  const caminhoes = useCaminhaoStore((state) => state.caminhoes);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<UpdateCaminhaoDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        await carregarCaminhoes();
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
+    loadCaminhoes();
   }, []);
+
+  const loadCaminhoes = async () => {
+    setLoading(true);
+    try {
+      await caminhaoController.fetchCaminhoes();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCreate = () => {
     setSelected(null);
@@ -59,11 +55,9 @@ export default function Caminhao() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      await removerCaminhao(deleteId);
-      toast.success("Caminhão removida com sucesso!");
-      carregarCaminhoesCompletos();
+      await caminhaoController.deleteCaminhao(deleteId);
+      loadCaminhoes();
     } catch (error) {
-      toast.error("Erro ao remover caminhão");
     } finally {
       setDeleteId(null);
     }
@@ -71,7 +65,7 @@ export default function Caminhao() {
 
   const handleSuccess = () => {
     setOpen(false);
-    carregarCaminhoesCompletos();
+    loadCaminhoes();
   };
 
   return (
@@ -181,6 +175,12 @@ export default function Caminhao() {
                 subtitle="Gerencie todos os caminhões do sistema"
                 loading={loading}
                 filterPlaceholder="Buscar caminhão..."
+                emptyStateConfig={{
+                  icon: <Truck />,
+                  showCreateButton: false,
+                  title: "Nenhum caminhão encontrado",
+                  description: "",
+                }}
               />
             )}
           </div>

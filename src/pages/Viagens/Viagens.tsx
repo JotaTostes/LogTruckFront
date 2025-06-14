@@ -1,40 +1,45 @@
 import { useEffect, useState } from "react";
 import { Plus, MapPinned, Search, Filter } from "lucide-react";
-
 import toast from "react-hot-toast";
 
+// UI Components
 import { Button } from "../../components/ui/Button";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import { DataTable } from "../../components/ui/DataTable";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 
+// Modals
 import { ViagemFormModal } from "./ViagemFormModal";
 import { ViagemCustosFormModal } from "./Custos/ViagemCustosFormModal";
 import { ViagemDetailsModal } from "./ViagemDetailsModal";
 import { StatusUpdateModal } from "./StatusUpdateModal";
 
+// Stores
 import { useViagemStore } from "../../store/viagemStore";
 import { useMotoristaStore } from "../../store/motoristaStore";
 import { useCaminhaoStore } from "../../store/caminhaoStore";
 
+// Controllers
+import { caminhaoController } from "../../controllers/caminhaoController";
+import { motoristaController } from "../../controllers/motoristaController";
+import { viagemController } from "../../controllers/viagemController";
+
+// Table Config
 import {
   createViagemActions,
   viagemColumns,
 } from "../../layouts/Table/ViagensTableConfig";
 
+// Types
 import type { Viagem, ViagemCompletas } from "../../types/Viagem";
 
 export default function Viagens() {
-  const {
-    viagens,
-    viagensCompletas,
-    carregarViagensCompletas,
-    removerViagem,
-    editarStatusViagem,
-  } = useViagemStore();
-  const { motoristas, carregarMotoristas } = useMotoristaStore();
-  const { caminhoes, carregarCaminhoes } = useCaminhaoStore();
-
+  const viagensCompletas = useViagemStore((state) => state.viagensCompletas);
+  const motoristas = useMotoristaStore((state) => state.motoristas);
+  const caminhoes = useCaminhaoStore((state) => state.caminhoes);
+  const caminhoesCompletos = useCaminhaoStore(
+    (state) => state.caminhoesCompletos
+  );
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Viagem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -51,15 +56,42 @@ export default function Viagens() {
     const loadData = async () => {
       setLoading(true);
       try {
-        await carregarViagensCompletas();
-        await carregarMotoristas();
-        await carregarCaminhoes();
+        loadViagensCompletas();
+        loadMotoristas();
+        loadCaminhoes();
       } finally {
         setLoading(false);
       }
     };
     loadData();
-  }, [carregarViagensCompletas, carregarMotoristas, carregarCaminhoes]);
+  }, []);
+
+  const loadCaminhoes = async () => {
+    setLoading(true);
+    try {
+      await caminhaoController.fetchCaminhoes();
+    } finally {
+      setLoading(false);
+    }
+  };
+  const loadViagensCompletas = async () => {
+    setLoading(true);
+    try {
+      await viagemController.fetchViagensCompletas();
+    } catch (error) {
+      toast.error("Erro ao carregar viagens");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const loadMotoristas = async () => {
+    setLoading(true);
+    try {
+      await motoristaController.fetchMotoristasCompletos();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleStatusUpdate = (viagem: ViagemCompletas) => {
     setStatusUpdateId(viagem.id ?? null);
@@ -83,11 +115,9 @@ export default function Viagens() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      await removerViagem(deleteId);
-      toast.success("Viagem removida com sucesso!");
-      await carregarViagensCompletas();
+      await viagemController.deleteViagem(deleteId);
+      await viagemController.fetchViagensCompletas();
     } catch (error) {
-      toast.error("Erro ao remover viagem");
     } finally {
       setDeleteId(null);
     }
@@ -96,11 +126,9 @@ export default function Viagens() {
   const confirmStatusUpdate = async (newStatus: number) => {
     if (!statusUpdateId) return;
     try {
-      await editarStatusViagem(statusUpdateId, newStatus);
-      await carregarViagensCompletas();
-      toast.success("Status atualizado com sucesso!");
+      viagemController.updateViagemStatus(statusUpdateId, newStatus);
+      viagemController.fetchViagensCompletas();
     } catch (error) {
-      toast.error("Erro ao atualizar status");
     } finally {
       setStatusUpdateId(null);
     }
@@ -113,7 +141,7 @@ export default function Viagens() {
 
   const handleSuccess = () => {
     setOpen(false);
-    carregarViagensCompletas();
+    loadViagensCompletas();
   };
 
   return (
@@ -200,6 +228,11 @@ export default function Viagens() {
               subtitle="Gerencie todas as viagens cadastradas"
               loading={loading}
               filterPlaceholder="Buscar viagens..."
+              emptyStateConfig={{
+                showCreateButton: false,
+                title: "Nenhuma viagem encontrada",
+                description: "Parece que ainda não há viagens cadastradas.",
+              }}
             />
           </div>
         </div>
@@ -224,7 +257,7 @@ export default function Viagens() {
         onSuccess={() => {
           setIsCustosModalOpen(false);
           setSelectedViagemParaCustos(null);
-          carregarViagensCompletas();
+          loadViagensCompletas();
           toast.success("Custo adicionado com sucesso!");
         }}
       />

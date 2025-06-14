@@ -1,6 +1,6 @@
-import type { Motorista } from "../../types/Motorista";
+import type { Motorista, MotoristaCompleto } from "../../types/Motorista";
 import type { Column, ActionButton } from "../../components/ui/DataTable";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Eye } from "lucide-react";
 import { formatarCPF } from "../../utils/formatadores";
 
 export const motoristaColumns: Column<Motorista>[] = [
@@ -32,8 +32,15 @@ export const motoristaColumns: Column<Motorista>[] = [
 
 export const createMotoristaActions = (
   onEdit: (motorista: Motorista) => void,
-  onDelete: (id: string) => void
+  onDelete: (id: string) => void,
+  onViewDetails: (motorista: MotoristaCompleto) => void
 ): ActionButton<Motorista>[] => [
+  {
+    icon: <Eye className="h-4 w-4" />,
+    onClick: onViewDetails,
+    color: "blue-gray",
+    title: "Visualizar Detalhes",
+  },
   {
     icon: <Edit className="h-4 w-4" />,
     onClick: onEdit,

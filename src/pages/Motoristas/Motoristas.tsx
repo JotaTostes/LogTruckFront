@@ -17,29 +17,57 @@ import {
   motoristaColumns,
 } from "../../layouts/Table/MotoristaTableConfig";
 
-import type { Motorista } from "../../types/Motorista";
+import type { Motorista, MotoristaCompleto } from "../../types/Motorista";
+import { MotoristaDetailsModal } from "./MotoristaDetailModal";
+import { motoristaController } from "../../controllers/motoristaController";
+import { usuarioController } from "../../controllers/usuarioController";
 
 export default function Motoristas() {
-  const { motoristas, carregarMotoristas, removerMotorista } =
-    useMotoristaStore();
-  const { usuariosMotoristas, carregarUsuariosMotoristas } = useUsuarioStore();
+  const motoristas = useMotoristaStore((state) => state.motoristas);
+  const motoristasCompletos = useMotoristaStore(
+    (state) => state.motoristasCompletos
+  );
+  const usuariosMotoristas = useUsuarioStore(
+    (state) => state.usuariosMotoristas
+  );
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Motorista | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selectedMotoristaForDetails, setSelectedViagemParaCustos] =
+    useState<MotoristaCompleto | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       try {
-        await carregarMotoristas();
-        await carregarUsuariosMotoristas();
+        await loadMotoristas();
+        await loadUsuariosMotoristas();
       } finally {
         setLoading(false);
       }
     };
     loadData();
   }, []);
+
+  const loadMotoristas = async () => {
+    setLoading(true);
+    try {
+      await motoristaController.fetchMotoristas();
+      await motoristaController.fetchMotoristasCompletos();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadUsuariosMotoristas = async () => {
+    setLoading(true);
+    try {
+      await usuarioController.fetchUsuariosMotoristas();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCreate = () => {
     setSelected(null);
@@ -58,11 +86,8 @@ export default function Motoristas() {
   const confirmDelete = async () => {
     if (!deleteId) return;
     try {
-      await removerMotorista(deleteId);
-      toast.success("Motorista removido com sucesso!");
-      carregarMotoristas();
+      motoristaController.deleteMotorista(deleteId);
     } catch (error) {
-      toast.error("Erro ao remover motorista");
     } finally {
       setDeleteId(null);
     }
@@ -70,7 +95,7 @@ export default function Motoristas() {
 
   const handleSuccess = () => {
     setOpen(false);
-    carregarMotoristas();
+    loadMotoristas();
   };
 
   return (
@@ -180,13 +205,22 @@ export default function Motoristas() {
               </div>
             ) : (
               <DataTable
-                data={motoristas}
+                data={motoristasCompletos}
                 columns={motoristaColumns}
-                actions={createMotoristaActions(handleEdit, handleDelete)}
+                actions={createMotoristaActions(
+                  handleEdit,
+                  handleDelete,
+                  setSelectedViagemParaCustos
+                )}
                 title="Motoristas Cadastrados"
                 subtitle="Gerencie todos os motoristas do sistema"
                 loading={loading}
                 filterPlaceholder="Buscar motorista..."
+                emptyStateConfig={{
+                  showCreateButton: false,
+                  title: "Nenhum motorista encontrado",
+                  description: "Nenhum motorista cadastrado no sistema ainda",
+                }}
               />
             )}
           </div>
@@ -255,6 +289,12 @@ export default function Motoristas() {
         onConfirm={confirmDelete}
         title="Excluir motorista"
         description="Tem certeza que deseja excluir este motorista?"
+      />
+
+      <MotoristaDetailsModal
+        open={!!selectedMotoristaForDetails}
+        onClose={() => setSelectedViagemParaCustos(null)}
+        motorista={selectedMotoristaForDetails}
       />
     </div>
   );

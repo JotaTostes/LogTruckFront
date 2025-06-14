@@ -4,8 +4,8 @@ export type Usuario = {
   nome: string;
   email: string;
   cpf: string;
-  senhaHash?: string;
-  role: number;
+  senha?: string;
+  role: string;
   ativo: boolean;
 };
 
@@ -14,8 +14,20 @@ export type UsuarioDto = {
   nome: string;
   email: string;
   cpf: string;
-  senhaHash?: string;
+  senhah?: string;
   role: number;
   ativo: boolean;
   motorista?: Motorista | null;
+};
+
+export type UpdateUsuarioDto = CreateUsuarioDto & {
+  id: string;
+};
+
+export type CreateUsuarioDto = {
+  nome: string;
+  email: string;
+  senha: string;
+  cpf: string;
+  role: number;
 };

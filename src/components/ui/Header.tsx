@@ -41,11 +41,13 @@ const Header = ({ isSidebarHovered, setIsSidebarHovered }: HeaderProps) => {
 
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <img
-              src="/logtruck-logo-header-white.png"
-              alt="Logotipo LogTruck"
-              className="h-8 w-auto object-contain drop-shadow-md hover:drop-shadow-xl transition-all duration-300"
-            />
+            <a href="/dashboard">
+              <img
+                src="/logtruck-logo-header-white.png"
+                alt="Logotipo LogTruck"
+                className="h-8 w-auto object-contain drop-shadow-md hover:drop-shadow-xl transition-all duration-300 cursor-pointer"
+              />
+            </a>
           </div>
         </div>
 

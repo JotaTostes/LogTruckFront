@@ -42,9 +42,19 @@ export const getTipoPlaca = (
   return "INVÁLIDA";
 };
 
-export const formatarCPF = (cpf: string): string => {
+export const formatarCPF = (cpf: string | null | undefined): string => {
+  // Verifica se o CPF é válido (não é null, undefined ou vazio)
+  if (!cpf || typeof cpf !== "string") {
+    return "";
+  }
+
   // Remove todos os caracteres não numéricos
   const cpfLimpo = cpf.replace(/\D/g, "");
+
+  // Se não há dígitos, retorna vazio
+  if (!cpfLimpo) {
+    return "";
+  }
 
   // Limita o tamanho para 11 dígitos
   const cpfTruncado = cpfLimpo.slice(0, 11);
@@ -66,6 +76,51 @@ export const formatarCPF = (cpf: string): string => {
     3,
     6
   )}.${cpfTruncado.slice(6, 9)}-${cpfTruncado.slice(9)}`;
+};
+
+// Versão alternativa mais robusta com validação de tipo
+export const formatarCPFSeguro = (cpf: any): string => {
+  try {
+    // Converte para string se for número
+    const cpfString = cpf?.toString() || "";
+
+    // Se é uma string vazia, retorna vazio
+    if (!cpfString.trim()) {
+      return "";
+    }
+
+    // Remove todos os caracteres não numéricos
+    const cpfLimpo = cpfString.replace(/\D/g, "");
+
+    // Se não há dígitos, retorna vazio
+    if (!cpfLimpo || cpfLimpo.length === 0) {
+      return "";
+    }
+
+    // Limita o tamanho para 11 dígitos
+    const cpfTruncado = cpfLimpo.slice(0, 11);
+
+    // Aplica a máscara conforme o tamanho
+    if (cpfTruncado.length <= 3) {
+      return cpfTruncado;
+    }
+    if (cpfTruncado.length <= 6) {
+      return `${cpfTruncado.slice(0, 3)}.${cpfTruncado.slice(3)}`;
+    }
+    if (cpfTruncado.length <= 9) {
+      return `${cpfTruncado.slice(0, 3)}.${cpfTruncado.slice(
+        3,
+        6
+      )}.${cpfTruncado.slice(6)}`;
+    }
+    return `${cpfTruncado.slice(0, 3)}.${cpfTruncado.slice(
+      3,
+      6
+    )}.${cpfTruncado.slice(6, 9)}-${cpfTruncado.slice(9)}`;
+  } catch (error) {
+    console.warn("Erro ao formatar CPF:", error, "Valor recebido:", cpf);
+    return "";
+  }
 };
 
 export const validarCPF = (cpf: string): boolean => {
@@ -120,4 +175,35 @@ export const formatarDataISO = (dataISO: string): string => {
     console.log("Erro ao formatar data:", error);
     return "-";
   }
+};
+
+export const formatarTelefone = (value: string): string => {
+  const cleaned = value.replace(/\D/g, "");
+  const truncated = cleaned.substring(0, 11);
+
+  if (truncated.length <= 2) {
+    return truncated;
+  }
+  if (truncated.length <= 3) {
+    return `(${truncated.substring(0, 2)})${truncated.substring(2)}`;
+  }
+  if (truncated.length <= 6) {
+    return `(${truncated.substring(0, 2)})${truncated.substring(2)}`;
+  }
+  if (truncated.length <= 10) {
+    // Telefone fixo: (XX)XXXX-XXXX
+    return `(${truncated.substring(0, 2)})${truncated.substring(
+      2,
+      6
+    )}-${truncated.substring(6)}`;
+  }
+  if (truncated.length === 11) {
+    // Celular: (XX)9XXXX-XXXX
+    return `(${truncated.substring(0, 2)})${truncated.substring(
+      2,
+      3
+    )}${truncated.substring(3, 7)}-${truncated.substring(7)}`;
+  }
+
+  return truncated;
 };
