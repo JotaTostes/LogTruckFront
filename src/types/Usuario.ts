@@ -7,6 +7,7 @@ export type Usuario = {
   senha?: string;
   role: string;
   ativo: boolean;
+  criadoEm: Date;
 };
 
 export type UsuarioDto = {

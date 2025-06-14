@@ -416,13 +416,20 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
         </div>
 
         {/* Submit Button */}
-        <div className="pt-4">
+        <div className="pt-4 flex justify-center">
           <Button
             type="submit"
             isLoading={loading}
             disabled={loading}
             className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 font-semibold text-lg rounded-xl transition-all duration-300"
             showArrow={false}
+            icon={
+              isEdit ? (
+                <CheckCircle2 className="h-5 w-5" />
+              ) : (
+                <User className="h-5 w-5" />
+              )
+            }
           >
             {loading ? (
               <div className="flex items-center gap-2">
@@ -431,11 +438,6 @@ export default function UsuarioForm({ usuario, onSuccess }: UsuarioFormProps) {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                {isEdit ? (
-                  <CheckCircle2 className="h-5 w-5" />
-                ) : (
-                  <User className="h-5 w-5" />
-                )}
                 {isEdit ? "Salvar Alterações" : "Cadastrar Usuário"}
               </div>
             )}

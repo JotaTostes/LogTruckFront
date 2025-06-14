@@ -237,7 +237,23 @@ export default function Usuarios() {
                 <p className="text-sm text-slate-500 font-medium">
                   Último Cadastro
                 </p>
-                <p className="text-sm font-medium text-slate-600">Hoje</p>
+                <p className="text-sm font-medium text-slate-600">
+                  {usuarios.length === 0
+                    ? "Nenhum"
+                    : (() => {
+                        const last = usuarios
+                          .map((u) => new Date(u.criadoEm))
+                          .sort((a, b) => b.getTime() - a.getTime())[0];
+                        const now = new Date();
+                        const diffMs = now.getTime() - last.getTime();
+                        const diffDays = Math.floor(
+                          diffMs / (1000 * 60 * 60 * 24)
+                        );
+                        if (diffDays === 0) return "Hoje";
+                        if (diffDays === 1) return "Ontem";
+                        return `${diffDays} dias atrás`;
+                      })()}
+                </p>
               </div>
             </div>
           </div>

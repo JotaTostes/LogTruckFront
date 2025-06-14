@@ -1,7 +1,12 @@
 import { useMotoristaStore } from "../store/motoristaStore";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
-import type { Motorista } from "../types/Motorista";
+import type {
+  CreateMotoristaDto,
+  Motorista,
+  MotoristaCompleto,
+  UpdateMotoristaDto,
+} from "../types/Motorista";
 
 export const motoristaController = {
   async fetchMotoristas() {
@@ -16,7 +21,7 @@ export const motoristaController = {
 
   async fetchMotoristasCompletos() {
     try {
-      const { data } = await api.get<Motorista[]>(
+      const { data } = await api.get<MotoristaCompleto[]>(
         "/motorista/motoristas-completos"
       );
       useMotoristaStore.getState().setMotoristasCompletos(data);
@@ -26,7 +31,7 @@ export const motoristaController = {
     }
   },
 
-  async addMotorista(motorista: Omit<Motorista, "id">) {
+  async addMotorista(motorista: CreateMotoristaDto) {
     try {
       const { data } = await api.post<Motorista>("/motorista", motorista);
       await this.fetchMotoristas(); // Refresh the list
@@ -38,7 +43,7 @@ export const motoristaController = {
     }
   },
 
-  async editMotorista(id: string, motorista: Motorista) {
+  async editMotorista(id: string, motorista: UpdateMotoristaDto) {
     try {
       await api.put(`/motorista/${id}`, motorista);
       await this.fetchMotoristas(); // Refresh the list

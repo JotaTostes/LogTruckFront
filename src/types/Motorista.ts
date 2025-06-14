@@ -15,4 +15,16 @@ export type Motorista = {
 export type MotoristaCompleto = Motorista & {
   viagens?: Viagem[];
   comissoes?: Comissao[];
+  criadoEm: Date;
+};
+
+export type CreateMotoristaDto = {
+  usuarioId: string;
+  cnh: string;
+  dataNascimento: string;
+  telefone: string;
+};
+
+export type UpdateMotoristaDto = CreateMotoristaDto & {
+  id: string;
 };
