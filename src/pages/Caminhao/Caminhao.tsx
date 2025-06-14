@@ -175,6 +175,12 @@ export default function Caminhao() {
                 subtitle="Gerencie todos os caminhões do sistema"
                 loading={loading}
                 filterPlaceholder="Buscar caminhão..."
+                emptyStateConfig={{
+                  icon: <Truck />,
+                  showCreateButton: false,
+                  title: "Nenhum caminhão encontrado",
+                  description: "",
+                }}
               />
             )}
           </div>

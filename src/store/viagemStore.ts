@@ -1,113 +1,21 @@
 import { create } from "zustand";
-import api from "../utils/api";
 import type { Viagem, ViagemCompletas } from "../types/Viagem";
-import { toast } from "react-hot-toast";
 
 interface ViagemStore {
   viagens: Viagem[];
   viagensCompletas: ViagemCompletas[];
-  carregarViagens: () => Promise<void>;
-  carregarViagensCompletas: () => Promise<void>;
-  adicionarViagem: (viagem: Omit<Viagem, "status">) => Promise<void>;
-  editarViagem: (id: string, viagem: Partial<Viagem>) => Promise<void>;
-  editarStatusViagem: (id: string, status: number) => Promise<void>;
-  removerViagem: (id: string) => Promise<void>;
-  aprovarViagem: (id: string) => Promise<void>;
+  setViagensCompletas: (viagensCompletas: ViagemCompletas[]) => void;
+  updateViagemStatus: (id: string, status: number) => void;
 }
 
-export enum ViagemStatus {
-  PLANEJADA = 1,
-  EM_ANDAMENTO = 2,
-  CONCLUIDA = 3,
-  CANCELADA = 4,
-}
 export const useViagemStore = create<ViagemStore>((set) => ({
   viagens: [],
   viagensCompletas: [],
-  carregarViagens: async () => {
-    try {
-      const { data } = await api.get<Viagem[]>("/viagem");
-      set({ viagens: data });
-    } catch (err) {
-      toast.error("Erro ao carregar vaigens");
-    }
-  },
-  carregarViagensCompletas: async () => {
-    try {
-      const { data } = await api.get<ViagemCompletas[]>("/viagem/completa");
-      set({ viagensCompletas: data });
-    } catch (err) {
-      toast.error("Erro ao carregar viagens");
-    }
-  },
-  adicionarViagem: async (viagem) => {
-    try {
-      await api.post("/viagem", {
-        ...viagem,
-        status: ViagemStatus.PLANEJADA,
-      });
-    } catch (err: any) {
-      if (
-        err.response &&
-        err.response.data &&
-        err.response.data.errors &&
-        Array.isArray(err.response.data.errors)
-      ) {
-        err.response.data.errors.forEach((error: string) => toast.error(error));
-      } else {
-        toast.error("Erro ao adicionar viagem");
-      }
-      throw err;
-    }
-  },
-
-  editarViagem: async (id, viagem) => {
-    try {
-      await api.put(`viagem/${id}`, viagem);
-    } catch (error) {
-      throw error;
-    }
-  },
-  aprovarViagem: async (id: string) => {
-    try {
-      await api.put(`/viagem/${id}/aprovar`);
-      set((state) => ({
-        viagensCompletas: state.viagensCompletas.map((v) =>
-          v.id === id ? { ...v } : v
-        ),
-      }));
-      toast.success("Viagem aprovada com sucesso!");
-    } catch (error) {
-      toast.error("Erro ao aprovar a viagem");
-      throw error;
-    }
-  },
-  editarStatusViagem: async (id: string, status: number) => {
-    try {
-      await api.put(`/viagem/${id}/status/${status}`);
-      set((state) => ({
-        viagens: state.viagens.map((v) => (v.id === id ? { ...v, status } : v)),
-        viagensCompletas: state.viagensCompletas.map((v) =>
-          v.id === id ? { ...v, status } : v
-        ),
-      }));
-      toast.success("Status da viagem atualizado com sucesso!");
-    } catch (err) {
-      toast.error("Erro ao atualizar status da viagem");
-      throw err;
-    }
-  },
-
-  removerViagem: async (id) => {
-    try {
-      await api.delete(`/viagem/${id}`);
-      set((state) => ({
-        viagens: state.viagens.filter((v) => v.id !== id),
-      }));
-      toast.success("viagem removida com sucesso!");
-    } catch (error) {
-      toast.error("Erro ao remover a viagem");
-      throw error;
-    }
-  },
+  setViagensCompletas: (viagensCompletas) => set({ viagensCompletas }),
+  updateViagemStatus: (id, status) =>
+    set((state) => ({
+      viagensCompletas: state.viagensCompletas.map((v) =>
+        v.id === id ? { ...v, status } : v
+      ),
+    })),
 }));

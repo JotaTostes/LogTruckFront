@@ -216,6 +216,11 @@ export default function Motoristas() {
                 subtitle="Gerencie todos os motoristas do sistema"
                 loading={loading}
                 filterPlaceholder="Buscar motorista..."
+                emptyStateConfig={{
+                  showCreateButton: false,
+                  title: "Nenhum motorista encontrado",
+                  description: "Nenhum motorista cadastrado no sistema ainda",
+                }}
               />
             )}
           </div>

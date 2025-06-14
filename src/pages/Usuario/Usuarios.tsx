@@ -184,6 +184,11 @@ export default function Usuarios() {
                 subtitle="Gerencie todos os usuários do sistema"
                 loading={loading}
                 filterPlaceholder="Buscar usuários..."
+                emptyStateConfig={{
+                  showCreateButton: false,
+                  title: "Nenhum usuário encontrado",
+                  description: "Nenhum usuario cadastrado ainda.",
+                }}
               />
             )}
           </div>

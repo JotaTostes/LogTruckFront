@@ -8,6 +8,11 @@ import {
   FilterIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  FileText,
+  Database,
+  SearchX,
+  Inbox,
+  FolderOpen,
 } from "lucide-react";
 
 import { systemTheme } from "../../config/systemTheme";
@@ -37,6 +42,14 @@ type DataTableProps<T> = {
   onFilter?: (filtered: T[]) => void;
   filterPlaceholder?: string;
   actions?: ActionButton<T>[];
+  emptyStateConfig?: {
+    title?: string;
+    description?: string;
+    icon?: React.ReactNode;
+    showCreateButton?: boolean;
+    createButtonText?: string;
+    onCreateClick?: () => void;
+  };
 };
 
 export function DataTable<T extends { id?: string | number }>({
@@ -48,6 +61,7 @@ export function DataTable<T extends { id?: string | number }>({
   onFilter,
   filterPlaceholder = "Buscar...",
   actions,
+  emptyStateConfig,
 }: DataTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filterText, setFilterText] = useState("");
@@ -92,6 +106,105 @@ export function DataTable<T extends { id?: string | number }>({
     // if (onFilter) {
     //   onFilter(filterData(data));
     // }
+  };
+
+  // Função para renderizar o estado vazio
+  const renderEmptyState = () => {
+    const isFiltered = filterText.length > 0;
+    const hasData = data.length > 0;
+
+    // Configuração padrão baseada no contexto
+    const getDefaultConfig = () => {
+      if (isFiltered && hasData) {
+        return {
+          icon: <SearchX className="w-16 h-16 text-gray-400" />,
+          title: "Nenhum resultado encontrado",
+          description: `Não encontramos registros que correspondam à busca "${filterText}". Tente ajustar os filtros ou usar outros termos.`,
+          showCreateButton: false,
+        };
+      } else if (!hasData) {
+        return {
+          icon: <Inbox className="w-16 h-16 text-gray-400" />,
+          title: "Nenhum registro cadastrado",
+          description:
+            "Ainda não há dados para exibir. Que tal começar criando o primeiro registro?",
+          showCreateButton: true,
+          createButtonText: "Criar primeiro registro",
+        };
+      } else {
+        return {
+          icon: <Database className="w-16 h-16 text-gray-400" />,
+          title: "Dados não encontrados",
+          description: "Não há registros disponíveis no momento.",
+          showCreateButton: false,
+        };
+      }
+    };
+
+    const defaultConfig = getDefaultConfig();
+    const config = { ...defaultConfig, ...emptyStateConfig };
+
+    return (
+      <tr>
+        <td
+          colSpan={actions ? columns.length + 1 : columns.length}
+          className="text-center p-12"
+        >
+          <div className="flex flex-col items-center justify-center space-y-4">
+            {/* Ícone com animação sutil */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full blur-xl opacity-50 animate-pulse"></div>
+              <div className="relative bg-gradient-to-r from-blue-50 to-indigo-50 rounded-full p-6 border border-blue-100">
+                {config.icon}
+              </div>
+            </div>
+
+            {/* Textos */}
+            <div className="space-y-2">
+              <Typography
+                variant="h6"
+                color="blue-gray"
+                className="font-semibold"
+              >
+                {config.title}
+              </Typography>
+              <Typography
+                variant="small"
+                color="gray"
+                className="max-w-md text-center leading-relaxed"
+              >
+                {config.description}
+              </Typography>
+            </div>
+
+            {/* Botão de ação (opcional) */}
+            {config.showCreateButton && (
+              <div className="pt-4">
+                <button
+                  onClick={config.onCreateClick}
+                  className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
+                  <FolderOpen className="w-4 h-4 mr-2" />
+                  {config.createButtonText || "Criar registro"}
+                </button>
+              </div>
+            )}
+
+            {/* Dicas adicionais para busca sem resultado */}
+            {isFiltered && hasData && (
+              <div className="pt-2">
+                <button
+                  onClick={() => setFilterText("")}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium hover:underline transition-colors"
+                >
+                  Limpar filtros
+                </button>
+              </div>
+            )}
+          </div>
+        </td>
+      </tr>
+    );
   };
 
   return (
@@ -140,7 +253,7 @@ export function DataTable<T extends { id?: string | number }>({
                   icon={<Search className="h-5 w-5 text-white/60" />}
                   type="search"
                   value={filterText}
-                  onChange={(e) => handleFilterTextChange(e.target.value)}
+                  onChange={(e: any) => handleFilterTextChange(e.target.value)}
                   placeholder={filterPlaceholder}
                   className="bg-white/10 border border-white/20 text-white placeholder-white/60 rounded-full pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 />
@@ -198,16 +311,7 @@ export function DataTable<T extends { id?: string | number }>({
                 </td>
               </tr>
             ) : paginatedData.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={actions ? columns.length + 1 : columns.length}
-                  className="text-center p-4"
-                >
-                  <Typography color="gray">
-                    Nenhum registro encontrado
-                  </Typography>
-                </td>
-              </tr>
+              renderEmptyState()
             ) : (
               paginatedData.map((item) => (
                 <tr

@@ -59,7 +59,7 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
           description: "Gerencie e aprove viagens",
           submenu: [
             {
-              label: "Listagem de Viagens",
+              label: "Cadastrar Viagens",
               to: "/viagens",
               icon: <MapPinned size={16} />,
               description: "Lista e gerenciamento de viagens",
@@ -216,7 +216,7 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
               <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400" />
               <span>
                 v{APP_VERSION.current}
-                {APP_VERSION.environment === "development" && " (Dev)"}
+                {APP_VERSION.environment === "development" && " · Dev"}
               </span>
             </div>
           </div>

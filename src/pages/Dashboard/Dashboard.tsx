@@ -19,16 +19,18 @@ import {
   BanknoteX,
 } from "lucide-react";
 import { Button } from "../../components/ui/Button";
+import { dashboardController } from "../../controllers/dashboardCController";
 
 export default function Dashboard() {
-  const { dados, carregarDashboard, carregando } = useDashboardStore();
+  const dados = useDashboardStore((state) => state.dados);
+  const carregando = useDashboardStore((state) => state.carregando);
 
   useEffect(() => {
-    carregarDashboard();
+    dashboardController.fetchDashboardData();
   }, []);
 
   const handleRefresh = () => {
-    carregarDashboard();
+    dashboardController.fetchDashboardData();
   };
 
   if (carregando) {

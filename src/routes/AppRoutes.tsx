@@ -8,6 +8,7 @@ import Motoristas from "../pages/Motoristas/Motoristas";
 import PrivateRoute from "../routes/PrivateRoute";
 import Usuarios from "../pages/Usuario/Usuarios";
 import Viagens from "../pages/Viagens/Viagens";
+import FeatureNotImplemented from "../components/ui/FeatureNotImplemented";
 import { Routes, Route, Navigate } from "react-router-dom";
 export function AppRoutes() {
   return (
@@ -24,6 +25,15 @@ export function AppRoutes() {
           <Route path="/caminhoes" element={<Caminhao />} />
           <Route path="/custos/comissoes" element={<Comissao />} />
           <Route path="/viagens/aprovar" element={<AprovarViagens />} />
+          <Route
+            path="/config"
+            element={
+              <FeatureNotImplemented
+                showAnimation={false}
+                featureName="Configurações"
+              />
+            }
+          />
         </Route>
       </Route>
     </Routes>
