@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Users, Search, Filter, Icon } from "lucide-react";
+import { Plus, Users, Search, History, Icon } from "lucide-react";
 import { steeringWheel } from "@lucide/lab";
 import toast from "react-hot-toast";
 
@@ -243,7 +243,7 @@ export default function Motoristas() {
             </div>
           </div>
 
-          <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
+          {/* <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
             <div className="flex items-center gap-4">
               <div className="bg-blue-100 p-3 rounded-xl">
                 <Plus className="h-6 w-6 text-blue-600" />
@@ -257,12 +257,12 @@ export default function Motoristas() {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
             <div className="flex items-center gap-4">
               <div className="bg-purple-100 p-3 rounded-xl">
-                <Filter className="h-6 w-6 text-purple-600" />
+                <History className="h-6 w-6 text-purple-600" />
               </div>
               <div>
                 <p className="text-sm text-slate-500 font-medium">

@@ -12,8 +12,17 @@ export const viagemController = {
     try {
       const { data } = await api.get<ViagemCompletas[]>("/viagem/completa");
       useViagemStore.getState().setViagensCompletas(data);
-    } catch (err) {
-      toast.error("Erro ao carregar viagens completas");
+    } catch (err: any) {
+      if (
+        err.response &&
+        err.response.data &&
+        err.response.data.errors &&
+        Array.isArray(err.response.data.errors)
+      ) {
+        err.response.data.errors.forEach((error: string) => toast.error(error));
+      } else {
+        toast.error("Erro ao atualizar status da viagem");
+      }
       throw err;
     }
   },
@@ -23,8 +32,17 @@ export const viagemController = {
       await api.post("/viagem", viagem);
       await this.fetchViagensCompletas();
       toast.success("Viagem criada com sucesso!");
-    } catch (err) {
-      toast.error("Erro ao criar viagem");
+    } catch (err: any) {
+      if (
+        err.response &&
+        err.response.data &&
+        err.response.data.errors &&
+        Array.isArray(err.response.data.errors)
+      ) {
+        err.response.data.errors.forEach((error: string) => toast.error(error));
+      } else {
+        toast.error("Erro ao criar viagem");
+      }
       throw err;
     }
   },
@@ -66,6 +84,26 @@ export const viagemController = {
         err.response.data.errors.forEach((error: string) => toast.error(error));
       } else {
         toast.error("Erro ao atualizar status da viagem");
+      }
+      throw err;
+    }
+  },
+
+  async aprovarViagem(id: string) {
+    try {
+      await api.put(`/viagem/${id}/aprovar`);
+      useViagemStore.getState().updateViagemStatus(id, 2);
+      toast.success("Viagem aprovada com sucesso!");
+    } catch (err: any) {
+      if (
+        err.response &&
+        err.response.data &&
+        err.response.data.errors &&
+        Array.isArray(err.response.data.errors)
+      ) {
+        err.response.data.errors.forEach((error: string) => toast.error(error));
+      } else {
+        toast.error("Erro ao aprovar viagem");
       }
       throw err;
     }

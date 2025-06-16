@@ -172,16 +172,6 @@ export default function ViagemForm({
 
       onSuccess();
     } catch (err: any) {
-      let errorMessage = isEdit
-        ? "Erro ao atualizar viagem."
-        : "Erro ao cadastrar viagem.";
-
-      if (err?.message) {
-        errorMessage += ` ${err.message}`;
-      } else if (err?.response?.data?.message) {
-        errorMessage += ` ${err.response.data.message}`;
-      }
-      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
