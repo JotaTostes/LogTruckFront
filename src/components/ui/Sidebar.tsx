@@ -70,6 +70,12 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
               icon: <MapPinCheck size={16} />,
               description: "Aprovação de viagens em planejamento",
             },
+            {
+              label: "Custos de Viagens",
+              to: "/viagens/custos",
+              icon: <Receipt size={16} />,
+              description: "Gerencie os custos associados às viagens",
+            },
           ],
         },
         {

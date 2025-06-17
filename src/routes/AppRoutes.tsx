@@ -10,6 +10,7 @@ import Usuarios from "../pages/Usuario/Usuarios";
 import Viagens from "../pages/Viagens/Viagens";
 import FeatureNotImplemented from "../components/ui/FeatureNotImplemented";
 import { Routes, Route, Navigate } from "react-router-dom";
+import GerenciarCustos from "../pages/Viagens/Custos/GerenciarCustos";
 export function AppRoutes() {
   return (
     <Routes>
@@ -25,6 +26,7 @@ export function AppRoutes() {
           <Route path="/caminhoes" element={<Caminhao />} />
           <Route path="/custos/comissoes" element={<Comissao />} />
           <Route path="/viagens/aprovar" element={<AprovarViagens />} />
+          <Route path="/viagens/custos" element={<GerenciarCustos />} />
           <Route
             path="/config"
             element={

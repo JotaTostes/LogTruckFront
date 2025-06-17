@@ -1,5 +1,6 @@
+import type { Viagem } from "./Viagem";
+
 export interface CustoViagemPayload {
-  // Para criação
   viagemId: string;
   tipo: number;
   valor: number;
@@ -7,8 +8,11 @@ export interface CustoViagemPayload {
 }
 
 export interface CustoViagem extends CustoViagemPayload {
-  // Para exibição, se vier com ID
   id: string;
+}
+
+export interface CustoViagemCompletoDto extends CustoViagem {
+  viagem: Viagem;
 }
 
 export const tiposCustoOptions = [
