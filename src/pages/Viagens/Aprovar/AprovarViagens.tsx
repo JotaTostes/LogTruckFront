@@ -25,7 +25,7 @@ export default function AprovarViagens() {
   const loadViagens = async () => {
     setLoading(true);
     try {
-      viagemController.fetchViagensCompletas();
+      await viagemController.fetchViagensCompletas();
     } finally {
       setLoading(false);
     }

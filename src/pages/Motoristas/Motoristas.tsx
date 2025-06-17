@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Plus, Users, Search, History, Icon } from "lucide-react";
+import { Plus, Users, History, Icon } from "lucide-react";
 import { steeringWheel } from "@lucide/lab";
-import toast from "react-hot-toast";
 
 import { Button } from "../../components/ui/Button";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";

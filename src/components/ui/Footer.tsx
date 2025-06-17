@@ -1,6 +1,5 @@
 import React from "react";
 import { systemTheme } from "../../config/systemTheme";
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 export const Footer: React.FC = () => {
   return (

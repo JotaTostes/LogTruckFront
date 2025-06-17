@@ -79,7 +79,7 @@ export const formatarCPF = (cpf: string | null | undefined): string => {
 };
 
 // Versão alternativa mais robusta com validação de tipo
-export const formatarCPFSeguro = (cpf: any): string => {
+export const formatarCPFSeguro = (cpf: string): string => {
   try {
     // Converte para string se for número
     const cpfString = cpf?.toString() || "";
