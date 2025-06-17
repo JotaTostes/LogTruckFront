@@ -2,7 +2,7 @@ import { Receipt } from "lucide-react";
 import FormModal from "../../components/ui/FormModal";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import type { ComissaoCompleta } from "../../types/Comissao";
-import { formatarCPF } from "../../utils/formatadores";
+import { getStatusText, getStatusColor } from "../../utils/status";
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -53,7 +53,37 @@ export function ComissaoDetailsModal({
                   </div>
                   <div className="flex justify-between text-sm text-gray-500">
                     <span>Data Viagem: {detalhe.viagem.dataSaida}</span>
+
                     <span>Percentual: {detalhe.percentual}%</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-500">
+                    <span>
+                      Data Retorno: {detalhe.viagem.dataRetorno || "N/A"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-500">
+                    <span>
+                      Status da viagem:{" "}
+                      <span
+                        className={`px-2 py-1 rounded-full font-medium text-white ${getStatusColor(
+                          detalhe.viagem.status
+                        )}`}
+                        style={{
+                          backgroundColor: getStatusColor(
+                            detalhe.viagem.status
+                          ),
+                        }}
+                      >
+                        {getStatusText(detalhe.viagem.status)}
+                      </span>
+                    </span>
+                    <span>
+                      Valor do Frete:{" "}
+                      {detalhe.viagem.valorFrete?.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </span>
                   </div>
                 </div>
               ))}

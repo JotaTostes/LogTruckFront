@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Plus, Users, Search, Filter, Icon } from "lucide-react";
+import { Plus, Users, History, Icon } from "lucide-react";
 import { steeringWheel } from "@lucide/lab";
-import toast from "react-hot-toast";
 
 import { Button } from "../../components/ui/Button";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
@@ -243,7 +242,7 @@ export default function Motoristas() {
             </div>
           </div>
 
-          <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
+          {/* <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
             <div className="flex items-center gap-4">
               <div className="bg-blue-100 p-3 rounded-xl">
                 <Plus className="h-6 w-6 text-blue-600" />
@@ -257,18 +256,34 @@ export default function Motoristas() {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
             <div className="flex items-center gap-4">
               <div className="bg-purple-100 p-3 rounded-xl">
-                <Filter className="h-6 w-6 text-purple-600" />
+                <History className="h-6 w-6 text-purple-600" />
               </div>
               <div>
                 <p className="text-sm text-slate-500 font-medium">
-                  Outros Dados
+                  Último Cadastro
                 </p>
-                <p className="text-2xl font-bold text-slate-800">--</p>
+                <p className="text-sm font-medium text-slate-600">
+                  {motoristasCompletos.length === 0
+                    ? "Nenhum"
+                    : (() => {
+                        const last = motoristasCompletos
+                          .map((m) => new Date(m.criadoEm))
+                          .sort((a, b) => b.getTime() - a.getTime())[0];
+                        const now = new Date();
+                        const diffMs = now.getTime() - last.getTime();
+                        const diffDays = Math.floor(
+                          diffMs / (1000 * 60 * 60 * 24)
+                        );
+                        if (diffDays === 0) return "Hoje";
+                        if (diffDays === 1) return "Ontem";
+                        return `${diffDays} dias atrás`;
+                      })()}
+                </p>
               </div>
             </div>
           </div>

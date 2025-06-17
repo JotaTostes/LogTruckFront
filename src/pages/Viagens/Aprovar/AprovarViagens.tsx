@@ -9,10 +9,10 @@ import {
   aprovarViagemColumns,
 } from "../../../layouts/Table/ViagensTableConfig";
 import toast from "react-hot-toast";
+import { viagemController } from "../../../controllers/viagemController";
 
 export default function AprovarViagens() {
-  const { viagensCompletas, carregarViagensCompletas, aprovarViagem } =
-    useViagemStore();
+  const viagensCompletas = useViagemStore((state) => state.viagensCompletas);
   const [loading, setLoading] = useState(true);
   const [selectedViagem, setSelectedViagem] = useState<ViagemCompletas | null>(
     null
@@ -25,7 +25,7 @@ export default function AprovarViagens() {
   const loadViagens = async () => {
     setLoading(true);
     try {
-      await carregarViagensCompletas();
+      await viagemController.fetchViagensCompletas();
     } finally {
       setLoading(false);
     }
@@ -34,17 +34,12 @@ export default function AprovarViagens() {
   const handleAprovar = async (viagem: ViagemCompletas) => {
     try {
       if (viagem.id) {
-        await aprovarViagem(viagem.id);
-        // loadViagens();
+        viagemController.aprovarViagem(viagem.id);
       } else {
         toast.error("Viagem não encontrada para aprovação.");
       }
       await loadViagens();
-    } catch (error) {
-      toast.error(
-        "Erro ao aprovar viagem. Verifique os dados e tente novamente."
-      );
-    }
+    } catch (error) {}
   };
 
   const viagensPlanejadas = viagensCompletas.filter(
@@ -73,6 +68,12 @@ export default function AprovarViagens() {
         subtitle="Gerencie as viagens que estão em planejamento"
         loading={loading}
         filterPlaceholder="Buscar viagens..."
+        emptyStateConfig={{
+          title: "Nenhuma viagem a ser aprovada",
+          showCreateButton: false,
+          description:
+            "Todas as viagens planejadas foram aprovadas ou não há viagens pendentes.",
+        }}
       />
 
       <ViagemDetailsModal

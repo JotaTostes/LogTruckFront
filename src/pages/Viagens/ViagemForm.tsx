@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import FilterableDropdown from "../../components/ui/FiltrableDropdown";
-import { useViagemStore } from "../../store/viagemStore";
+import { viagemController } from "../../controllers/viagemController";
 import {
   Truck,
   MapPin,
@@ -13,10 +13,15 @@ import {
   AlertCircle,
   User,
   Banknote,
+  CheckCircle2,
 } from "lucide-react";
 import type { Motorista } from "../../types/Motorista";
 import type { Caminhao } from "../../types/Caminhao";
-import type { Viagem } from "../../types/Viagem";
+import type {
+  CreateViagemDto,
+  UpdateViagemDto,
+  Viagem,
+} from "../../types/Viagem";
 import { formatarPlaca } from "../../utils/formatadores";
 
 type ViagemFormProps = {
@@ -32,8 +37,6 @@ export default function ViagemForm({
   onSuccess,
   viagem,
 }: ViagemFormProps) {
-  const { adicionarViagem, editarViagem } = useViagemStore();
-
   const [motoristaId, setMotoristaId] = useState(viagem?.motoristaId ?? "");
   const [caminhaoId, setCaminhaoId] = useState(viagem?.caminhaoId ?? "");
   const [origem, setOrigem] = useState(viagem?.origem ?? "");
@@ -110,6 +113,19 @@ export default function ViagemForm({
     return Object.keys(newErrors).length === 0;
   };
 
+  const resetForm = () => {
+    setMotoristaId("");
+    setCaminhaoId("");
+    setOrigem("");
+    setDestino("");
+    setQuilometragem(0);
+    setValorFrete(0);
+    setComissao(0);
+    setDataSaida("");
+    setErrors({});
+    setLoading(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -118,30 +134,44 @@ export default function ViagemForm({
       return;
     }
 
+    const viagemData: CreateViagemDto | UpdateViagemDto =
+      isEdit && viagem?.id
+        ? {
+            id: viagem.id,
+            motoristaId,
+            caminhaoId,
+            origem: origem.trim(),
+            destino: destino.trim(),
+            quilometragem,
+            valorFrete,
+            dataSaida,
+            comissao,
+          }
+        : {
+            motoristaId,
+            caminhaoId,
+            origem: origem.trim(),
+            destino: destino.trim(),
+            quilometragem,
+            valorFrete,
+            dataSaida,
+            comissao,
+          };
+
     setLoading(true);
     try {
-      const viagemData = {
-        motoristaId,
-        caminhaoId,
-        origem: origem.trim(),
-        destino: destino.trim(),
-        quilometragem,
-        valorFrete,
-        dataSaida,
-        comissao,
-      };
-
       if (isEdit && viagem?.id) {
-        await editarViagem(viagem.id, { ...viagemData, id: viagem.id });
-        toast.success("Viagem atualizada com sucesso!");
+        await viagemController.editViagem(
+          viagem.id,
+          viagemData as UpdateViagemDto
+        );
       } else {
-        await adicionarViagem(viagemData);
-        toast.success("Viagem cadastrada com sucesso!");
+        await viagemController.addViagem(viagemData as CreateViagemDto);
+        resetForm();
       }
 
-      onSuccess?.();
-    } catch (err) {
-      console.error(err);
+      onSuccess();
+    } catch (err: any) {
     } finally {
       setLoading(false);
     }
@@ -343,13 +373,20 @@ export default function ViagemForm({
         </div>
 
         {/* Submit Button */}
-        <div className="pt-4">
+        <div className="pt-4 flex justify-center">
           <Button
             type="submit"
             isLoading={loading}
             disabled={loading}
             className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 font-semibold text-lg rounded-xl transition-all duration-300"
             showArrow={false}
+            icon={
+              isEdit ? (
+                <CheckCircle2 className="h-5 w-5" />
+              ) : (
+                <Truck className="h-5 w-5" />
+              )
+            }
           >
             {loading ? (
               <div className="flex items-center gap-2">
@@ -358,11 +395,6 @@ export default function ViagemForm({
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                {isEdit ? (
-                  <Truck className="h-5 w-5" />
-                ) : (
-                  <Truck className="h-5 w-5" />
-                )}
                 {isEdit ? "Salvar Alterações" : "Cadastrar Viagem"}
               </div>
             )}

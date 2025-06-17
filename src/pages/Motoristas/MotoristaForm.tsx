@@ -3,20 +3,23 @@ import { toast } from "react-hot-toast";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import FilterableDropdown from "../../components/ui/FiltrableDropdown";
-import { useMotoristaStore } from "../../store/motoristaStore";
 import { MTSwitch as Switch } from "../../components/ui/mt/MTSwitch";
 import {
   User,
-  CreditCard,
   Phone,
   Calendar,
   CheckCircle2,
   AlertCircle,
   IdCard,
 } from "lucide-react";
-import type { Usuario, UsuarioDto } from "../../types/Usuario";
-import type { Motorista } from "../../types/Motorista";
+import type { UsuarioDto } from "../../types/Usuario";
+import type {
+  CreateMotoristaDto,
+  Motorista,
+  UpdateMotoristaDto,
+} from "../../types/Motorista";
 import { formatarTelefone } from "../../utils/formatadores";
+import { motoristaController } from "../../controllers/motoristaController";
 
 type MotoristaFormProps = {
   usuariosMotoristas: UsuarioDto[];
@@ -29,8 +32,7 @@ export default function MotoristaForm({
   onSuccess,
   motorista,
 }: MotoristaFormProps) {
-  const { adicionarMotorista, editarMotorista } = useMotoristaStore();
-  const [usuarioId, setUsuarioId] = useState(motorista?.id ?? "");
+  const [usuarioId, setUsuarioId] = useState(motorista?.usuarioId ?? "");
   const [cnh, setCnh] = useState(motorista?.cnh ?? "");
   const [nome, setNome] = useState(motorista?.nome ?? "");
   const [dataNascimento, setDataNascimento] = useState(
@@ -40,7 +42,6 @@ export default function MotoristaForm({
   const [ativo, setAtivo] = useState(motorista?.ativo ?? true);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState("");
   const isEdit = !!motorista;
 
   // Filtro para dropdown
@@ -72,14 +73,16 @@ export default function MotoristaForm({
       setErrors({ ...errors, telefone: "" });
     }
   };
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!usuarioId) newErrors.usuarioId = "Selecione o usuário";
+    if (!isEdit && !usuarioId) newErrors.usuarioId = "Selecione o usuário";
     if (!cnh.trim()) newErrors.cnh = "CNH é obrigatória";
     if (cnh.length < 11) newErrors.cnh = "CNH deve ter 11 dígitos";
     if (!dataNascimento)
       newErrors.dataNascimento = "Data de nascimento é obrigatória";
     if (!telefone.trim()) newErrors.telefone = "Telefone é obrigatório";
+    if (isEdit && !nome.trim()) newErrors.nome = "Nome é obrigatório";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -97,35 +100,42 @@ export default function MotoristaForm({
     try {
       const telefoneNumerico = telefone.replace(/\D/g, "");
 
-      // Dados base para criação/edição
       const dadosMotorista = {
         nome: nome.trim(),
         dataNascimento,
         cnh: cnh.trim(),
         telefone: telefoneNumerico,
+        ativo,
       };
 
-      if (isEdit && motorista?.id) {
-        // Atualização de motorista existente
-        await editarMotorista(motorista.id, {
-          id: motorista.id,
-          ...dadosMotorista,
-        });
-      } else {
-        await adicionarMotorista({
-          usuarioId,
-          ...dadosMotorista,
-          nome: "",
-          cpf: "",
-          ativo: true,
-        });
+      const motoristaData: CreateMotoristaDto | UpdateMotoristaDto =
+        isEdit && motorista?.id
+          ? {
+              id: motorista.id,
+              cnh: cnh.trim(),
+              dataNascimento,
+              telefone: telefoneNumerico,
+              usuarioId,
+            }
+          : {
+              cnh: cnh.trim(),
+              dataNascimento,
+              telefone: telefoneNumerico,
+              usuarioId,
+            };
 
+      if (isEdit && motorista?.id) {
+        await motoristaController.editMotorista(
+          motorista.id,
+          motoristaData as UpdateMotoristaDto
+        );
+      } else {
+        await motoristaController.addMotorista(
+          motoristaData as CreateMotoristaDto
+        );
         resetForm();
       }
-
-      if (onSuccess && typeof onSuccess === "function") {
-        onSuccess();
-      }
+      onSuccess();
     } catch (err: any) {
       let errorMessage = isEdit
         ? "Erro ao atualizar motorista."
@@ -148,6 +158,7 @@ export default function MotoristaForm({
     setCnh("");
     setTelefone("");
     setDataNascimento("");
+    setUsuarioId("");
   };
 
   return (
@@ -283,13 +294,20 @@ export default function MotoristaForm({
         </div>
 
         {/* Submit Button */}
-        <div className="pt-4">
+        <div className="pt-4 flex justify-center">
           <Button
             type="submit"
             isLoading={loading}
             disabled={loading}
             className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 font-semibold text-lg rounded-xl transition-all duration-300"
             showArrow={false}
+            icon={
+              isEdit ? (
+                <CheckCircle2 className="h-5 w-5" />
+              ) : (
+                <User className="h-5 w-5" />
+              )
+            }
           >
             {loading ? (
               <div className="flex items-center gap-2">
@@ -298,11 +316,6 @@ export default function MotoristaForm({
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                {isEdit ? (
-                  <CheckCircle2 className="h-5 w-5" />
-                ) : (
-                  <User className="h-5 w-5" />
-                )}
                 {isEdit ? "Salvar Alterações" : "Cadastrar Motorista"}
               </div>
             )}

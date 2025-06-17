@@ -15,6 +15,7 @@ export type Viagem = {
   status: number; // 1: Planejada, 2: EmAndamento, 3: Concluída, 4: Cancelada
   valorFrete: number;
   comissao: number; // Percentual de comissão sobre o valor do frete
+  criadoEm: Date;
 };
 
 export type ViagemCompletas = Viagem & {

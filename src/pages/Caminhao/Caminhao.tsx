@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Truck, Search, Filter } from "lucide-react";
+import { Plus, Truck, Search, History } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { Button } from "../../components/ui/Button";
@@ -183,6 +183,70 @@ export default function Caminhao() {
                 }}
               />
             )}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
+          <div className="flex items-center gap-4">
+            <div className="bg-green-100 p-3 rounded-xl">
+              <Truck className="h-6 w-6 text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm text-slate-500 font-medium">
+                Total de Caminhões
+              </p>
+              <p className="text-2xl font-bold text-slate-800">
+                {caminhoes.length}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
+          <div className="flex items-center gap-4">
+            <div className="bg-blue-100 p-3 rounded-xl">
+              <Plus className="h-6 w-6 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-sm text-slate-500 font-medium">
+                Motoristas Ativos
+              </p>
+              <p className="text-2xl font-bold text-slate-800">
+                {caminhoes.length}
+              </p>
+            </div>
+          </div>
+        </div> */}
+
+        <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
+          <div className="flex items-center gap-4">
+            <div className="bg-purple-100 p-3 rounded-xl">
+              <History className="h-6 w-6 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-sm text-slate-500 font-medium">
+                Último Cadastro
+              </p>
+              <p className="text-sm font-medium text-slate-600">
+                {caminhoes.length === 0
+                  ? "Nenhum"
+                  : (() => {
+                      const last = caminhoes
+                        .map((m) => new Date(m.criadoEm))
+                        .sort((a, b) => b.getTime() - a.getTime())[0];
+                      const now = new Date();
+                      const diffMs = now.getTime() - last.getTime();
+                      const diffDays = Math.floor(
+                        diffMs / (1000 * 60 * 60 * 24)
+                      );
+                      if (diffDays === 0) return "Hoje";
+                      if (diffDays === 1) return "Ontem";
+                      return `${diffDays} dias atrás`;
+                    })()}
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -8,6 +8,7 @@ export type Caminhao = {
   ano: number;
   capacidadeToneladas: number;
   ativo: boolean;
+  criadoEm: Date;
 };
 
 export type CaminhaoCompletos = Caminhao & {
