@@ -86,6 +86,7 @@ export default function Motoristas() {
     if (!deleteId) return;
     try {
       motoristaController.deleteMotorista(deleteId);
+      loadMotoristas();
     } catch (error) {
     } finally {
       setDeleteId(null);

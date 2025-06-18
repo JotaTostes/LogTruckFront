@@ -1,8 +1,8 @@
 import type { Motorista } from "../../types/Motorista";
 import MotoristaForm from "./MotoristaForm";
-import type { Usuario, UsuarioDto } from "../../types/Usuario";
+import type { UsuarioDto } from "../../types/Usuario";
 import FormModal from "../../components/ui/FormModal";
-import { UserPlus, Icon } from "lucide-react";
+import { Icon } from "lucide-react";
 import { steeringWheel } from "@lucide/lab";
 
 type Props = {

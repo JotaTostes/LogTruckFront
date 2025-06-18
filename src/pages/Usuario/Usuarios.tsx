@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Users, Search, History } from "lucide-react";
-import toast from "react-hot-toast";
+import { Plus, Users, History } from "lucide-react";
 
 import { Button } from "../../components/ui/Button";
 import { DataTable } from "../../components/ui/DataTable";

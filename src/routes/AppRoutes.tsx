@@ -26,6 +26,12 @@ export function AppRoutes() {
           <Route path="/custos/comissoes" element={<Comissao />} />
           <Route path="/viagens/aprovar" element={<AprovarViagens />} />
           <Route
+            path="/custos/pendenciasVeiculares"
+            element={
+              <FeatureNotImplemented featureName="Pendências Veiculares" />
+            }
+          />
+          <Route
             path="/config"
             element={
               <FeatureNotImplemented

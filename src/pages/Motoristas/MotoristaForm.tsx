@@ -100,14 +100,6 @@ export default function MotoristaForm({
     try {
       const telefoneNumerico = telefone.replace(/\D/g, "");
 
-      const dadosMotorista = {
-        nome: nome.trim(),
-        dataNascimento,
-        cnh: cnh.trim(),
-        telefone: telefoneNumerico,
-        ativo,
-      };
-
       const motoristaData: CreateMotoristaDto | UpdateMotoristaDto =
         isEdit && motorista?.id
           ? {
@@ -134,8 +126,8 @@ export default function MotoristaForm({
           motoristaData as CreateMotoristaDto
         );
         resetForm();
+        onSuccess();
       }
-      onSuccess();
     } catch (err: any) {
       let errorMessage = isEdit
         ? "Erro ao atualizar motorista."

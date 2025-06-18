@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Receipt,
   MapPinCheck,
+  BanknoteArrowDown,
 } from "lucide-react";
 import { systemTheme } from "../../config/systemTheme";
 
@@ -93,6 +94,13 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
               to: "/custos/comissoes",
               icon: <Receipt size={16} />,
               description: "Gerencie as comissões pendentes",
+            },
+            {
+              label: "Pendências Veiculares",
+              to: "/custos/pendenciasVeiculares",
+              icon: <BanknoteArrowDown size={16} />,
+              description:
+                "Gerencie os débitos dos caminhões (IPVA, Licenciamento, etc.)",
             },
           ],
         },

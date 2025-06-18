@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { DataTable } from "../../../components/ui/DataTable";
-import { Check, Eye } from "lucide-react";
 import { useViagemStore } from "../../../store/viagemStore";
 import { ViagemDetailsModal } from "../ViagemDetailsModal";
 import type { ViagemCompletas } from "../../../types/Viagem";

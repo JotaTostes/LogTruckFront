@@ -1,12 +1,4 @@
-import {
-  Eye,
-  Truck,
-  User,
-  MapPin,
-  Calendar,
-  DollarSign,
-  Receipt,
-} from "lucide-react";
+import { Eye, Truck, User, MapPin, DollarSign, Receipt } from "lucide-react";
 import FormModal from "../../components/ui/FormModal";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import type { ViagemCompletas } from "../../types/Viagem";
