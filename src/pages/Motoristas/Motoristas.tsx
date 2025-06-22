@@ -169,40 +169,6 @@ export default function Motoristas() {
           </div>
 
           <div className="p-8">
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-16 space-y-4">
-                <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-                <p className="text-slate-500 font-medium">
-                  Carregando motoristas...
-                </p>
-              </div>
-            ) : motoristas.length === 0 ? (
-              <div className="text-center py-16 space-y-4">
-                <div className="bg-gradient-to-br from-slate-100 to-slate-200 w-24 h-24 rounded-full mx-auto flex items-center justify-center">
-                  <Users className="h-10 w-10 text-slate-400" />
-                </div>
-                <div>
-                  <Typography
-                    variant="h4"
-                    color="blue-gray"
-                    className="font-semibold mb-2"
-                  >
-                    Nenhum motorista encontrado
-                  </Typography>
-                  <p className="text-slate-500 mb-6">
-                    Comece criando seu primeiro motorista no sistema
-                  </p>
-                  <Button
-                    onClick={handleCreate}
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 px-6 py-3 rounded-xl font-medium"
-                    showArrow={false}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Criar Primeiro Motorista
-                  </Button>
-                </div>
-              </div>
-            ) : (
               <DataTable
                 data={motoristasCompletos}
                 columns={motoristaColumns}
@@ -221,7 +187,6 @@ export default function Motoristas() {
                   description: "Nenhum motorista cadastrado no sistema ainda",
                 }}
               />
-            )}
           </div>
         </div>
 
