@@ -1,6 +1,6 @@
 import { Button } from "./Button";
 import { Trash2, X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { systemTheme } from "../../config/systemTheme";
 
 type ConfirmDeleteModalProps = {
@@ -9,6 +9,7 @@ type ConfirmDeleteModalProps = {
   onConfirm: () => void;
   title?: string;
   description?: string;
+  icon?: ReactNode;
 };
 
 export default function ConfirmDeleteModal({
@@ -17,6 +18,7 @@ export default function ConfirmDeleteModal({
   onConfirm,
   title = "Confirmar exclusão",
   description = "Tem certeza que deseja excluir este motorista? Esta ação não pode ser desfeita.",
+  icon,
 }: ConfirmDeleteModalProps) {
   // Previne scroll quando modal está aberta
   useEffect(() => {
@@ -70,7 +72,7 @@ export default function ConfirmDeleteModal({
         {/* Header com ícone e título */}
         <div className="flex flex-col items-center text-center mb-6">
           <div className="bg-red-50 p-4 rounded-full mb-4 border border-red-100">
-            <Trash2 className="w-8 h-8 text-red-500" />
+            {icon ?? <Trash2 className="w-8 h-8 text-red-500" />}
           </div>
           <h2 className="text-xl font-semibold text-gray-900 mb-2">{title}</h2>
           <p className="text-gray-600 leading-relaxed">{description}</p>
@@ -93,7 +95,7 @@ export default function ConfirmDeleteModal({
             onClick={onConfirm}
             showArrow={false}
             className="flex-1 sm:flex-none"
-            icon={<Trash2 className="h-5 w-5" />}
+            icon={icon ?? <X className="h-5 w-5" />}
             variant="success"
           >
             Confirmar

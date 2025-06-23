@@ -14,6 +14,7 @@ import {
   Receipt,
   MapPinCheck,
   BanknoteArrowDown,
+  UserCheck,
 } from "lucide-react";
 import { systemTheme } from "../../config/systemTheme";
 
@@ -50,9 +51,22 @@ const Sidebar = ({ children, isHovered, setIsHovered }: SidebarProps) => {
         },
         {
           label: "Motoristas",
-          to: "/motoristas",
           icon: <IdCard size={18} />,
-          description: "Lista e detalhes dos motoristas",
+          description: "Lista e gerenciamento de motoristas",
+          submenu: [
+            {
+              label: "Cadastrar Motoristas",
+              to: "/motoristas",
+              icon: <IdCard size={16} />,
+              description: "Cadastro e gerenciamento de motoristas",
+            },
+            {
+              label: "Reativar Motoristas",
+              to: "/motoristas/reativar",
+              icon: <UserCheck size={16} />,
+              description: "Reative motoristas deletados",
+            },
+          ],
         },
         {
           label: "Viagens",

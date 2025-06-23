@@ -86,7 +86,6 @@ export default function Motoristas() {
     if (!deleteId) return;
     try {
       motoristaController.deleteMotorista(deleteId);
-      loadMotoristas();
     } catch (error) {
     } finally {
       setDeleteId(null);
@@ -170,24 +169,24 @@ export default function Motoristas() {
           </div>
 
           <div className="p-8">
-              <DataTable
-                data={motoristasCompletos}
-                columns={motoristaColumns}
-                actions={createMotoristaActions(
-                  handleEdit,
-                  handleDelete,
-                  setSelectedViagemParaCustos
-                )}
-                title="Motoristas Cadastrados"
-                subtitle="Gerencie todos os motoristas do sistema"
-                loading={loading}
-                filterPlaceholder="Buscar motorista..."
-                emptyStateConfig={{
-                  showCreateButton: false,
-                  title: "Nenhum motorista encontrado",
-                  description: "Nenhum motorista cadastrado no sistema ainda",
-                }}
-              />
+            <DataTable
+              data={motoristasCompletos}
+              columns={motoristaColumns}
+              actions={createMotoristaActions(
+                handleEdit,
+                handleDelete,
+                setSelectedViagemParaCustos
+              )}
+              title="Motoristas Cadastrados"
+              subtitle="Gerencie todos os motoristas do sistema"
+              loading={loading}
+              filterPlaceholder="Buscar motorista..."
+              emptyStateConfig={{
+                showCreateButton: false,
+                title: "Nenhum motorista encontrado",
+                description: "Nenhum motorista cadastrado no sistema ainda",
+              }}
+            />
           </div>
         </div>
 
@@ -202,7 +201,7 @@ export default function Motoristas() {
                   Total de Motoristas
                 </p>
                 <p className="text-2xl font-bold text-slate-800">
-                  {motoristas.length}
+                  {motoristas.filter((m) => !m.ativo).length}
                 </p>
               </div>
             </div>

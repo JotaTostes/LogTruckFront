@@ -5,6 +5,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import DefaultLayout from "../layouts/DefaultLayout";
 import Login from "../pages/Login";
 import Motoristas from "../pages/Motoristas/Motoristas";
+import ReativarMotoristas from "../pages/Motoristas/ReativarMotorista";
 import PrivateRoute from "../routes/PrivateRoute";
 import Usuarios from "../pages/Usuario/Usuarios";
 import Viagens from "../pages/Viagens/Viagens";
@@ -25,6 +26,7 @@ export function AppRoutes() {
           <Route path="/caminhoes" element={<Caminhao />} />
           <Route path="/custos/comissoes" element={<Comissao />} />
           <Route path="/viagens/aprovar" element={<AprovarViagens />} />
+          <Route path="/motoristas/reativar" element={<ReativarMotoristas />} />
           <Route
             path="/custos/pendenciasVeiculares"
             element={

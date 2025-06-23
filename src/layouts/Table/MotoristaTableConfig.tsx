@@ -1,7 +1,7 @@
 import type { Motorista, MotoristaCompleto } from "../../types/Motorista";
 import type { Column, ActionButton } from "../../components/ui/DataTable";
-import { Edit, Trash2, Eye } from "lucide-react";
-import { formatarCPF } from "../../utils/formatadores";
+import { Edit, Trash2, Eye, CheckCircle2 } from "lucide-react";
+import { formatarCPF, formatarTelefone } from "../../utils/formatadores";
 
 export const motoristaColumns: Column<Motorista>[] = [
   {
@@ -26,6 +26,7 @@ export const motoristaColumns: Column<Motorista>[] = [
     key: "telefone",
     label: "Telefone",
     width: "25%",
+    render: (item) => formatarTelefone(item.telefone),
     filtrable: true,
   },
 ];
@@ -52,5 +53,16 @@ export const createMotoristaActions = (
     onClick: (usuario) => usuario.id && onDelete(usuario.id),
     color: "red",
     title: "Excluir",
+  },
+];
+
+export const reativarMotoristaActions = (
+  onReativar: (id: string) => void
+): ActionButton<Motorista>[] => [
+  {
+    icon: <CheckCircle2 className="h-4 w-4" />,
+    onClick: (motorista) => motorista.id && onReativar(motorista.id),
+    color: "green",
+    title: "Reativar",
   },
 ];

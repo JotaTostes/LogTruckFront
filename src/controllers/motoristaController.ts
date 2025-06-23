@@ -57,7 +57,7 @@ export const motoristaController = {
   async deleteMotorista(id: string) {
     try {
       await api.delete(`/motorista/${id}`);
-      await this.fetchMotoristas();
+      await this.fetchMotoristasCompletos();
       toast.success("Motorista removido com sucesso!");
     } catch (err: any) {
       if (
@@ -70,6 +70,25 @@ export const motoristaController = {
       } else {
         toast.error("Erro ao remover motorista");
       }
+      throw err;
+    }
+  },
+  async fetchMotoristasDeletados() {
+    try {
+      const { data } = await api.get<Motorista[]>("/motorista/deletados");
+      useMotoristaStore.getState().setMotoristasDeletados(data);
+    } catch (err) {
+      toast.error("Erro ao carregar motoristas deletados");
+      throw err;
+    }
+  },
+  async reativarMotorista(id: string) {
+    try {
+      await api.put(`/motorista/${id}/reativar`);
+      toast.success("Motorista reativado com sucesso!");
+      await this.fetchMotoristasDeletados(); // Atualiza a lista de motoristas deletados
+    } catch (err) {
+      toast.error("Erro ao reativar motorista");
       throw err;
     }
   },
