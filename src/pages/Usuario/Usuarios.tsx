@@ -16,6 +16,7 @@ import {
 
 import type { Usuario } from "../../types/Usuario";
 import { usuarioController } from "../../controllers/usuarioController";
+import { formatDaysAgo } from "../../utils/calculos";
 
 export default function Usuarios() {
   const usuarios = useUsuarioStore((state) => state.usuarios);
@@ -243,14 +244,7 @@ export default function Usuarios() {
                         const last = usuarios
                           .map((u) => new Date(u.criadoEm))
                           .sort((a, b) => b.getTime() - a.getTime())[0];
-                        const now = new Date();
-                        const diffMs = now.getTime() - last.getTime();
-                        const diffDays = Math.floor(
-                          diffMs / (1000 * 60 * 60 * 24)
-                        );
-                        if (diffDays === 0) return "Hoje";
-                        if (diffDays === 1) return "Ontem";
-                        return `${diffDays} dias atrás`;
+                        return formatDaysAgo(last);
                       })()}
                 </p>
               </div>

@@ -10,12 +10,12 @@ export type Motorista = {
   telefone: string;
   ativo: boolean;
   dataNascimento: string;
+  criadoEm: Date;
 };
 
 export type MotoristaCompleto = Motorista & {
   viagens?: Viagem[];
   comissoes?: Comissao[];
-  criadoEm: Date;
 };
 
 export type CreateMotoristaDto = {

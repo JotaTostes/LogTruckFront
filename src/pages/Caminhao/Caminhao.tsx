@@ -17,6 +17,7 @@ import {
 } from "../../layouts/Table/CaminhaoTableConfig";
 
 import type { Caminhao, UpdateCaminhaoDto } from "../../types/Caminhao";
+import { formatDaysAgo } from "../../utils/calculos";
 
 export default function Caminhao() {
   const caminhoes = useCaminhaoStore((state) => state.caminhoes);
@@ -140,20 +141,20 @@ export default function Caminhao() {
           </div>
 
           <div className="p-8">
-              <DataTable
-                data={caminhoes}
-                columns={caminhaoColumns}
-                actions={createCaminhaoActions(handleEdit, handleDelete)}
-                title="Caminhões Cadastrados"
-                subtitle="Gerencie todos os caminhões do sistema"
-                loading={loading}
-                filterPlaceholder="Buscar caminhão..."
-                emptyStateConfig={{
-                  showCreateButton: false,
-                  title: "Nenhum caminhão encontrado",
-                  description: "Nenhum caminhão foi cadastrado ainda.",
-                }}
-              />
+            <DataTable
+              data={caminhoes}
+              columns={caminhaoColumns}
+              actions={createCaminhaoActions(handleEdit, handleDelete)}
+              title="Caminhões Cadastrados"
+              subtitle="Gerencie todos os caminhões do sistema"
+              loading={loading}
+              filterPlaceholder="Buscar caminhão..."
+              emptyStateConfig={{
+                showCreateButton: false,
+                title: "Nenhum caminhão encontrado",
+                description: "Nenhum caminhão foi cadastrado ainda.",
+              }}
+            />
           </div>
         </div>
       </div>
@@ -175,22 +176,6 @@ export default function Caminhao() {
           </div>
         </div>
 
-        {/* <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
-          <div className="flex items-center gap-4">
-            <div className="bg-blue-100 p-3 rounded-xl">
-              <Plus className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm text-slate-500 font-medium">
-                Motoristas Ativos
-              </p>
-              <p className="text-2xl font-bold text-slate-800">
-                {caminhoes.length}
-              </p>
-            </div>
-          </div>
-        </div> */}
-
         <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-2xl p-6 shadow-lg shadow-blue-500/5">
           <div className="flex items-center gap-4">
             <div className="bg-purple-100 p-3 rounded-xl">
@@ -205,16 +190,9 @@ export default function Caminhao() {
                   ? "Nenhum"
                   : (() => {
                       const last = caminhoes
-                        .map((m) => new Date(m.criadoEm))
+                        .map((c) => new Date(c.criadoEm))
                         .sort((a, b) => b.getTime() - a.getTime())[0];
-                      const now = new Date();
-                      const diffMs = now.getTime() - last.getTime();
-                      const diffDays = Math.floor(
-                        diffMs / (1000 * 60 * 60 * 24)
-                      );
-                      if (diffDays === 0) return "Hoje";
-                      if (diffDays === 1) return "Ontem";
-                      return `${diffDays} dias atrás`;
+                      return formatDaysAgo(last);
                     })()}
               </p>
             </div>

@@ -20,6 +20,7 @@ import type { Motorista, MotoristaCompleto } from "../../types/Motorista";
 import { MotoristaDetailsModal } from "./MotoristaDetailModal";
 import { motoristaController } from "../../controllers/motoristaController";
 import { usuarioController } from "../../controllers/usuarioController";
+import { formatDaysAgo } from "../../utils/calculos";
 
 export default function Motoristas() {
   const motoristas = useMotoristaStore((state) => state.motoristas);
@@ -233,20 +234,13 @@ export default function Motoristas() {
                   Último Cadastro
                 </p>
                 <p className="text-sm font-medium text-slate-600">
-                  {motoristasCompletos.length === 0
+                  {motoristas.length === 0
                     ? "Nenhum"
                     : (() => {
-                        const last = motoristasCompletos
+                        const last = motoristas
                           .map((m) => new Date(m.criadoEm))
                           .sort((a, b) => b.getTime() - a.getTime())[0];
-                        const now = new Date();
-                        const diffMs = now.getTime() - last.getTime();
-                        const diffDays = Math.floor(
-                          diffMs / (1000 * 60 * 60 * 24)
-                        );
-                        if (diffDays === 0) return "Hoje";
-                        if (diffDays === 1) return "Ontem";
-                        return `${diffDays} dias atrás`;
+                        return formatDaysAgo(last);
                       })()}
                 </p>
               </div>

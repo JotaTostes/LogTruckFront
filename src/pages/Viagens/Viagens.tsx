@@ -32,6 +32,7 @@ import {
 
 // Types
 import type { Viagem, ViagemCompletas } from "../../types/Viagem";
+import { formatDaysAgo } from "../../utils/calculos";
 
 export default function Viagens() {
   const viagensCompletas = useViagemStore((state) => state.viagensCompletas);
@@ -286,14 +287,7 @@ export default function Viagens() {
                       const last = viagensCompletas
                         .map((v) => new Date(v.criadoEm))
                         .sort((a, b) => b.getTime() - a.getTime())[0];
-                      const now = new Date();
-                      const diffMs = now.getTime() - last.getTime();
-                      const diffDays = Math.floor(
-                        diffMs / (1000 * 60 * 60 * 24)
-                      );
-                      if (diffDays === 0) return "Hoje";
-                      if (diffDays === 1) return "Ontem";
-                      return `${diffDays} dias atrás`;
+                      return formatDaysAgo(last);
                     })()}
               </p>
             </div>
