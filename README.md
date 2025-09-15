@@ -104,8 +104,3 @@ Abra uma _issue_ para sugerir melhorias, reportar bugs ou envie um _pull request
 
 Distribuído sob a licença MIT.
 
----
-
-<p align="center">
-  Feito com ❤️ por <a href="https://github.com/JotaTostes">Jota Tostes</a>
-</p>
