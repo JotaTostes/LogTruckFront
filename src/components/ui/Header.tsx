@@ -19,7 +19,7 @@ const getInitials = (name: string = ""): string => {
     .toUpperCase();
 };
 
-const Header = ({ isSidebarHovered, setIsSidebarHovered }: HeaderProps) => {
+const Header = ({ setIsSidebarHovered }: HeaderProps) => {
   const { usuario, logout } = useAuthStore();
 
   // Chame a função para obter as iniciais

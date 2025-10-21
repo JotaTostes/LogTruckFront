@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useDashboardStore } from "../../store/dashboardStore";
-import { DashCard } from "../../components/ui/DashCard";
 import {
   BarChart3,
   TrendingUp,
@@ -253,7 +252,7 @@ export default function Dashboard() {
           {/* Cards Grid */}
           <div className="p-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {cardConfigs.map((config, index) => (
+              {cardConfigs.map((config) => (
                 <div
                   key={config.title}
                   className={`group relative bg-gradient-to-br ${config.bgGradient} border border-white/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-1 cursor-pointer overflow-hidden`}

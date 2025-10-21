@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, MapPinned, History, Filter, MapPinCheck } from "lucide-react";
+import { Plus, MapPinned, History, MapPinCheck } from "lucide-react";
 import toast from "react-hot-toast";
 
 // UI Components
@@ -38,9 +38,6 @@ export default function Viagens() {
   const viagensCompletas = useViagemStore((state) => state.viagensCompletas);
   const motoristas = useMotoristaStore((state) => state.motoristas);
   const caminhoes = useCaminhaoStore((state) => state.caminhoes);
-  const caminhoesCompletos = useCaminhaoStore(
-    (state) => state.caminhoesCompletos
-  );
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Viagem | null>(null);
   const [loading, setLoading] = useState(true);

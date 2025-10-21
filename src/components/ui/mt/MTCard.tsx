@@ -5,7 +5,6 @@ import {
   CardHeader as MTCardHeader,
   CardBody as MTCardBody,
   CardFooter as MTCardFooter,
-  type CardProps as MTCardProps,
 } from "@material-tailwind/react";
 
 export const Card = (props: any) => <MTCard {...props} />;

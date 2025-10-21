@@ -1,7 +1,6 @@
 import { Button } from "./Button";
 import { Trash2, X } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
-import { systemTheme } from "../../config/systemTheme";
 
 type ConfirmDeleteModalProps = {
   open: boolean;

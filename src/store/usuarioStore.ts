@@ -1,9 +1,5 @@
 import { create } from "zustand";
-import api from "../utils/api";
-import { toast } from "react-hot-toast";
 import type { Usuario, UsuarioDto } from "../types/Usuario";
-
-type RoleUsuario = "Administrador" | "Operador" | "Motorista";
 
 interface UsuarioStore {
   usuarios: Usuario[];

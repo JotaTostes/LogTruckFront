@@ -1,18 +1,8 @@
-import type { Viagem } from "../../types/Viagem";
 import type { Motorista } from "../../types/Motorista";
 import type { Caminhao } from "../../types/Caminhao";
 import FormModal from "../../components/ui/FormModal";
 import { MapPlus } from "lucide-react";
 import ViagemForm from "./ViagemForm";
-
-type Props = {
-  open: boolean;
-  onClose: () => void;
-  viagem: Viagem | null;
-  onSuccess: () => void;
-  motoristas: Motorista[];
-  caminhoes: Caminhao[];
-};
 
 export function ViagemFormModal({
   open,

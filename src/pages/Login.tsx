@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Truck } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { toast } from "react-hot-toast";
 

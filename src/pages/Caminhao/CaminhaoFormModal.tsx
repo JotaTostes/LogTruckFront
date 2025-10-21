@@ -1,14 +1,6 @@
 import CaminhaoForm from "./CaminhaoForm";
-import type { Caminhao } from "../../types/Caminhao";
 import FormModal from "../../components/ui/FormModal";
 import { Truck } from "lucide-react";
-
-type Props = {
-  open: boolean;
-  onClose: () => void;
-  caminhao: Caminhao | null;
-  onSuccess: () => void;
-};
 
 export function CaminhaoFormModal({
   open,
