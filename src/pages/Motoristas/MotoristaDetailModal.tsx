@@ -1,12 +1,4 @@
-import {
-  Eye,
-  User,
-  Truck,
-  MapPin,
-  Receipt,
-  Phone,
-  CreditCard,
-} from "lucide-react";
+import { Eye, User, MapPin, Receipt } from "lucide-react";
 import FormModal from "../../components/ui/FormModal";
 import { MTTypography as Typography } from "../../components/ui/mt/MTTypography";
 import { formatarCPF } from "../../utils/formatadores";
@@ -140,13 +132,10 @@ export function MotoristaDetailsModal({ open, onClose, motorista }: Props) {
                     {viagem.comissao && (
                       <span className="text-green-600 font-medium">
                         Comissão:{" "}
-                        {viagem.comissao.valorCalculado.toLocaleString(
-                          "pt-BR",
-                          {
-                            style: "currency",
-                            currency: "BRL",
-                          }
-                        )}
+                        {viagem.comissao.toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
                       </span>
                     )}
                   </div>

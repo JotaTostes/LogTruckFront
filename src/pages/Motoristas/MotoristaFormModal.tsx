@@ -1,17 +1,8 @@
-import type { Motorista } from "../../types/Motorista";
 import MotoristaForm from "./MotoristaForm";
 import type { UsuarioDto } from "../../types/Usuario";
 import FormModal from "../../components/ui/FormModal";
 import { Icon } from "lucide-react";
 import { steeringWheel } from "@lucide/lab";
-
-type Props = {
-  open: boolean;
-  onClose: () => void;
-  motorista: Motorista | null;
-  onSuccess: () => void;
-  usuariosMotoristas: UsuarioDto[];
-};
 
 export function MotoristaFormModal({
   open,

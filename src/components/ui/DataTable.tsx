@@ -5,17 +5,13 @@ import { MTIconBtt as IconButton } from "./mt/MTIcon";
 import { Input } from "./Input";
 import {
   Search,
-  FilterIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  FileText,
   Database,
   SearchX,
   Inbox,
   FolderOpen,
 } from "lucide-react";
-
-import { systemTheme } from "../../config/systemTheme";
 
 export interface ActionButton<T> {
   icon: React.ReactNode;
@@ -58,7 +54,6 @@ export function DataTable<T extends { id?: string | number }>({
   title,
   subtitle,
   loading,
-  onFilter,
   filterPlaceholder = "Buscar...",
   actions,
   emptyStateConfig,

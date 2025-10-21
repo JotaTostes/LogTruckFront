@@ -5,7 +5,6 @@ import {
   DialogHeader as MTDialogHeader,
   DialogBody as MTDialogBody,
   DialogFooter as MTDialogFooter,
-  type DialogProps as MTDialogProps,
 } from "@material-tailwind/react";
 
 export const Dialog = (props: any) => <MTDialog {...props} />;

@@ -9,7 +9,7 @@ interface CustoViagemStore {
   adicionarCustoViagem: (viagem: CustoViagemPayload) => Promise<void>;
 }
 
-export const useCustoViagemStore = create<CustoViagemStore>((set) => ({
+export const useCustoViagemStore = create<CustoViagemStore>(() => ({
   custoViagem: {} as CustoViagem,
   CustoViagemPayload: {} as CustoViagemPayload,
 

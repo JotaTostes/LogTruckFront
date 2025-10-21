@@ -1,5 +1,4 @@
 // DashCard.tsx
-import React from "react";
 
 type DashCardProps = {
   title: string;

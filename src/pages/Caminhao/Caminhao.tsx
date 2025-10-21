@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Truck, Search, History } from "lucide-react";
-import toast from "react-hot-toast";
+import { Plus, Truck, History } from "lucide-react";
 
 import { Button } from "../../components/ui/Button";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
