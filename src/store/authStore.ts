@@ -11,13 +11,32 @@ interface Usuario {
 interface AuthStore {
   usuario: Usuario | null;
   token: string | null;
+  isAuthenticated: boolean;
   login: (email: string, senha: string) => Promise<boolean>;
   logout: () => void;
+  checkAuth: () => boolean;
+  initializeAuth: () => void;
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
   usuario: null,
   token: null,
+  isAuthenticated: false,
+
+  initializeAuth: () => {
+    const token = localStorage.getItem("token");
+    const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+
+    if (token && usuario) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      set({ token, usuario, isAuthenticated: true });
+    }
+  },
+
+  checkAuth: () => {
+    const token = localStorage.getItem("token");
+    return !!token;
+  },
 
   login: async (email, senha) => {
     try {
@@ -28,9 +47,13 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       const { token, usuario } = response.data;
 
+      if (!token || !usuario) {
+        throw new Error("Invalid response data");
+      }
+
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-      set({ usuario, token });
+      set({ usuario, token, isAuthenticated: true });
 
       localStorage.setItem("token", token);
       localStorage.setItem("usuario", JSON.stringify(usuario));
@@ -43,9 +66,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
 
   logout: () => {
-    set({ usuario: null, token: null });
-    delete axios.defaults.headers.common["Authorization"];
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
+    delete axios.defaults.headers.common["Authorization"];
+    set({ usuario: null, token: null, isAuthenticated: false });
   },
 }));
+
+useAuthStore.getState().initializeAuth();

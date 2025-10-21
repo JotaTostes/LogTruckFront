@@ -1,31 +1,48 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import AprovarViagens from "../pages/Viagens/Aprovar/AprovarViagens";
+import Caminhao from "../pages/Caminhao/Caminhao";
+import Comissao from "../pages/Comissao/Comissao";
+import Dashboard from "../pages/Dashboard/Dashboard";
+import DefaultLayout from "../layouts/DefaultLayout";
 import Login from "../pages/Login";
-import Dashboard from "../pages/Dashboard";
+import Motoristas from "../pages/Motoristas/Motoristas";
+import ReativarMotoristas from "../pages/Motoristas/ReativarMotorista";
 import PrivateRoute from "../routes/PrivateRoute";
-import DashboardLayout from "../layouts/DashboardLayout";
-
+import Usuarios from "../pages/Usuario/Usuarios";
+import Viagens from "../pages/Viagens/Viagens";
+import FeatureNotImplemented from "../components/ui/FeatureNotImplemented";
+import { Routes, Route, Navigate } from "react-router-dom";
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" />} />
       <Route path="/login" element={<Login />} />
+
       <Route element={<PrivateRoute roles={["Administrador", "Operador"]} />}>
-        <Route
-          path="/dashboard"
-          element={
-            <DashboardLayout>
-              <Dashboard />
-            </DashboardLayout>
-          }
-        />
-        {/* <Route
-          path="/usuarios"
-          element={
-            <DashboardLayout>
-              <Usuarios />
-            </DashboardLayout>
-          }
-        /> */}
+        <Route element={<DefaultLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/usuarios" element={<Usuarios />} />
+          <Route path="/motoristas" element={<Motoristas />} />
+          <Route path="/viagens" element={<Viagens />} />
+          <Route path="/caminhoes" element={<Caminhao />} />
+          <Route path="/custos/comissoes" element={<Comissao />} />
+          <Route path="/viagens/aprovar" element={<AprovarViagens />} />
+          <Route path="/motoristas/reativar" element={<ReativarMotoristas />} />
+          <Route
+            path="/custos/pendenciasVeiculares"
+            element={
+              <FeatureNotImplemented featureName="Pendências Veiculares" />
+            }
+          />
+          <Route
+            path="/config"
+            element={
+              <FeatureNotImplemented
+                showAnimation={false}
+                featureName="Configurações"
+              />
+            }
+          />
+        </Route>
       </Route>
     </Routes>
   );

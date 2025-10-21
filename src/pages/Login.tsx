@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Truck } from "lucide-react";
 import { Button } from "../components/ui/Button";
+import { toast } from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -14,20 +15,34 @@ export default function Login() {
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  useEffect(() => {
+    if (useAuthStore.getState().checkAuth()) {
+      navigate("/usuarios");
+    }
+  }, [navigate]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setErro("");
 
-    const sucesso = await login(email, senha);
+    try {
+      const sucesso = await login(email, senha);
 
-    if (sucesso) {
-      navigate("/dashboard");
-    } else {
-      setErro("E-mail ou senha inválidos.");
+      if (sucesso && useAuthStore.getState().isAuthenticated) {
+        toast.success("Login realizado com sucesso!");
+        navigate("/dashboard", { replace: true });
+      } else {
+        setErro("E-mail ou senha inválidos");
+        toast.error("E-mail ou senha inválidos.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setErro("Erro interno");
+      toast.error("Erro interno. Tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -35,13 +50,16 @@ export default function Login() {
       {/* Login Card */}
       <div className="w-full max-w-md relative">
         {/* Header com Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-2xl mb-6 shadow-lg">
-            <Lock className="w-10 h-10 text-white" />
+        <div className="mb-8">
+          <div className="bg-white/90 rounded-full p-6 w-48 h-48 mx-auto">
+            <img
+              src="/logtruck-logo-login.png"
+              alt="Logotipo LogTruck"
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">LogTruck</h1>
-          <p className="text-white/70">Sistema de Gestão Logística</p>
         </div>
+
         {/* Glassmorphism Card */}
         <div className="bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl relative z-10">
           {/* Header Interno */}
@@ -53,7 +71,14 @@ export default function Login() {
           </div>
 
           {/* Login Form */}
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message */}
+            {erro && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
+                {erro}
+              </div>
+            )}
+
             {/* Email Field */}
             <div className="space-y-2">
               <label className="block text-gray-700 text-sm font-medium">
@@ -68,6 +93,7 @@ export default function Login() {
                   className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   placeholder="seu@email.com"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -86,11 +112,13 @@ export default function Login() {
                   className="w-full pl-12 pr-12 py-4 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   placeholder="••••••••"
                   required
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  disabled={isLoading}
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -102,53 +130,50 @@ export default function Login() {
             </div>
 
             {/* Remember & Forgot */}
-            <div className="flex items-center justify-between">
+            {/* <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input
                   type="checkbox"
                   className="w-4 h-4 rounded border-gray-300 bg-gray-50 text-blue-600 focus:ring-blue-500 focus:ring-2"
+                  disabled={isLoading}
                 />
                 <span className="ml-2 text-gray-700 text-sm">Lembrar-me</span>
               </label>
-              <button className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">
+              <button
+                type="button"
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors disabled:opacity-50"
+                disabled={isLoading}
+              >
                 Esqueceu a senha?
               </button>
-            </div>
+            </div> */}
 
             {/* Submit Button */}
-            {/* <button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 group"
-            >
-              {isLoading ? (
-                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              ) : (
-                <>
-                  <span>Entrar</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </>
-              )}
-            </button> */}
-            <Button onClick={handleSubmit} isLoading={isLoading}>
-              Entrar
-            </Button>
-          </div>
+            <div className="flex justify-center">
+              <Button
+                variant="primary"
+                isLoading={isLoading}
+                disabled={isLoading || !email || !senha}
+                size="lg"
+              >
+                {isLoading ? "Entrando..." : "Entrar"}
+              </Button>
+            </div>
+          </form>
 
           {/* Footer */}
           <div className="text-center mt-8">
             <p className="text-gray-500 text-sm">
               Precisa de ajuda?{" "}
-              <button className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+              <button
+                type="button"
+                className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+              >
                 Contate o suporte
               </button>
             </p>
           </div>
         </div>
-
-        {/* Floating Elements */}
-        <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-xl -z-10"></div>
-        <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-gradient-to-br from-slate-400/20 to-blue-400/20 rounded-full blur-xl -z-10"></div>
       </div>
     </div>
   );

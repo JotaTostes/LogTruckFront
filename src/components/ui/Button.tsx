@@ -1,32 +1,63 @@
 // src/components/ui/Button.tsx
 import { ArrowRight } from "lucide-react";
 import React from "react";
+import { systemTheme } from "../../config/systemTheme";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   showArrow?: boolean;
+  icon?: React.ReactNode; // Adicionada propriedade para ícones
+  variant?:
+    | "primary"
+    | "secondary"
+    | "danger"
+    | "outline"
+    | "ghost"
+    | "success";
+  size?: "sm" | "md" | "lg";
 }
 
 export const Button: React.FC<ButtonProps> = ({
   children,
   isLoading = false,
   showArrow = true,
+  icon,
   className = "",
+  variant = "primary",
+  size = "md",
   ...props
 }) => {
+  const sizeClasses = {
+    sm: "px-4 py-2 text-sm",
+    md: "px-6 py-3 text-base",
+    lg: "px-8 py-4 text-lg",
+  };
+
   return (
     <button
       {...props}
       disabled={isLoading || props.disabled}
-      className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 group ${className}`}
+      className={`
+        ${systemTheme.components.button[variant]}
+        ${sizeClasses[size]}
+        rounded-xl font-medium
+        shadow-lg shadow-blue-500/30 
+        hover:shadow-blue-500/40 
+        transition-all duration-300
+        flex items-center space-x-2
+      `}
     >
       {isLoading ? (
-        <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+        <div className="flex items-center space-x-2">
+          <div className="w-5 h-5 border-2 border-current/30 border-t-current rounded-full animate-spin"></div>
+          <span>Carregando...</span>
+        </div>
       ) : (
         <>
+          {icon && <span className="flex items-center">{icon}</span>}
           <span>{children}</span>
           {showArrow && (
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
           )}
         </>
       )}
