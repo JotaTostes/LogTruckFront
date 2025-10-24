@@ -24,7 +24,7 @@ api.interceptors.response.use(
       // Remove o token e desloga o usuário
       localStorage.removeItem("token");
       const authStore = useAuthStore.getState();
-      authStore.logout?.(); // se tua store tiver o método logout
+      authStore.logout?.();
 
       // Redireciona pro login
       window.location.href = "/login";
