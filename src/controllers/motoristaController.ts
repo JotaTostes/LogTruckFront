@@ -7,12 +7,18 @@ import type {
   MotoristaCompleto,
   UpdateMotoristaDto,
 } from "../types/Motorista";
+import type { ApiResponse } from "../types/ApiResponse";
 
 export const motoristaController = {
   async fetchMotoristas() {
     try {
-      const { data } = await api.get<Motorista[]>("/motorista");
-      useMotoristaStore.getState().setMotoristas(data);
+      const { data } = await api.get<ApiResponse<Motorista[]>>("/motorista");
+
+      if (data.success) {
+        useMotoristaStore.getState().setMotoristas(data.content || []);
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
     } catch (err) {
       toast.error("Erro ao carregar motoristas");
       throw err;
@@ -21,10 +27,15 @@ export const motoristaController = {
 
   async fetchMotoristasCompletos() {
     try {
-      const { data } = await api.get<MotoristaCompleto[]>(
+      const { data } = await api.get<ApiResponse<MotoristaCompleto[]>>(
         "/motorista/motoristas-completos"
       );
-      useMotoristaStore.getState().setMotoristasCompletos(data);
+
+      if (data.success) {
+        useMotoristaStore.getState().setMotoristasCompletos(data.content || []);
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
     } catch (err) {
       toast.error("Erro ao carregar motoristas completos");
       throw err;
@@ -33,8 +44,16 @@ export const motoristaController = {
 
   async addMotorista(motorista: CreateMotoristaDto) {
     try {
-      const { data } = await api.post<Motorista>("/motorista", motorista);
-      await this.fetchMotoristas(); // Refresh the list
+      const { data } = await api.post<ApiResponse<Motorista>>(
+        "/motorista",
+        motorista
+      );
+
+      if (data.success) {
+        await this.fetchMotoristas();
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
       toast.success("Motorista adicionado com sucesso!");
       return data;
     } catch (err) {
@@ -45,8 +64,16 @@ export const motoristaController = {
 
   async editMotorista(id: string, motorista: UpdateMotoristaDto) {
     try {
-      await api.put(`/motorista/${id}`, motorista);
-      await this.fetchMotoristas(); // Refresh the list
+      const { data } = await api.put<ApiResponse<null>>(
+        `/motorista/${id}`,
+        motorista
+      );
+
+      if (data.success) {
+        await this.fetchMotoristas();
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
       toast.success("Motorista atualizado com sucesso!");
     } catch (err) {
       toast.error("Erro ao editar motorista");
@@ -56,27 +83,30 @@ export const motoristaController = {
 
   async deleteMotorista(id: string) {
     try {
-      await api.delete(`/motorista/${id}`);
-      await this.fetchMotoristasCompletos();
+      const { data } = await api.delete<ApiResponse<null>>(`/motorista/${id}`);
+
+      if (data.success) {
+        await this.fetchMotoristasCompletos();
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
       toast.success("Motorista removido com sucesso!");
     } catch (err: any) {
-      if (
-        err.response &&
-        err.response.data &&
-        err.response.data.errors &&
-        Array.isArray(err.response.data.errors)
-      ) {
-        err.response.data.errors.forEach((error: string) => toast.error(error));
-      } else {
-        toast.error("Erro ao remover motorista");
-      }
+      toast.error("Erro ao editar motorista");
       throw err;
     }
   },
   async fetchMotoristasDeletados() {
     try {
-      const { data } = await api.get<Motorista[]>("/motorista/deletados");
-      useMotoristaStore.getState().setMotoristasDeletados(data);
+      const { data } = await api.get<ApiResponse<Motorista[]>>(
+        "/motorista/deletados"
+      );
+
+      if (data.success) {
+        useMotoristaStore.getState().setMotoristasDeletados(data.content || []);
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
     } catch (err) {
       toast.error("Erro ao carregar motoristas deletados");
       throw err;
@@ -84,9 +114,16 @@ export const motoristaController = {
   },
   async reativarMotorista(id: string) {
     try {
-      await api.put(`/motorista/${id}/reativar`);
+      const { data } = await api.put<ApiResponse<null>>(
+        `/motorista/${id}/reativar`
+      );
+
+      if (data.success) {
+        await this.fetchMotoristasDeletados();
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
       toast.success("Motorista reativado com sucesso!");
-      await this.fetchMotoristasDeletados(); // Atualiza a lista de motoristas deletados
     } catch (err) {
       toast.error("Erro ao reativar motorista");
       throw err;
