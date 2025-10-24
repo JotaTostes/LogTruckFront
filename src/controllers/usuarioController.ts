@@ -7,12 +7,18 @@ import type {
   Usuario,
   UsuarioDto,
 } from "../types/Usuario";
+import type { ApiResponse } from "../types/ApiResponse";
 
 export const usuarioController = {
   async fetchUsuarios() {
     try {
-      const { data } = await api.get<Usuario[]>("/usuario");
-      useUsuarioStore.getState().setUsuarios(data);
+      const { data } = await api.get<ApiResponse<Usuario[]>>("/usuario");
+
+      if (data.success) {
+        useUsuarioStore.getState().setUsuarios(data.content || []);
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
     } catch (err) {
       toast.error("Erro ao carregar usuários");
       throw err;
@@ -42,8 +48,16 @@ export const usuarioController = {
             : usuario.role,
       };
 
-      const { data } = await api.post<Usuario>("/usuario", usuarioParaEnviar);
-      await this.fetchUsuarios(); // Refresh the list
+      const { data } = await api.post<ApiResponse<Usuario>>(
+        "/usuario",
+        usuarioParaEnviar
+      );
+
+      if (data.success) {
+        await this.fetchUsuarios();
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
       toast.success("Usuário adicionado com sucesso!");
       return data;
     } catch (err) {
@@ -54,9 +68,17 @@ export const usuarioController = {
 
   async editUsuario(id: string, usuario: UpdateUsuarioDto) {
     try {
-      await api.put(`/usuario/${id}`, usuario);
+      const { data } = await api.put<ApiResponse<null>>(
+        `/usuario/${id}`,
+        usuario
+      );
+
+      if (data.success) {
+        await this.fetchUsuarios();
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
       toast.success("Usuário editado com sucesso!");
-      await this.fetchUsuarios();
     } catch (err) {
       toast.error("Erro ao editar usuário");
       throw err;
@@ -65,8 +87,13 @@ export const usuarioController = {
 
   async deleteUsuario(id: string) {
     try {
-      await api.delete(`/usuario/${id}`);
-      await this.fetchUsuarios();
+      const { data } = await api.delete<ApiResponse<null>>(`/usuario/${id}`);
+
+      if (data.success) {
+        await this.fetchUsuarios();
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
       toast.success("Usuário removido com sucesso!");
     } catch (err) {
       toast.error("Erro ao remover usuário");

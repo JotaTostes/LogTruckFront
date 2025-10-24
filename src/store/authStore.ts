@@ -45,7 +45,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         { email, senha }
       );
 
-      const { token, usuario } = response.data;
+      const { token, usuario } = response.data.content;
 
       if (!token || !usuario) {
         throw new Error("Invalid response data");
