@@ -1,7 +1,7 @@
 import { useComissaoStore } from "../store/comissaoStore";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
-import type { Comissao, ComissaoCompleta } from "../types/Comissao";
+import type { ComissaoCompleta } from "../types/Comissao";
 import type { ApiResponse } from "../types/ApiResponse";
 
 export const comissaoController = {
