@@ -43,6 +43,11 @@ export default function Motoristas() {
       try {
         await loadMotoristas();
         await loadUsuariosMotoristas();
+        console.log(
+          "Motoristas e usuários motoristas carregados",
+          motoristas,
+          usuariosMotoristas
+        );
       } finally {
         setLoading(false);
       }
@@ -202,7 +207,7 @@ export default function Motoristas() {
                   Total de Motoristas
                 </p>
                 <p className="text-2xl font-bold text-slate-800">
-                  {motoristas.filter((m) => !m.ativo).length}
+                  {motoristas.filter((m) => m.ativo).length}
                 </p>
               </div>
             </div>
