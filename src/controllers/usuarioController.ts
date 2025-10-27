@@ -27,10 +27,14 @@ export const usuarioController = {
 
   async fetchUsuariosMotoristas() {
     try {
-      const { data } = await api.get<UsuarioDto[]>(
+      const { data } = await api.get<ApiResponse<UsuarioDto[]>>(
         "/usuario/usuarios-motoristas"
       );
-      useUsuarioStore.getState().setUsuariosMotoristas(data);
+      if (data.success) {
+        useUsuarioStore.getState().setUsuariosMotoristas(data.content || []);
+      } else {
+        data.errors?.forEach((error) => toast.error(error));
+      }
     } catch (err) {
       toast.error("Erro ao carregar usuários motoristas");
       throw err;

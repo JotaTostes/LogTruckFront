@@ -1,6 +1,7 @@
 import { useAuthStore } from "../../store/authStore";
 import { LogOut, Menu } from "lucide-react";
 import { systemTheme } from "../../config/systemTheme";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
   isSidebarHovered: boolean;
@@ -41,13 +42,13 @@ const Header = ({ setIsSidebarHovered }: HeaderProps) => {
 
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <a href="/dashboard">
+            <Link to="/dashboard">
               <img
                 src="/logtruck-logo-header-white.png"
                 alt="Logotipo LogTruck"
                 className="h-8 w-auto object-contain drop-shadow-md hover:drop-shadow-xl transition-all duration-300 cursor-pointer"
               />
-            </a>
+            </Link>
           </div>
         </div>
 
